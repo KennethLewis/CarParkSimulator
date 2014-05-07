@@ -19,7 +19,6 @@ import org.junit.Test;
 /**
  * @author hogan
  *
- * Tom Test
  */
 public class CarTests {
 

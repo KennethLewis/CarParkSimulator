@@ -10,8 +10,6 @@
  */
 package asgn2Vehicles;
 
-//Testing GIT UPDATING
-
 import asgn2Exceptions.VehicleException;
 import asgn2Simulators.Constants;
 
