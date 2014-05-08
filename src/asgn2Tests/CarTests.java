@@ -26,14 +26,16 @@ import asgn2Vehicles.Car;
 public class CarTests {
 	
 	private Vehicle testVehicle;
-	/*
-	 * 
+	
+	/**
+	 * Testing the creation of a normal Vehicle Object
+	 * @throws VehicleException
+	 * @author Ken Lewis
 	 */
 	@Test
 	public void testNewCarCreation() throws VehicleException{
 		
 		testVehicle = new Car ("1234Test", 10, false);
-		
 	}
 
 	/**
