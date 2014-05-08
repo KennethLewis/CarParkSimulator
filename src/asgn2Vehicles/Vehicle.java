@@ -52,6 +52,7 @@ public abstract class Vehicle {
 	private String vehID;
 	private Integer arrivalTime;
 	private Integer parkingTime;
+	private Integer departureTime;
 	private Integer intendedDuration = MINIMUMDURATION;
 	private String vehicleState;
 	
@@ -75,6 +76,7 @@ public abstract class Vehicle {
 		
 		//Setting other initial vehicle variables
 		parkingTime = 0;
+		departureTime = 0;
 		vehicleState = "N";
 	}
 
@@ -86,6 +88,7 @@ public abstract class Vehicle {
 	 *  	  Note that the parkingTime + intendedDuration yields the departureTime
 	 * @throws VehicleException if the vehicle is already in a parked or queued state, if parkingTime < 0, 
 	 *         or if intendedDuration is less than the minimum prescribed in asgnSimulators.Constants
+	 * @author Ken Lewis
 	 */
 	public void enterParkedState(int parkingTime, int intendedDuration) throws VehicleException {
 		
@@ -107,8 +110,15 @@ public abstract class Vehicle {
 	 * Transition vehicle to queued state (mutator) 
 	 * Queuing formally starts on arrival and ceases with a call to {@link #exitQueuedState(int) exitQueuedState}
 	 * @throws VehicleException if the vehicle is already in a queued or parked state
+	 * @author Ken Lewis
 	 */
 	public void enterQueuedState() throws VehicleException {
+		
+		if (vehicleState.matches("P") == true || vehicleState.matches("Q") == true)
+			throw new VehicleException ("Vehicle is currently either already parked"
+					+ " or in the que to enter the CarPark.\n");
+		else
+			this.vehicleState = "Q";
 	}
 	
 	/**
@@ -116,8 +126,21 @@ public abstract class Vehicle {
 	 * @param departureTime int holding the actual departure time 
 	 * @throws VehicleException if the vehicle is not in a parked state, is in a queued 
 	 * 		  state or if the revised departureTime < parkingTime
+	 * @author Ken Lewis
 	 */
 	public void exitParkedState(int departureTime) throws VehicleException {
+		
+		if (vehicleState.matches("P") == false || vehicleState.matches("Q") == true)
+			throw new VehicleException ("Vehicle  cannot exit parked state, as it is" +
+					" currently either not parked or in the que to enter the CarPark.\n");
+		else if (departureTime < this.parkingTime)
+			throw new VehicleException ("Revised departure time cannot be less than" +
+					" the parking time.\n");
+		//Method enterParkedState mentions departure time is parkingTime + 
+		//intendedDuration yields the departureTime
+		else
+			this.departureTime = departureTime;
+			
 	}
 
 	/**
