@@ -55,7 +55,7 @@ public abstract class Vehicle {
 	private Integer departureTime;
 	private Integer exitTime;
 	private Integer intendedDuration = MINIMUMDURATION;
-	private String vehicleState;
+	private List<String> vehicleState;
 	
 	/**
 	 * Vehicle Constructor 
@@ -79,7 +79,8 @@ public abstract class Vehicle {
 		this.parkingTime = 0;
 		this.departureTime = 0;
 		this.exitTime = 0;
-		this.vehicleState = "N";
+		this.vehicleState = new ArrayList<String>();
+		this.vehicleState.add("N");
 	}
 
 	/**
@@ -94,7 +95,7 @@ public abstract class Vehicle {
 	 */
 	public void enterParkedState(int parkingTime, int intendedDuration) throws VehicleException {
 		
-		if (vehicleState.matches("P") == true || vehicleState.matches("Q") == true)
+		if(vehicleState.contains("P") || vehicleState.contains("Q"))
 			throw new VehicleException ("Vehicle is currently either already parked"
 					+ " or in the que to enter the CarPark.\n");
 		else if (parkingTime < 0)
@@ -116,11 +117,11 @@ public abstract class Vehicle {
 	 */
 	public void enterQueuedState() throws VehicleException {
 		
-		if (vehicleState.matches("P") == true || vehicleState.matches("Q") == true)
+		if(vehicleState.contains("P") || vehicleState.contains("Q"))
 			throw new VehicleException ("Vehicle is currently either already parked"
 					+ " or in the que to enter the CarPark.\n");
 		else
-			this.vehicleState = "Q";
+			this.vehicleState.add("Q");
 	}
 	
 	/**
@@ -132,7 +133,7 @@ public abstract class Vehicle {
 	 */
 	public void exitParkedState(int departureTime) throws VehicleException {
 		
-		if (vehicleState.matches("P") == false || vehicleState.matches("Q") == true)
+		if(vehicleState.contains("P") == false || vehicleState.contains("Q"))
 			throw new VehicleException ("Vehicle  cannot exit parked state, as it is" +
 					" currently either not parked or in the que to enter the CarPark.\n");
 		else if (departureTime < this.parkingTime)
@@ -156,13 +157,13 @@ public abstract class Vehicle {
 	 */
 	public void exitQueuedState(int exitTime) throws VehicleException {
 	
-		if (vehicleState.matches("P") == true || vehicleState.matches("Q") == false)
+		if(vehicleState.contains("P") || vehicleState.contains("Q") == false)
 			throw new VehicleException ("Vehicle  cannot exit Queued state, as it is" +
 					" currently either parked or not in the que to enter the CarPark.\n");
 		else if (exitTime > arrivalTime)
 			throw new VehicleException ("Exit time cannot be greater than arrival time\n");
 		else {
-				this.vehicleState = "P";
+				this.vehicleState.add("P");
 				this.exitTime = exitTime;
 		}
 	}
@@ -186,9 +187,14 @@ public abstract class Vehicle {
 	 */
 	public int getDepartureTime() {
 		
-		if (this.vehicleState.matches("P"))
+		int lastState = vehicleState.size(); // might have to -1 to get right pos
+		/**Presuming that the last vehicleState is the one which is
+		* required. ie if it was parked that should be its last state,
+		* if it was archived it should be its last state.
+		*/
+		if(this.vehicleState.get(lastState).equals("P"))
 				return this.departureTime;
-		else if (this.vehicleState.matches("A"))
+		else if (this.vehicleState.get(lastState).equals("A"))
 			//Presume this is where the EnterParkedState method mentions
 			//returning proper departure time
 				return this.parkingTime + this.intendedDuration;
@@ -200,8 +206,11 @@ public abstract class Vehicle {
 	 * Simple getter for the parking time
 	 * Note: result may be 0 before parking
 	 * @return the parkingTime
+	 * @author Ken Lewis
 	 */
 	public int getParkingTime() {
+		
+		return this.parkingTime;
 	}
 
 	/**
@@ -210,21 +219,45 @@ public abstract class Vehicle {
 	 * @author Ken Lewis
 	 */
 	public String getVehID() {
+		
 		return this.vehID;
 	}
 
 	/**
 	 * Boolean status indicating whether vehicle is currently parked 
 	 * @return true if the vehicle is in a parked state; false otherwise
+	 * @author Ken Lewis
 	 */
 	public boolean isParked() {
+		
+		int lastState = vehicleState.size(); // might have to -1 to get right pos
+		/**Presuming that the last vehicleState is the one which is
+		* required. ie if it was parked that should be its last state,
+		* if it was archived it should be its last state.
+		*/
+		if(this.vehicleState.get(lastState).equals("P"))
+			return true;
+		else
+			return false;
 	}
 
 	/**
 	 * Boolean status indicating whether vehicle is currently queued
-	 * @return true if vehicle is in a queued state, false otherwise 
+	 * @return true if vehicle is in a queued state, false otherwise
+	 * @author Ken Lewis
 	 */
 	public boolean isQueued() {
+		
+		int lastState = vehicleState.size(); // might have to -1 to get right pos
+		/**Presuming that the last vehicleState is the one which is
+		* required. ie if it was parked that should be its last state,
+		* if it was archived it should be its last state.
+		*/
+		if(this.vehicleState.get(lastState).equals("Q"))
+			return true;
+		else
+			return false;
+			
 	}
 	
 	/**
@@ -247,14 +280,26 @@ public abstract class Vehicle {
 	 * Boolean status indicating whether vehicle was ever parked
 	 * Will return false for vehicles in queue or turned away 
 	 * @return true if vehicle was or is in a parked state, false otherwise 
+	 * @author Ken Lewis
 	 */
 	public boolean wasParked() {
+		
+		if (this.vehicleState.contains("P"))
+			return true;
+		else
+			return false;
 	}
 
 	/**
 	 * Boolean status indicating whether vehicle was ever queued
 	 * @return true if vehicle was or is in a queued state, false otherwise 
+	 * @author Ken Lewis
 	 */
 	public boolean wasQueued() {
+		
+		if (this.vehicleState.contains("Q"))
+			return true;
+		else
+			return false;
 	}
 }
