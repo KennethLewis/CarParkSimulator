@@ -49,7 +49,7 @@ public abstract class Vehicle {
 	private Integer arrivalTime;
 	private Integer parkingTime;
 	private Integer departureTime;
-	private Integer exitTime;
+	private Integer exitTime; //Time the vehicle leaves the que
 	private Integer intendedDuration;
 	private List<String> vehicleState;
 	
@@ -229,8 +229,7 @@ public abstract class Vehicle {
 		
 		int lastState = vehicleState.size(); // might have to -1 to get right pos
 		/**Presuming that the last vehicleState is the one which is
-		* required. ie if it was parked that should be its last state,
-		* if it was archived it should be its last state.
+		* required. ie if it was parked that should be its last state.
 		*/
 		if(this.vehicleState.get(lastState).equals("P"))
 			return true;
@@ -247,8 +246,7 @@ public abstract class Vehicle {
 		
 		int lastState = vehicleState.size(); // might have to -1 to get right pos
 		/**Presuming that the last vehicleState is the one which is
-		* required. ie if it was parked that should be its last state,
-		* if it was archived it should be its last state.
+		* required. ie if it was queued that should be its last state.
 		*/
 		if(this.vehicleState.get(lastState).equals("Q"))
 			return true;
@@ -269,6 +267,7 @@ public abstract class Vehicle {
 		if (vehicleState.contains("P"))
 			return true;
 		//not sure about calculating the in que for too long time period.
+		//or if they were turned away as soon as they arrived.
 		//need to fix
 		else
 			return false;
