@@ -53,6 +53,7 @@ public abstract class Vehicle {
 	private Integer arrivalTime;
 	private Integer parkingTime;
 	private Integer departureTime;
+	private Integer exitTime;
 	private Integer intendedDuration = MINIMUMDURATION;
 	private String vehicleState;
 	
@@ -75,9 +76,10 @@ public abstract class Vehicle {
 			this.arrivalTime = arrivalTime;
 		
 		//Setting other initial vehicle variables
-		parkingTime = 0;
-		departureTime = 0;
-		vehicleState = "N";
+		this.parkingTime = 0;
+		this.departureTime = 0;
+		this.exitTime = 0;
+		this.vehicleState = "N";
 	}
 
 	/**
@@ -150,8 +152,19 @@ public abstract class Vehicle {
 	 * @param exitTime int holding the time at which the vehicle left the queue 
 	 * @throws VehicleException if the vehicle is in a parked state or not in a queued state, or if 
 	 *  exitTime is not later than arrivalTime for this vehicle
+	 *  @author Ken Lewis
 	 */
 	public void exitQueuedState(int exitTime) throws VehicleException {
+	
+		if (vehicleState.matches("P") == true || vehicleState.matches("Q") == false)
+			throw new VehicleException ("Vehicle  cannot exit Queued state, as it is" +
+					" currently either parked or not in the que to enter the CarPark.\n");
+		else if (exitTime > arrivalTime)
+			throw new VehicleException ("Exit time cannot be greater than arrival time\n");
+		else {
+				this.vehicleState = "P";
+				this.exitTime = exitTime;
+		}
 	}
 	
 	/**
@@ -169,8 +182,18 @@ public abstract class Vehicle {
 	 * Note: result may be 0 before parking, show intended departure 
 	 * time while parked; and actual when archived
 	 * @return the departureTime
+	 * @author Ken Lewis
 	 */
 	public int getDepartureTime() {
+		
+		if (this.vehicleState.matches("P"))
+				return this.departureTime;
+		else if (this.vehicleState.matches("A"))
+			//Presume this is where the EnterParkedState method mentions
+			//returning proper departure time
+				return this.parkingTime + this.intendedDuration;
+		else
+			return this.departureTime;
 	}
 	
 	/**
