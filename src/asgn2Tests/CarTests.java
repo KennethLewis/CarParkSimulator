@@ -37,6 +37,17 @@ public class CarTests {
 		
 		testVehicle = new Car ("1234Test", 10, false);
 	}
+	
+	/**
+	 * Testing the creation of a small car object
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test
+	public void testNewSmallCarCreation() throws VehicleException {
+		
+		testVehicle = new Car ("1234Test", 10, true);
+	}
 
 	/**
 	 * @throws java.lang.Exception
