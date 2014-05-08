@@ -88,6 +88,19 @@ public abstract class Vehicle {
 	 *         or if intendedDuration is less than the minimum prescribed in asgnSimulators.Constants
 	 */
 	public void enterParkedState(int parkingTime, int intendedDuration) throws VehicleException {
+		
+		if (vehicleState.matches("P") == true || vehicleState.matches("Q") == true)
+			throw new VehicleException ("Vehicle is currently either already parked"
+					+ " or in the que to enter the CarPark.\n");
+		else if (parkingTime < 0)
+			throw new VehicleException ("Vehicle parking time cannot be less than 0\n");
+		else if (intendedDuration < MINIMUMDURATION)
+			throw new VehicleException ("Intended duration cannot be less than the" +
+					" Minimum Duration\n");
+		else {
+			this.parkingTime = parkingTime;
+			this.intendedDuration = intendedDuration;
+		}
 	}
 	
 	/**
