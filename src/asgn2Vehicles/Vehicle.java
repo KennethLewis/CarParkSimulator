@@ -264,9 +264,17 @@ public abstract class Vehicle {
 	 * Boolean status indicating whether customer is satisfied or not
 	 * Satisfied if they park; dissatisfied if turned away, or queuing for too long 
 	 * Note that calls to this method may not reflect final status 
-	 * @return true if satisfied, false if never in parked state or if queuing time exceeds max allowable 
+	 * @return true if satisfied, false if never in parked state or if queuing time exceeds max allowable
+	 * @author Ken Lewis 
 	 */
 	public boolean isSatisfied() {
+		
+		if (vehicleState.contains("P"))
+			return true;
+		//not sure about calculating the in que for too long time period.
+		//need to fix
+		else
+			return false;
 	}
 	
 	/* (non-Javadoc)
