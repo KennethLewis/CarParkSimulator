@@ -15,12 +15,26 @@ import static org.junit.Assert.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import asgn2Exceptions.VehicleException;
+import asgn2Vehicles.Vehicle;
+import asgn2Vehicles.Car;
 
 /**
  * @author hogan
  *
  */
 public class CarTests {
+	
+	private Vehicle testVehicle;
+	/*
+	 * 
+	 */
+	@Test
+	public void testNewCarCreation() throws VehicleException{
+		
+		testVehicle = new Car ("1234Test", 10, false);
+		
+	}
 
 	/**
 	 * @throws java.lang.Exception
