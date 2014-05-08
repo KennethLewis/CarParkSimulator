@@ -9,12 +9,11 @@
  * 
  */
 
-//TESTING DEV IN GIT
 package asgn2Vehicles;
 
 import asgn2Exceptions.VehicleException;
 import asgn2Simulators.Constants;
-
+import java.util.*;
 
 
 /**
@@ -46,14 +45,37 @@ import asgn2Simulators.Constants;
  */
 public abstract class Vehicle {
 	
+	//Set the min vehicle stay duration. Leaves flexibility to change
+	//if needed.
+	private final Integer MINIMUMDURATION = 20;
+	
+	private String vehID;
+	private Integer arrivalTime;
+	private Integer parkingTime;
+	private Integer intendedDuration = MINIMUMDURATION;
+	private String vehicleState;
+	
 	/**
 	 * Vehicle Constructor 
 	 * @param vehID String identification number or plate of the vehicle
 	 * @param arrivalTime int time (minutes) at which the vehicle arrives and is 
 	 *        either queued, given entry to the car park or forced to leave
 	 * @throws VehicleException if arrivalTime is <= 0 
+	 * @author Ken Lewis
 	 */
 	public Vehicle(String vehID,int arrivalTime) throws VehicleException  {
+		
+		this.vehID = vehID;
+		
+		if(arrivalTime <= 0)
+			throw new VehicleException("Arrival Time must be greater that" +
+					"0\n");
+		else
+			this.arrivalTime = arrivalTime;
+		
+		//Setting other initial vehicle variables
+		parkingTime = 0;
+		vehicleState = "N";
 	}
 
 	/**
@@ -99,8 +121,11 @@ public abstract class Vehicle {
 	/**
 	 * Simple getter for the arrival time 
 	 * @return the arrivalTime
+	 * @author Ken Lewis
 	 */
 	public int getArrivalTime() {
+		
+		return this.arrivalTime;
 	}
 	
 	/**
@@ -123,8 +148,10 @@ public abstract class Vehicle {
 	/**
 	 * Simple getter for the vehicle ID
 	 * @return the vehID
+	 * @author Ken Lewis
 	 */
 	public String getVehID() {
+		return this.vehID;
 	}
 
 	/**
