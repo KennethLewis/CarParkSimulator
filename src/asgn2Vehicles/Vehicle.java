@@ -44,17 +44,13 @@ import java.util.*;
  *
  */
 public abstract class Vehicle {
-	
-	//Set the min vehicle stay duration. Leaves flexibility to change
-	//if needed.
-	private final Integer MINIMUMDURATION = 20;
-	
+		
 	private String vehID;
 	private Integer arrivalTime;
 	private Integer parkingTime;
 	private Integer departureTime;
 	private Integer exitTime;
-	private Integer intendedDuration = MINIMUMDURATION;
+	private Integer intendedDuration;
 	private List<String> vehicleState;
 	
 	/**
@@ -79,6 +75,7 @@ public abstract class Vehicle {
 		this.parkingTime = 0;
 		this.departureTime = 0;
 		this.exitTime = 0;
+		this.intendedDuration = 0;
 		this.vehicleState = new ArrayList<String>();
 		this.vehicleState.add("N");
 	}
@@ -100,7 +97,7 @@ public abstract class Vehicle {
 					+ " or in the que to enter the CarPark.\n");
 		else if (parkingTime < 0)
 			throw new VehicleException ("Vehicle parking time cannot be less than 0\n");
-		else if (intendedDuration < MINIMUMDURATION)
+		else if (intendedDuration < Constants.MINIMUM_STAY)
 			throw new VehicleException ("Intended duration cannot be less than the" +
 					" Minimum Duration\n");
 		else {
@@ -282,6 +279,7 @@ public abstract class Vehicle {
 	 */
 	@Override
 	public String toString() {
+		return "IM NOT SURE WHAT WERE PRINTING YET\n";
 	}
 
 	/**
