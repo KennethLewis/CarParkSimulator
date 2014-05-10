@@ -135,36 +135,97 @@ public class CarTests {
 	/**
 	 * Testing the method in vehicle which changes the state of
 	 * the vehicle once it arrives to the CarPark. Should throw
-	 * an exception due to the same car already being parked.
+	 * an exception due to the same car already being in Que.
 	 * @throws VehicleException
 	 * @author Ken Lewis
 	 */	
+	
+	//SHOULDNT WE BE ABLE TO PARK A CAR IF IT IS IN QUE!!!???
 	@Test (expected = VehicleException.class)
 	public void parkVehicleWhichIsInQue() throws VehicleException {
 		
 		testVehicle = new Car ("1234Test", 10, false);
 		testVehicle.enterParkedState(10, 20);
+		testVehicle.enterQueuedState();
 		testVehicle.enterParkedState(10,20);
 	}
 	
-	
-
-	
-/*public void enterParkedState(int parkingTime, int intendedDuration) throws VehicleException {
+	/**
+	 * Testing the method in vehicle which changes the state of
+	 * the vehicle once it arrives to the CarPark. Should throw
+	 * an exception due to the parking time being < 0.
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test (expected = VehicleException.class)
+	public void parkVehicleWithNegParkingTime() throws VehicleException {
 		
-		if(vehicleState.contains("P") || vehicleState.contains("Q"))
-			throw new VehicleException ("Vehicle is currently either already parked"
-					+ " or in the que to enter the CarPark.\n");
-		else if (parkingTime < 0)
-			throw new VehicleException ("Vehicle parking time cannot be less than 0\n");
-		else if (intendedDuration < Constants.MINIMUM_STAY)
-			throw new VehicleException ("Intended duration cannot be less than the" +
-					" Minimum Duration\n");
-		else {
-			this.parkingTime = parkingTime;
-			this.intendedDuration = intendedDuration;
-		}
-	}*/
+		testVehicle = new Car ("1234Test", 10, false);
+		testVehicle.enterParkedState(-5, 20);
+	}
+	
+	/**
+	 * Testing the method in vehicle which changes the state of
+	 * the vehicle once it arrives to the CarPark. Should throw
+	 * an exception due to the intendedDuration being less then
+	 * the min stay requirements.
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test (expected = VehicleException.class)
+	public void parkVehicleWithLowIntendedDur() throws VehicleException {
+		
+		testVehicle = new Car ("1234Test", 10, false);
+		testVehicle.enterParkedState(10, 19);
+	}
+	
+	/**
+	 * Testing the method in vehicle which changes the state of
+	 * the vehicle once it arrives to the CarPark. Should throw
+	 * an exception due to the parking time and intendedDuration
+	 * being less then the minimum requirements.
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test (expected = VehicleException.class)
+	public void parkVehicleWithBothBadVariables() throws VehicleException {
+		
+		testVehicle = new Car ("1234Test", 10, false);
+		testVehicle.enterParkedState(-8, 19);
+	}
+	
+	/**
+	 * Testing the method in vehicle which changes the state of
+	 * the vehicle once it arrives to the CarPark. Should throw
+	 * an exception due to the intendedDuration being far less 
+	 * then the minimum requirements.
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test (expected = VehicleException.class)
+	public void parkVehicleWithVeryLowIntendedDur() throws VehicleException {
+		
+		testVehicle = new Car ("1234Test", 10, false);
+		testVehicle.enterParkedState(10, -19);
+	}
+	
+	/**
+	 * Testing to check that both the parkingTime is correctly 
+	 * registered and stored in the Vehicle/Car object
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test
+	public void testParkTimeVar() throws VehicleException {
+		
+		testVehicle = new Car ("1234Test", 10, false);
+		testVehicle.enterParkedState(10, 20);
+		assertTrue(testVehicle.getParkingTime() == 10);
+	}
+
+	//MAYBE TEST INTENDEDDURATION VARIABLE AS WELL? NO GETTER IN VEHICLE CLASS
+	//NOT SURE IF WE CAN ADD IT. CHECK!
+
 	
 	/**
 	 * @throws java.lang.Exception
