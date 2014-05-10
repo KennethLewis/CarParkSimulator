@@ -103,6 +103,7 @@ public abstract class Vehicle {
 		else {
 			this.parkingTime = parkingTime;
 			this.intendedDuration = intendedDuration;
+			this.vehicleState.add("P");//change state of Vehicle to parked once checked
 		}
 	}
 	
