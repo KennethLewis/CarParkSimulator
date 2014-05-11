@@ -135,12 +135,12 @@ public class CarTests {
 	/**
 	 * Testing the method in vehicle which changes the state of
 	 * the vehicle once it arrives to the CarPark. Should throw
-	 * an exception due to the same car already being in Que.
+	 * an exception due to the same car already being in Queue.
 	 * @throws VehicleException
 	 * @author Ken Lewis
 	 */	
 	
-	//SHOULDNT WE BE ABLE TO PARK A CAR IF IT IS IN QUE!!!???
+	//SHOULDNT WE BE ABLE TO PARK A CAR IF IT IS IN QUEUE!!!???
 	@Test (expected = VehicleException.class)
 	public void parkVehicleWhichIsInQue() throws VehicleException {
 		
@@ -228,7 +228,7 @@ public class CarTests {
 
 	/**
 	 * Testing enteredQueuedState method to ensure the car can
-	 * enter into the que if the carpark is currently full.
+	 * enter into the queue if the carpark is currently full.
 	 * @throws VehicleException
 	 * @author Ken Lewis
 	 */	
@@ -242,7 +242,7 @@ public class CarTests {
 	
 	/**
 	 * Testing enteredQueuedState method to ensure the car can
-	 * cannot enter the que once parked.
+	 * cannot enter the queue once parked.
 	 * @throws VehicleException
 	 * @author Ken Lewis
 	 */	
@@ -256,7 +256,7 @@ public class CarTests {
 	
 	/**
 	 * Testing enteredQueuedState method to ensure the car can
-	 * cannot enter the que once queued.
+	 * cannot enter the queue once queued.
 	 * @throws VehicleException
 	 * @author Ken Lewis
 	 */	
@@ -282,6 +282,21 @@ public class CarTests {
 		testVehicle.exitParkedState(12);
 	}
 	
+	/**
+	 * Testing exitParkedState method to ensure the car can exit
+	 * its parked state and the variable departureTime is correct.
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test
+	public void testExitParkedStateDepartTime() throws VehicleException {
+		
+		testVehicle = new Car ("1234Test",10,false);
+		testVehicle.enterParkedState(10,20);
+		testVehicle.exitParkedState(12);
+		assertTrue(testVehicle.getDepartureTime() == 12);
+	}
+	
 	
 	/**
 	 * Testing enteredQueuedState method to ensure the car cannot
@@ -299,7 +314,7 @@ public class CarTests {
 	
 	/**
 	 * Testing enteredQueuedState method to ensure the car cannot
-	 * cannot leave parked state if it was only in que.
+	 * cannot leave parked state if it was only in queue.
 	 * @throws VehicleException
 	 * @author Ken Lewis
 	 */	
@@ -311,20 +326,76 @@ public class CarTests {
 		testVehicle.exitParkedState(12);
 	}
 	
-/*public void exitParkedState(int departureTime) throws VehicleException {
+	/**
+	 * Testing enteredQueuedState method to that the departure time
+	 * is not less than the parking time.
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test (expected = VehicleException.class)
+	public void testingDepartTimeVsParkTime() throws VehicleException {
 		
-		if(vehicleState.contains("P") == false || vehicleState.contains("Q"))
-			throw new VehicleException ("Vehicle  cannot exit parked state, as it is" +
-					" currently either not parked or in the que to enter the CarPark.\n");
-		else if (departureTime < this.parkingTime)
-			throw new VehicleException ("Revised departure time cannot be less than" +
-					" the parking time.\n");
-		//Method enterParkedState mentions departure time is parkingTime + 
-		//intendedDuration yields the departureTime
-		else
-			this.departureTime = departureTime;
-			
-	}*/
+		testVehicle = new Car ("1234Test",10,false);
+		testVehicle.enterParkedState(10,20);
+		testVehicle.exitParkedState(9);
+	}
+	
+	/**
+	 * Testing enteredQueuedState method to that the departure time
+	 * variable if a large negative.
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test (expected = VehicleException.class)
+	public void testingLargeNegDepartTimeVsParkTime() throws VehicleException {
+		
+		testVehicle = new Car ("1234Test",10,false);
+		testVehicle.enterParkedState(10,20);
+		testVehicle.exitParkedState(-99999);
+	}
+	
+	/**
+	 * Testing exitQuedState to ensure that the vehicle leaves
+	 * the queue and becomes parked.
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test
+	public void testingExitQueForCorrectVars() throws VehicleException {
+		
+		testVehicle = new Car ("1234Test",10,false);
+		testVehicle.enterQueuedState();
+		testVehicle.exitQueuedState(11);
+		assertTrue(testVehicle.wasParked() == true);
+	}
+	
+	/**
+	 * Testing exitQuedState to ensure that the vehicle cannot
+	 * be first parked but then able to exit the queue.
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test (expected = VehicleException.class)
+	public void testingParkedExitQueue() throws VehicleException {
+		
+		testVehicle = new Car ("1234Test",10,false);
+		testVehicle.enterParkedState(10, 20);
+		testVehicle.exitQueuedState(10);
+	}
+	
+	/**
+	 * Testing exitQuedState to ensure that the vehicle is actually
+	 * in the queue in order to be able to leave it.
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test (expected = VehicleException.class)
+	public void testingNotAlreadyQueued() throws VehicleException {
+		
+		testVehicle = new Car ("1234Test",10,false);
+		testVehicle.exitQueuedState(11);
+	}
+	
 	
 	/**
 	 * @throws java.lang.Exception

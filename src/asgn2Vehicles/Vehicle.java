@@ -158,7 +158,7 @@ public abstract class Vehicle {
 		if(vehicleState.contains("P") || vehicleState.contains("Q") == false)
 			throw new VehicleException ("Vehicle  cannot exit Queued state, as it is" +
 					" currently either parked or not in the que to enter the CarPark.\n");
-		else if (exitTime > arrivalTime)
+		else if (exitTime < arrivalTime)
 			throw new VehicleException ("Exit time cannot be greater than arrival time\n");
 		else {
 				this.vehicleState.add("P");
@@ -185,7 +185,7 @@ public abstract class Vehicle {
 	 */
 	public int getDepartureTime() {
 		
-		int lastState = vehicleState.size(); // might have to -1 to get right pos
+		int lastState = vehicleState.size() -1; // might have to -1 to get right pos
 		/**Presuming that the last vehicleState is the one which is
 		* required. ie if it was parked that should be its last state,
 		* if it was archived it should be its last state.
