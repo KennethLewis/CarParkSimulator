@@ -458,24 +458,126 @@ public class CarTests {
 		assertTrue(testVehicle.getDepartureTime() == 30);
 	}
 	
+	/**
+	 * Testing getDepartureTime to make sure the times are
+	 * matching. This should return the actually parking time
+	 * duration if the car has parked and left the carpark
+	 * completely.
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test
+	public void testingFinalDepartureTime() throws VehicleException {
+		
+		testVehicle = new Car ("1234Test",10,false);
+		testVehicle.enterParkedState(10,20);
+		testVehicle.exitParkedState(50);
+		assertTrue(testVehicle.getDepartureTime() == 60);
+	}
+	
+	/**
+	 * Testing getParking time to ensure the correct variable
+	 * is being returned
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test
+	public void testGetParkingTime() throws VehicleException {
+		
+		testVehicle = new Car ("1234Test",10,false);
+		testVehicle.enterParkedState(10,20);
+		assertTrue(testVehicle.getParkingTime() == 10);
+	}
+	
+	/**
+	 * Testing getVehicleID to ensure the correct variable
+	 * is being returned
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test
+	public void testVehicleID() throws VehicleException {
+		
+		testVehicle = new Car ("1234Test",10,false);
+		assertTrue(testVehicle.getVehID().equals("1234Test"));
+	}
+	
+	/**
+	 * Testing isParked method to ensure that if the car is 
+	 * currently parked that it will return the correct boolean
+	 * of true
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test
+	public void testIsParked() throws VehicleException {
+		
+		testVehicle = new Car ("1234Test",10,false);
+		testVehicle.enterParkedState(10,20);
+		assertTrue(testVehicle.isParked() ==  true);
+	}
+	
+	/**
+	 * Testing isParked method to ensure that if the was parked
+	 * but is no longer parked and has exited the carpark that
+	 * the method will not return true
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test
+	public void testIsParkedAfterLeaving() throws VehicleException {
+		
+		testVehicle = new Car ("1234Test",10,false);
+		testVehicle.enterParkedState(10,20);
+		testVehicle.exitParkedState(12);
+		assertTrue(testVehicle.isParked() ==  false);
+	}
+	
+	/**
+	 * Testing isParked method to ensure that if the car was
+	 * in queue that it will not return that the car is parked.
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test
+	public void testIsParkedWhileInQueue() throws VehicleException {
+		
+		testVehicle = new Car ("1234Test",10,false);
+		testVehicle.enterQueuedState();
+		assertTrue(testVehicle.isParked() ==  false);
+	}
+	
+	/**
+	 * Testing isQueued method to make sure that if the car
+	 * is currently in queue that it will return the correct
+	 * state.
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test
+	public void testIsQueued() throws VehicleException {
+		
+		testVehicle = new Car ("1234Test",10,false);
+		testVehicle.enterQueuedState();
+		assertTrue(testVehicle.isQueued() == true);
+	}
+	
+	/**
+	 * Testing isQueued method to make sure that if the car
+	 * is currently not queue that it will return the correct
+	 * state.
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test
+	public void testIsNotQueued() throws VehicleException {
+		
+		testVehicle = new Car ("1234Test",10,false);
+		testVehicle.enterParkedState(10,20);
+		assertTrue(testVehicle.isQueued() == false);
+	}
 	
 	
-/*public int getDepartureTime() {
-		
-		int lastState = vehicleState.size() -1; //-1 to get correct array position
-		/**Presuming that the last vehicleState is the one which is
-		* required. ie if it was parked that should be its last state,
-		* if it was archived it should be its last state.
-		
-		if(this.vehicleState.get(lastState).equals("P"))
-				return this.departureTime;
-		else if (this.vehicleState.get(lastState).equals("A"))
-			//Presume this is where the EnterParkedState method mentions
-			//returning proper departure time
-				return this.parkingTime + this.intendedDuration;
-		else
-			return this.departureTime;
-	}*/
 	/**
 	 * @throws java.lang.Exception
 	 */

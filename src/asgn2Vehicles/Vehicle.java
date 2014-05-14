@@ -235,7 +235,7 @@ public abstract class Vehicle {
 	 */
 	public boolean isParked() {
 		
-		int lastState = vehicleState.size(); // might have to -1 to get right pos
+		int lastState = vehicleState.size() - 1; // -1 to get right pos
 		/**Presuming that the last vehicleState is the one which is
 		* required. ie if it was parked that should be its last state.
 		*/
@@ -252,7 +252,7 @@ public abstract class Vehicle {
 	 */
 	public boolean isQueued() {
 		
-		int lastState = vehicleState.size(); // might have to -1 to get right pos
+		int lastState = vehicleState.size() - 1; // -1 to get right pos
 		/**Presuming that the last vehicleState is the one which is
 		* required. ie if it was queued that should be its last state.
 		*/
