@@ -139,8 +139,10 @@ public abstract class Vehicle {
 					" the parking time.\n");
 		//Method enterParkedState mentions departure time is parkingTime + 
 		//intendedDuration yields the departureTime
-		else
+		else {
 			this.departureTime = departureTime;
+			vehicleState.add("A");
+		}
 			
 	}
 
@@ -185,7 +187,7 @@ public abstract class Vehicle {
 	 */
 	public int getDepartureTime() {
 		
-		int lastState = vehicleState.size() -1; // might have to -1 to get right pos
+		int lastState = vehicleState.size() -1; //-1 to get correct array position
 		/**Presuming that the last vehicleState is the one which is
 		* required. ie if it was parked that should be its last state,
 		* if it was archived it should be its last state.
@@ -196,6 +198,11 @@ public abstract class Vehicle {
 			//Presume this is where the EnterParkedState method mentions
 			//returning proper departure time
 				return this.parkingTime + this.intendedDuration;
+		else if(this.vehicleState.get(lastState)== "N")
+			//Car may be in queue or just arrived.
+			return 0;
+		else if (this.vehicleState.get(lastState) == "Q")
+			return 0;
 		else
 			return this.departureTime;
 	}

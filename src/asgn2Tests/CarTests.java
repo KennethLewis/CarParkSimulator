@@ -294,6 +294,8 @@ public class CarTests {
 		testVehicle = new Car ("1234Test",10,false);
 		testVehicle.enterParkedState(10,20);
 		testVehicle.exitParkedState(12);
+
+		System.out.printf("%d\n",testVehicle.getDepartureTime());
 		assertTrue(testVehicle.getDepartureTime() == 12);
 	}
 	
@@ -396,7 +398,71 @@ public class CarTests {
 		testVehicle.exitQueuedState(11);
 	}
 	
+	/**
+	 * Testing arrival time to ensure correct variable is 
+	 * returned.
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test
+	public void testingArrivalTime() throws VehicleException {
+		
+		testVehicle = new Car ("1234Test",10,false);
+		assertTrue(testVehicle.getArrivalTime() == 10);
+	}
 	
+	/**
+	 * Testing getDepartureTime to make sure the times are
+	 * matching. This should return the indendedDuration of
+	 * the park as the vehicle hasn't left the park
+	 * yet.
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test
+	public void testingDepartureTime() throws VehicleException {
+		
+		testVehicle = new Car ("1234Test",10,false);
+		testVehicle.enterParkedState(11, 20);
+		testVehicle.exitParkedState(12);
+		System.out.printf("%d\n",testVehicle.getDepartureTime());
+		assertTrue(testVehicle.getDepartureTime() == 12);
+	}
+	
+	/**
+	 * Testing getDepartureTime to make sure the times are
+	 * matching. This should return 0 as the car has neither
+	 * parked yet or entered an intended duration ie could be
+	 * queued (as tested below).
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test
+	public void testingQueuedDepartureTime() throws VehicleException {
+		
+		testVehicle = new Car ("1234Test",10,false);
+		testVehicle.enterQueuedState();
+		assertTrue(testVehicle.getDepartureTime() == 0);
+	}
+	
+	
+	
+/*public int getDepartureTime() {
+		
+		int lastState = vehicleState.size() -1; //-1 to get correct array position
+		/**Presuming that the last vehicleState is the one which is
+		* required. ie if it was parked that should be its last state,
+		* if it was archived it should be its last state.
+		
+		if(this.vehicleState.get(lastState).equals("P"))
+				return this.departureTime;
+		else if (this.vehicleState.get(lastState).equals("A"))
+			//Presume this is where the EnterParkedState method mentions
+			//returning proper departure time
+				return this.parkingTime + this.intendedDuration;
+		else
+			return this.departureTime;
+	}*/
 	/**
 	 * @throws java.lang.Exception
 	 */
