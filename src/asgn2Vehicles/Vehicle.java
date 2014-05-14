@@ -193,12 +193,12 @@ public abstract class Vehicle {
 		* if it was archived it should be its last state.
 		*/
 		if(this.vehicleState.get(lastState).equals("P"))
-				return this.departureTime;
+				return this.parkingTime + this.intendedDuration;
 		else if (this.vehicleState.get(lastState).equals("A"))
 			//Presume this is where the EnterParkedState method mentions
 			//returning proper departure time
-				return this.parkingTime + this.intendedDuration;
-		else if(this.vehicleState.get(lastState)== "N")
+				return this.parkingTime + this.departureTime;
+		else if (this.vehicleState.get(lastState)== "N")
 			//Car may be in queue or just arrived.
 			return 0;
 		else if (this.vehicleState.get(lastState) == "Q")

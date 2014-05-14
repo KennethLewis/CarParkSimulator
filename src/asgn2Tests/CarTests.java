@@ -294,9 +294,7 @@ public class CarTests {
 		testVehicle = new Car ("1234Test",10,false);
 		testVehicle.enterParkedState(10,20);
 		testVehicle.exitParkedState(12);
-
-		System.out.printf("%d\n",testVehicle.getDepartureTime());
-		assertTrue(testVehicle.getDepartureTime() == 12);
+		assertTrue(testVehicle.getDepartureTime() == 22);
 	}
 	
 	
@@ -425,8 +423,7 @@ public class CarTests {
 		testVehicle = new Car ("1234Test",10,false);
 		testVehicle.enterParkedState(11, 20);
 		testVehicle.exitParkedState(12);
-		System.out.printf("%d\n",testVehicle.getDepartureTime());
-		assertTrue(testVehicle.getDepartureTime() == 12);
+		assertTrue(testVehicle.getDepartureTime() == 23);
 	}
 	
 	/**
@@ -443,6 +440,22 @@ public class CarTests {
 		testVehicle = new Car ("1234Test",10,false);
 		testVehicle.enterQueuedState();
 		assertTrue(testVehicle.getDepartureTime() == 0);
+	}
+	
+	/**
+	 * Testing getDepartureTime to make sure the times are
+	 * matching. This should return the parking time + the
+	 * intended duration as the car has not yet left its 
+	 * parked state.
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test
+	public void testingParkedDepartureTime() throws VehicleException {
+		
+		testVehicle = new Car ("1234Test",10,false);
+		testVehicle.enterParkedState(10,20);
+		assertTrue(testVehicle.getDepartureTime() == 30);
 	}
 	
 	
