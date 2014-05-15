@@ -582,7 +582,8 @@ public class CarTests {
 		assertTrue(testVehicle.isQueued() == false);
 	}
 	
-	/* TODO
+	/* TODO More tests to check length of time if < or >
+	 * max allow time etc.
 	 * Still to write 
 	 * IS SATISFIED
 	 */
