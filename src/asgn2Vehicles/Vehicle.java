@@ -131,7 +131,9 @@ public abstract class Vehicle {
 	 */
 	public void exitParkedState(int departureTime) throws VehicleException {
 		
-		if(vehicleState.contains("P") == false || vehicleState.contains("Q"))
+		int lastState = vehicleState.size() -1 ;//-1 to get the last pos
+		if(vehicleState.contains("P") == false || 
+				vehicleState.get(lastState)	== ("Q"))
 			throw new VehicleException ("Vehicle  cannot exit parked state, as it is" +
 					" currently either not parked or in the que to enter the CarPark.\n");
 		else if (departureTime < this.parkingTime)
@@ -163,7 +165,14 @@ public abstract class Vehicle {
 		else if (exitTime < arrivalTime)
 			throw new VehicleException ("Exit time cannot be greater than arrival time\n");
 		else {
+			/* Prob need another if else statement here which uses is satisfied as
+			 * if they have queued for too long they leave the carpark etc.
+			 * 
+			 */
+			
 				this.vehicleState.add("P");
+				this.parkingTime = exitTime;
+				this.intendedDuration = Constants.MINIMUM_STAY;
 				this.exitTime = exitTime;
 		}
 	}

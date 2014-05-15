@@ -569,7 +569,7 @@ public class CarTests {
 	
 	/**
 	 * Testing isQueued method to make sure that if the car
-	 * is currently not queue that it will return the correct
+	 * is currently in queue that it will return the correct
 	 * state.
 	 * @throws VehicleException
 	 * @author Ken Lewis
@@ -582,58 +582,90 @@ public class CarTests {
 		assertTrue(testVehicle.isQueued() == false);
 	}
 	
-	/* Still to write 
+	/* TODO
+	 * Still to write 
 	 * IS SATISFIED
 	 */
 	
-	/* Still to write 
+	/* TODO
+	 *  Still to write 
 	 * TOSTRING
 	 */
 	
-	/* Still to write 
-	 * WAS PARKED
-	 */
+	/**
+	 * Testing was parked method to ensure that if the car was 
+	 * in a parked state that it would be returned correctly
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test
+	public void wasParked() throws VehicleException {
+		
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
+		testVehicle.enterParkedState(10,20);
+		assertTrue(testVehicle.wasParked() == true);
+	}
 	
-	/* Still to write 
-	 * WAS QUEUED
-	 */
+	/**
+	 * Testing was parked method to ensure that if the car was 
+	 * in a parked state that it would be returned correctly
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test
+	public void inQueueNotParked() throws VehicleException {
+		
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
+		testVehicle.enterQueuedState();
+		assertTrue(testVehicle.wasParked() == false);
+	}
+	
+
+	/**
+	 * Testing was parked method to ensure that if the car was 
+	 * was in a parked state that it would be returned correctly
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test
+	public void hasParkedAndLeft() throws VehicleException {
+		
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
+		testVehicle.enterParkedState(10,20);
+		testVehicle.exitParkedState(12);
+		assertTrue(testVehicle.wasParked() == true);
+	}
+
+	/**
+	 * Testing the was queued method to check to see if at any time
+	 * the car was queued.
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test
+	public void wasQueued() throws VehicleException {
+		
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
+		testVehicle.enterQueuedState();
+		testVehicle.exitQueuedState(11);
+		testVehicle.exitParkedState(12);
+		assertTrue(testVehicle.wasQueued() == true);
+	}
 	
 	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	/**
-	 * Test method for {@link asgn2Vehicles.Car#toString()}.
-	 */
+	 * Testing the was queued method to check to see if the car
+	 * wasn't queued that it will return the correct result.
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
 	@Test
-	public void testToString() {
-		fail("Not yet implemented"); // TODO
+	public void wasNotQueued() throws VehicleException {
+		
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
+		testVehicle.enterParkedState(10,20);
+		testVehicle.exitParkedState(12);
+		assertTrue(testVehicle.wasQueued() == false);
 	}
-
-	/**
-	 * Test method for {@link asgn2Vehicles.Car#Car(java.lang.String, int, boolean)}.
-	 */
-	@Test
-	public void testCar() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link asgn2Vehicles.Car#isSmall()}.
-	 */
-	@Test
-	public void testIsSmall() {
-		fail("Not yet implemented"); // TODO
-	}
+	
 
 }
