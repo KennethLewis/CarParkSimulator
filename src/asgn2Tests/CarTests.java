@@ -587,6 +587,21 @@ public class CarTests {
 	 * IS SATISFIED
 	 */
 	
+	/**
+	 * Testing isSatisfied to check that if they car parks that
+	 * the method will return the correct variable.
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */	
+	@Test
+	public void isSatisfied() throws VehicleException {
+		
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
+		testVehicle.enterParkedState(10,20);
+		testVehicle.exitParkedState(12);
+		assertTrue(testVehicle.isSatisfied() == true);
+	}
+	
 	/* TODO
 	 *  Still to write 
 	 * TOSTRING

@@ -44,7 +44,11 @@ public class Car extends Vehicle {
 	 * @return true if small parking space, false otherwise
 	 */
 	public boolean isSmall() {
-		return false;
+		
+		if (this.small == true)
+			return true;
+		else
+			return false;
 	}
 
 	/* (non-Javadoc)
@@ -52,6 +56,15 @@ public class Car extends Vehicle {
 	 */
 	@Override
 	public String toString() {
-		return "IM A CAR";
+		
+		String carSize = "";
+		if (isSmall() == true)
+			carSize.equals("can");
+		else
+			carSize.equals("cannot");
+			
+		return super.toString() +
+				"\nCar " + carSize +
+				"use small parking space\n";
 	}
 }

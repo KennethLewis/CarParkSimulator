@@ -165,9 +165,10 @@ public abstract class Vehicle {
 		else if (exitTime < arrivalTime)
 			throw new VehicleException ("Exit time cannot be greater than arrival time\n");
 		else {
-			/* Prob need another if else statement here which uses is satisfied as
-			 * if they have queued for too long they leave the carpark etc.
-			 * 
+			/* TODO
+			 * Prob need another if else statement here which uses is satisfied as
+			 * if they have queued for too long they leave the car park and the process
+			 * is archived. 
 			 */
 			
 				this.vehicleState.add("P");
@@ -283,11 +284,15 @@ public abstract class Vehicle {
 		
 		if (vehicleState.contains("P"))
 			return true;
-		//not sure about calculating the in que for too long time period.
-		//or if they were turned away as soon as they arrived.
-		//need to fix
-		else
-			return false;
+		/*TODO
+		 * Not sure about calculating the in queued for too long time period.
+		* or if they were turned away as soon as they arrived.
+		* need to fix.
+		*/
+		else if ((this.arrivalTime + this.exitTime) > Constants.MAXIMUM_QUEUE_TIME)
+			return false; //false if queue time was too long
+		else 
+			return false; // false if turned away
 	}
 	
 	/* (non-Javadoc)
@@ -295,7 +300,37 @@ public abstract class Vehicle {
 	 */
 	@Override
 	public String toString() {
-		return "IM NOT SURE WHAT WERE PRINTING YET\n";
+		
+		String wasQueued = "";
+		if (wasQueued() == true)
+			wasQueued.equals("not");
+		else
+			wasQueued.equals("was");
+		
+		String wasSatisfied = "";
+		if (isSatisfied() == true)
+			wasSatisfied.equals("satisfied");
+		else
+			wasSatisfied.equals("not satisfied");
+		
+		return "Vehicle ID: " + this.vehID +
+				"\nArrival Time: " + this.arrivalTime +
+				"\nVehicle was " + wasQueued + "queued" +
+				"\nEntry to the Car Park: " + this.arrivalTime +
+				"\nExit from Car Park: " + getDepartureTime() +
+				"\nParking Time: " + 
+				(this.arrivalTime + this.departureTime) +
+				"\nCustomer was " + wasSatisfied;
+		//EXAMPLE toString from Assingment Specs part II		
+		/*Vehicle vehID:
+			C9
+			Arrival Time: 9
+			Vehicle was not queued
+			Entry to Car Park: 9
+			Exit from Car Park: 124
+			Parking Time: 115
+			Customer was satisfied
+			Car cannot use small parking space*/
 	}
 
 	/**
