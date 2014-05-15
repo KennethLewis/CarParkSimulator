@@ -16,200 +16,69 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import asgn2Exceptions.VehicleException;
+import asgn2Vehicles.Car;
+import asgn2Vehicles.MotorCycle;
+import asgn2CarParks.CarPark;
+
+
 /**
  * @author hogan
  *
  */
 public class CarParkTests {
 
-	/**
-	 * @throws java.lang.Exception
-	 */
+	private static final int EXAMPLE_SPACES = 20;
+	private static final int EXAMPLE_SMALL_SPACES = 5;
+	private static final int EXAMPLE_CYCLE_SPACES = 3;
+	private static final int EXAMPLE_QUEUE_SIZE = 5;
+	private CarPark testCarPark;
+	
 	@Before
-	public void setUp() throws Exception {
-	}
-
 	/**
-	 * @throws java.lang.Exception
+	 * Creates a new car park before every test
+	 * @author Thomas McCarthy
 	 */
-	@After
-	public void tearDown() throws Exception {
+	public void testCreateTestCarPark() throws VehicleException {
+		testCarPark = new CarPark();
 	}
 
+	
 	/**
-	 * Test method for {@link asgn2CarParks.CarPark#archiveDepartingVehicles(int, boolean)}.
-	 */
-	@Test
-	public void testArchiveDepartingVehicles() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link asgn2CarParks.CarPark#archiveNewVehicle(asgn2Vehicles.Vehicle)}.
+	 * Testing the creation of a normal Vehicle Object
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
 	 */
 	@Test
-	public void testArchiveNewVehicle() {
-		fail("Not yet implemented"); // TODO
+	public void testNewCarParkCreation() throws VehicleException{
+		assertTrue(testCarPark != null);
 	}
 
+	
+	
+	
 	/**
-	 * Test method for {@link asgn2CarParks.CarPark#archiveQueueFailures(int)}.
+	 * Tests if the car park is correctly returning
+	 * true when it is empty
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
 	 */
 	@Test
-	public void testArchiveQueueFailures() {
-		fail("Not yet implemented"); // TODO
+	public void testEmptyCarPark() throws VehicleException{
+		assertTrue(testCarPark.carParkEmpty() == true);
 	}
-
+	
 	/**
-	 * Test method for {@link asgn2CarParks.CarPark#carParkEmpty()}.
+	 * TODO  Tests if the car park is correctly returning
+	 * true when it is empty
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
 	 */
 	@Test
-	public void testCarParkEmpty() {
-		fail("Not yet implemented"); // TODO
+	public void testFullCarPark() throws VehicleException{
+		testCarPark = new CarPark(EXAMPLE_SPACES, EXAMPLE_SMALL_SPACES,
+								  EXAMPLE_CYCLE_SPACES, EXAMPLE_QUEUE_SIZE);
+		testCarPark.parkVehicle(testVehicle, time, intendedDuration);
+		
 	}
-
-	/**
-	 * Test method for {@link asgn2CarParks.CarPark#carParkFull()}.
-	 */
-	@Test
-	public void testCarParkFull() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link asgn2CarParks.CarPark#enterQueue(asgn2Vehicles.Vehicle)}.
-	 */
-	@Test
-	public void testEnterQueue() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link asgn2CarParks.CarPark#exitQueue(asgn2Vehicles.Vehicle, int)}.
-	 */
-	@Test
-	public void testExitQueue() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link asgn2CarParks.CarPark#finalState()}.
-	 */
-	@Test
-	public void testFinalState() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link asgn2CarParks.CarPark#getNumCars()}.
-	 */
-	@Test
-	public void testGetNumCars() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link asgn2CarParks.CarPark#getNumMotorCycles()}.
-	 */
-	@Test
-	public void testGetNumMotorCycles() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link asgn2CarParks.CarPark#getNumSmallCars()}.
-	 */
-	@Test
-	public void testGetNumSmallCars() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link asgn2CarParks.CarPark#getStatus(int)}.
-	 */
-	@Test
-	public void testGetStatus() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link asgn2CarParks.CarPark#initialState()}.
-	 */
-	@Test
-	public void testInitialState() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link asgn2CarParks.CarPark#numVehiclesInQueue()}.
-	 */
-	@Test
-	public void testNumVehiclesInQueue() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link asgn2CarParks.CarPark#parkVehicle(asgn2Vehicles.Vehicle, int, int)}.
-	 */
-	@Test
-	public void testParkVehicle() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link asgn2CarParks.CarPark#processQueue(int, asgn2Simulators.Simulator)}.
-	 */
-	@Test
-	public void testProcessQueue() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link asgn2CarParks.CarPark#queueEmpty()}.
-	 */
-	@Test
-	public void testQueueEmpty() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link asgn2CarParks.CarPark#queueFull()}.
-	 */
-	@Test
-	public void testQueueFull() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link asgn2CarParks.CarPark#spacesAvailable(asgn2Vehicles.Vehicle)}.
-	 */
-	@Test
-	public void testSpacesAvailable() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link asgn2CarParks.CarPark#toString()}.
-	 */
-	@Test
-	public void testToString() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link asgn2CarParks.CarPark#tryProcessNewVehicles(int, asgn2Simulators.Simulator)}.
-	 */
-	@Test
-	public void testTryProcessNewVehicles() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link asgn2CarParks.CarPark#unparkVehicle(asgn2Vehicles.Vehicle, int)}.
-	 */
-	@Test
-	public void testUnparkVehicle() {
-		fail("Not yet implemented"); // TODO
-	}
-
 }

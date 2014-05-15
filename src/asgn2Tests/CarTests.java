@@ -237,7 +237,7 @@ public class CarTests {
 	 * @author Ken Lewis
 	 */	
 	@Test
-	public void testEnteringQue() throws VehicleException {
+	public void testEnteringQueue() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterQueuedState();
@@ -251,7 +251,7 @@ public class CarTests {
 	 * @author Ken Lewis
 	 */	
 	@Test (expected = VehicleException.class)
-	public void testEnteringQueWhileParked() throws VehicleException {
+	public void testEnteringQueueWhileParked() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterParkedState(10, 20);
@@ -265,7 +265,7 @@ public class CarTests {
 	 * @author Ken Lewis
 	 */	
 	@Test (expected = VehicleException.class)
-	public void testEnteringQueWhileQueued() throws VehicleException {
+	public void testEnteringQueueWhileQueued() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterQueuedState();
@@ -324,7 +324,7 @@ public class CarTests {
 	 * @author Ken Lewis
 	 */	
 	@Test (expected = VehicleException.class)
-	public void exitingParkWhileInQue() throws VehicleException {
+	public void exitingParkWhileInQueue() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterQueuedState();
