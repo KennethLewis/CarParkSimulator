@@ -27,7 +27,8 @@ import asgn2Vehicles.Car;
 public class CarTests {
 	
 	private Vehicle testVehicle;
-	
+	private static final String EXAMPLE_PLATE = "1234Test";
+	private static final int EXAMPLE_TIME = 10;
 	/**
 	 * Testing the creation of a normal Vehicle Object
 	 * @throws VehicleException
@@ -36,7 +37,8 @@ public class CarTests {
 	@Test
 	public void testNewCarCreation() throws VehicleException{
 		
-		testVehicle = new Car ("1234Test", 10, false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
+		assertTrue(testVehicle != null);
 	}
 	
 	/**
@@ -47,7 +49,8 @@ public class CarTests {
 	@Test
 	public void testNewSmallCarCreation() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test", 10, true);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, true);
+		assertTrue (testVehicle != null);
 	}
 	
 	/**
@@ -60,7 +63,7 @@ public class CarTests {
 	@Test (expected = VehicleException.class)
 	public void testLowArrivalTime() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test", 0, true);
+		testVehicle = new Car (EXAMPLE_PLATE, 0, true);
 	}
 	
 	/**
@@ -73,7 +76,7 @@ public class CarTests {
 	@Test (expected = VehicleException.class)
 	public void testNegativeArrivalTime() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test", -8, true);
+		testVehicle = new Car (EXAMPLE_PLATE, -8, true);
 	}
 	
 	/**
@@ -86,7 +89,7 @@ public class CarTests {
 	@Test (expected = VehicleException.class)
 	public void testLargeNegativeArrivalTime() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test", -100000, true);
+		testVehicle = new Car (EXAMPLE_PLATE, -100000, true);
 	}
 	
 	/**
@@ -99,7 +102,7 @@ public class CarTests {
 	@Test (expected = VehicleException.class)
 	public void testLargeCarNegativeArrivalTime() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test", -8, false);
+		testVehicle = new Car (EXAMPLE_PLATE, -8, false);
 	}
 	
 	/**
@@ -113,8 +116,9 @@ public class CarTests {
 	@Test
 	public void parkVehicle() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test", 10, false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterParkedState(10, 20);
+		assertTrue(testVehicle.isParked() == true);
 	}
 	
 	/**
@@ -127,7 +131,7 @@ public class CarTests {
 	@Test (expected = VehicleException.class)
 	public void parkVehicleAlreadyParked() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test", 10, false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterParkedState(10, 20);
 		testVehicle.enterParkedState(10,20);
 	}
@@ -144,7 +148,7 @@ public class CarTests {
 	@Test (expected = VehicleException.class)
 	public void parkVehicleWhichIsInQue() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test", 10, false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterParkedState(10, 20);
 		testVehicle.enterQueuedState();
 		testVehicle.enterParkedState(10,20);
@@ -160,7 +164,7 @@ public class CarTests {
 	@Test (expected = VehicleException.class)
 	public void parkVehicleWithNegParkingTime() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test", 10, false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterParkedState(-5, 20);
 	}
 	
@@ -175,7 +179,7 @@ public class CarTests {
 	@Test (expected = VehicleException.class)
 	public void parkVehicleWithLowIntendedDur() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test", 10, false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterParkedState(10, 19);
 	}
 	
@@ -190,7 +194,7 @@ public class CarTests {
 	@Test (expected = VehicleException.class)
 	public void parkVehicleWithBothBadVariables() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test", 10, false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterParkedState(-8, 19);
 	}
 	
@@ -205,7 +209,7 @@ public class CarTests {
 	@Test (expected = VehicleException.class)
 	public void parkVehicleWithVeryLowIntendedDur() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test", 10, false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterParkedState(10, -19);
 	}
 	
@@ -218,7 +222,7 @@ public class CarTests {
 	@Test
 	public void testParkTimeVar() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test", 10, false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterParkedState(10, 20);
 		assertTrue(testVehicle.getParkingTime() == 10);
 	}
@@ -235,7 +239,7 @@ public class CarTests {
 	@Test
 	public void testEnteringQue() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test",10,false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterQueuedState();
 		assertTrue(testVehicle.wasQueued() == true);
 	}
@@ -249,7 +253,7 @@ public class CarTests {
 	@Test (expected = VehicleException.class)
 	public void testEnteringQueWhileParked() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test",10,false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterParkedState(10, 20);
 		testVehicle.enterQueuedState();
 	}
@@ -263,7 +267,7 @@ public class CarTests {
 	@Test (expected = VehicleException.class)
 	public void testEnteringQueWhileQueued() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test",10,false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterQueuedState();
 		testVehicle.enterQueuedState();
 	}
@@ -277,9 +281,10 @@ public class CarTests {
 	@Test
 	public void testExitParkedState() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test",10,false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterParkedState(10,20);
 		testVehicle.exitParkedState(12);
+		assertTrue(testVehicle.wasParked() == true);
 	}
 	
 	/**
@@ -291,7 +296,7 @@ public class CarTests {
 	@Test
 	public void testExitParkedStateDepartTime() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test",10,false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterParkedState(10,20);
 		testVehicle.exitParkedState(12);
 		assertTrue(testVehicle.getDepartureTime() == 22);
@@ -308,7 +313,7 @@ public class CarTests {
 	@Test (expected = VehicleException.class)
 	public void exitingParkWithoutParking() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test",10,false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.exitParkedState(12);
 	}
 	
@@ -321,7 +326,7 @@ public class CarTests {
 	@Test (expected = VehicleException.class)
 	public void exitingParkWhileInQue() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test",10,false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterQueuedState();
 		testVehicle.exitParkedState(12);
 	}
@@ -335,7 +340,7 @@ public class CarTests {
 	@Test (expected = VehicleException.class)
 	public void testingDepartTimeVsParkTime() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test",10,false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterParkedState(10,20);
 		testVehicle.exitParkedState(9);
 	}
@@ -349,7 +354,7 @@ public class CarTests {
 	@Test (expected = VehicleException.class)
 	public void testingLargeNegDepartTimeVsParkTime() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test",10,false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterParkedState(10,20);
 		testVehicle.exitParkedState(-99999);
 	}
@@ -363,7 +368,7 @@ public class CarTests {
 	@Test
 	public void testingExitQueForCorrectVars() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test",10,false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterQueuedState();
 		testVehicle.exitQueuedState(11);
 		assertTrue(testVehicle.wasParked() == true);
@@ -378,7 +383,7 @@ public class CarTests {
 	@Test (expected = VehicleException.class)
 	public void testingParkedExitQueue() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test",10,false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterParkedState(10, 20);
 		testVehicle.exitQueuedState(10);
 	}
@@ -392,7 +397,7 @@ public class CarTests {
 	@Test (expected = VehicleException.class)
 	public void testingNotAlreadyQueued() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test",10,false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.exitQueuedState(11);
 	}
 	
@@ -405,7 +410,7 @@ public class CarTests {
 	@Test
 	public void testingArrivalTime() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test",10,false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		assertTrue(testVehicle.getArrivalTime() == 10);
 	}
 	
@@ -420,7 +425,7 @@ public class CarTests {
 	@Test
 	public void testingDepartureTime() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test",10,false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterParkedState(11, 20);
 		testVehicle.exitParkedState(12);
 		assertTrue(testVehicle.getDepartureTime() == 23);
@@ -437,7 +442,7 @@ public class CarTests {
 	@Test
 	public void testingQueuedDepartureTime() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test",10,false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterQueuedState();
 		assertTrue(testVehicle.getDepartureTime() == 0);
 	}
@@ -453,7 +458,7 @@ public class CarTests {
 	@Test
 	public void testingParkedDepartureTime() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test",10,false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterParkedState(10,20);
 		assertTrue(testVehicle.getDepartureTime() == 30);
 	}
@@ -484,7 +489,7 @@ public class CarTests {
 	@Test
 	public void testGetParkingTime() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test",10,false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterParkedState(10,20);
 		assertTrue(testVehicle.getParkingTime() == 10);
 	}
@@ -498,7 +503,7 @@ public class CarTests {
 	@Test
 	public void testVehicleID() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test",10,false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		assertTrue(testVehicle.getVehID().equals("1234Test"));
 	}
 	
@@ -512,7 +517,7 @@ public class CarTests {
 	@Test
 	public void testIsParked() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test",10,false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterParkedState(10,20);
 		assertTrue(testVehicle.isParked() ==  true);
 	}
@@ -527,7 +532,7 @@ public class CarTests {
 	@Test
 	public void testIsParkedAfterLeaving() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test",10,false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterParkedState(10,20);
 		testVehicle.exitParkedState(12);
 		assertTrue(testVehicle.isParked() ==  false);
@@ -542,7 +547,7 @@ public class CarTests {
 	@Test
 	public void testIsParkedWhileInQueue() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test",10,false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterQueuedState();
 		assertTrue(testVehicle.isParked() ==  false);
 	}
@@ -557,7 +562,7 @@ public class CarTests {
 	@Test
 	public void testIsQueued() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test",10,false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterQueuedState();
 		assertTrue(testVehicle.isQueued() == true);
 	}
@@ -572,11 +577,26 @@ public class CarTests {
 	@Test
 	public void testIsNotQueued() throws VehicleException {
 		
-		testVehicle = new Car ("1234Test",10,false);
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterParkedState(10,20);
 		assertTrue(testVehicle.isQueued() == false);
 	}
 	
+	/* Still to write 
+	 * IS SATISFIED
+	 */
+	
+	/* Still to write 
+	 * TOSTRING
+	 */
+	
+	/* Still to write 
+	 * WAS PARKED
+	 */
+	
+	/* Still to write 
+	 * WAS QUEUED
+	 */
 	
 	/**
 	 * @throws java.lang.Exception
