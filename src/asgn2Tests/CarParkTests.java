@@ -31,12 +31,15 @@ public class CarParkTests {
 
 
 	private static final int EXAMPLE_SPACES = 20;
+	private static final int EXAMPLE_SPACES_TINY = 1;
+	
 	private static final int EXAMPLE_SMALL_SPACES = 5;
 	private static final int EXAMPLE_CYCLE_SPACES = 3;
 	private static final int EXAMPLE_QUEUE_SIZE = 5;
 	
 	private static final String EXAMPLE_PLATE = "1234Test";	
 	private static final int EXAMPLE_ARRIVAL_TIME = 5;
+	private static final int EXAMPLE_DEPARTURE_TIME = 5;
 	private static final int EXAMPLE_INTENDED_DURATION = 10;
 	
 	private static final int EXAMPLE_LOOP = 10;
@@ -78,7 +81,7 @@ public class CarParkTests {
 	
 	/**
 	 * Tests if the car park is correctly returning
-	 * true when it is empty
+	 * true when it is full
 	 * @throws VehicleException
 	 * @author Thomas McCarthy
 	 * @throws SimulationException 
@@ -86,12 +89,54 @@ public class CarParkTests {
 	@Test
 	public void testFullCarPark() throws VehicleException, SimulationException {
 		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
-		testCarPark = new CarPark(EXAMPLE_SPACES, EXAMPLE_SMALL_SPACES,
+		testCarPark = new CarPark(EXAMPLE_SPACES_TINY, EXAMPLE_SMALL_SPACES,
 								  EXAMPLE_CYCLE_SPACES, EXAMPLE_QUEUE_SIZE);
 		testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
-		
+		assertTrue(testCarPark.carParkFull() == true);
 	}
 	
+	
+	/**
+	 * Tests if an exception is throw when we try
+	 * adding a car to a full carpark
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test(expected = VehicleException.class)
+	public void testParkVehicle_FullCarPark() throws VehicleException, SimulationException {
+		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
+		testCarPark = new CarPark(EXAMPLE_SPACES_TINY, EXAMPLE_SMALL_SPACES,
+								  EXAMPLE_CYCLE_SPACES, EXAMPLE_QUEUE_SIZE);
+		testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+	}
+	
+	
+	/**
+	 * TODO
+	 * Tests if an exception is throw when we try
+	 * adding a car to a carpark with invalid time constraints
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test(expected = SimulationException.class)
+	public void testParkVehicle_InvalidTimeConstraints() throws VehicleException, SimulationException {
+	}
+	
+	
+	/**
+	 * TODO
+	 * Tests if an exception is throw when we try
+	 * adding a car with an invalid state to a carpark
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test(expected = SimulationException.class)
+	public void testParkVehicle_InvalidState() throws VehicleException, SimulationException {
+	}
 	
 	/**
 	 * Tests if we can correctly get the number of cars
@@ -168,5 +213,50 @@ public class CarParkTests {
 		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
 		testCarPark.enterQueue(testCar);
 		assertTrue(testCarPark.numVehiclesInQueue() == 1);
+	}
+	
+	
+	
+	
+	/**
+	 * Tests if the queue is correctly reported as empty
+	 * TODO Make better?
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test
+	public void testQueueEmpty() throws VehicleException, SimulationException{
+		assertTrue(testCarPark.queueEmpty() == true);
+	}
+	
+	
+	
+	/**
+	 * Tests if a vehicle can be removed from the carpark
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test
+	public void testRemoveFromCarpark() throws VehicleException, SimulationException{
+		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
+		testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testCarPark.unparkVehicle(testCar, EXAMPLE_DEPARTURE_TIME);
+		assertTrue(testCarPark.carParkEmpty() == true);
+	}
+	
+	
+	/**
+	 * Tests if an exception is thrown when we try to 
+	 * remove a car from a carpark when it isn't in there
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test(expected = VehicleException.class)
+	public void testRemoveFromCarpark_WithoutBeingParked() throws VehicleException, SimulationException{
+		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
+		testCarPark.unparkVehicle(testCar, EXAMPLE_DEPARTURE_TIME);
 	}
 }
