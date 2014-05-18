@@ -40,6 +40,11 @@ import asgn2Vehicles.Vehicle;
  */
 public class CarPark {
 
+	private ArrayList<Vehicle> carParkEntries;
+	private int maxCarSpaces;
+	private int maxSmallCarSpaces;
+	private int maxMotorCycleSpaces;
+	private int maxQueueSize;
 	
 	/**
 	 * CarPark constructor sets the basic size parameters. 
@@ -59,6 +64,14 @@ public class CarPark {
 	 * @param maxQueueSize maximum number of vehicles allowed to queue
 	 */
 	public CarPark(int maxCarSpaces,int maxSmallCarSpaces, int maxMotorCycleSpaces, int maxQueueSize) {
+		carParkEntries = new ArrayList<Vehicle>(maxCarSpaces);
+		
+		this.maxCarSpaces = maxCarSpaces;
+		this.maxSmallCarSpaces = maxSmallCarSpaces;
+		this.maxMotorCycleSpaces = maxMotorCycleSpaces;
+		this.maxQueueSize = maxQueueSize;
+		
+		
 	}
 
 	/**
@@ -231,8 +244,11 @@ public class CarPark {
 	 * @param intendedDuration int holding intended duration of stay 
 	 * @throws SimulationException if no suitable spaces are available for parking 
 	 * @throws VehicleException if vehicle not in the correct state or timing constraints are violated
+	 * @author Thomas McCarthy
 	 */
 	public void parkVehicle(Vehicle v, int time, int intendedDuration) throws SimulationException, VehicleException {
+
+	
 	}
 
 	/**
@@ -242,6 +258,7 @@ public class CarPark {
 	 * @param time int holding current simulation time 
 	 * @throws SimulationException if no suitable spaces available when parking attempted
 	 * @throws VehicleException if state is incorrect, or timing constraints are violated
+	 * 
 	 */
 	public void processQueue(int time, Simulator sim) throws VehicleException, SimulationException {
 	}
@@ -267,6 +284,36 @@ public class CarPark {
 	 * @return true if space available for v, false otherwise 
 	 */
 	public boolean spacesAvailable(Vehicle v) {
+		
+		// If either of these two overflow variables are over 0,
+		// it means that there are still optimal spare spaces for these
+		// types of vehicles (i.e. the opposite of overflowing)
+		int motorCycleOverflow = this.maxMotorCycleSpaces - this.getNumMotorCycles();
+		if (motorCycleOverflow > 0) {
+			motorCycleOverflow = 0;
+		}
+		
+		int smallCarOverflow = this.maxSmallCarSpaces - this.getNumSmallCars() + motorCycleOverflow;
+		if (smallCarOverflow > 0) {
+			smallCarOverflow = 0;
+		}
+		
+		// These are the calculations used to figure out if there are spaces left.
+		int motorCycleCalc = this.maxMotorCycleSpaces + (this.maxSmallCarSpaces - this.getNumSmallCars()) - this.getNumMotorCycles();
+		int smallCarCalc = (this.maxCarSpaces - this.getNumCars()) + (this.maxSmallCarSpaces + motorCycleOverflow) - this.getNumSmallCars();
+		int carCalc = this.maxCarSpaces - this.getNumCars() + (this.maxSmallCarSpaces - this.getNumSmallCars() + motorCycleOverflow);
+		
+		if (this.carParkFull() == true) {
+			return false;
+		} else if (v instanceof MotorCycle &&  motorCycleCalc <= 0) {
+			return false;
+		} else if (v instanceof Car && smallCarCalc <= 0 && ((Car) v).isSmall() == true) {
+			return false;
+		} else if (v instanceof Car && carCalc <= 0 && ((Car) v).isSmall() == false) {
+			return false;
+		}
+		
+		return true;
 	}
 
 

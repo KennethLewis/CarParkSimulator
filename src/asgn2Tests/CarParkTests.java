@@ -257,6 +257,89 @@ public class CarParkTests {
 	@Test(expected = VehicleException.class)
 	public void testRemoveFromCarpark_WithoutBeingParked() throws VehicleException, SimulationException{
 		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
+		testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
 		testCarPark.unparkVehicle(testCar, EXAMPLE_DEPARTURE_TIME);
+		assertTrue(testCarPark.carParkEmpty() == true);
+		
 	}
+	
+	
+	/**
+	 * Tests if the carpark correctly reports that there are no
+	 * spaces available for a normal car when normal car spaces are empty
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test
+	public void testSpacesAvailableCar() throws VehicleException, SimulationException{
+		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
+		Car testSmallCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
+		
+		for (int i =0; i < EXAMPLE_SPACES; i++) {
+			testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		}
+		
+		for (int i =0; i < EXAMPLE_SMALL_SPACES; i++) {
+			testCarPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		}
+		
+		assertFalse(testCarPark.spacesAvailable(testCar));
+	}
+	
+	
+	/**
+	 * Tests if the carpark correctly reports that there are no
+	 * spaces available for a small car when all available car spaces are empty
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test
+	public void testSpacesAvailableSmallCar() throws VehicleException, SimulationException{
+		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
+		Car testSmallCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
+		
+		for (int i =0; i < EXAMPLE_SPACES; i++) {
+			testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		}
+		
+		for (int i =0; i < EXAMPLE_SMALL_SPACES; i++) {
+			testCarPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		}
+		
+		assertFalse(testCarPark.spacesAvailable(testSmallCar));
+	}
+	
+	
+	
+	/**
+	 * Tests if the carpark correctly reports that there are no
+	 * spaces available for a motorcycle when all available spaces are empty
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test
+	public void testSpacesAvailableMotorCycle() throws VehicleException, SimulationException{
+		Car testSmallCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
+		MotorCycle testBike = new MotorCycle(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME);
+
+		
+		for (int i =0; i < EXAMPLE_SMALL_SPACES; i++) {
+			testCarPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		}
+		
+		for (int i =0; i < EXAMPLE_CYCLE_SPACES; i++) {
+			testCarPark.parkVehicle(testBike, testBike.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		}
+		
+		assertFalse(testCarPark.spacesAvailable(testBike));
+	}
+	
+	
+	
+	
+	
+	
 }
