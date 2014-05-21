@@ -18,6 +18,7 @@ import org.junit.Test;
 
 import asgn2Exceptions.SimulationException;
 import asgn2Exceptions.VehicleException;
+import asgn2Simulators.Constants;
 import asgn2Vehicles.Car;
 import asgn2Vehicles.MotorCycle;
 import asgn2CarParks.CarPark;
@@ -34,13 +35,15 @@ public class CarParkTests {
 	private static final int EXAMPLE_SPACES_TINY = 1;
 	
 	private static final int EXAMPLE_SMALL_SPACES = 5;
+	private static final int EXAMPLE_SMALL_SPACES_TINY = 1;
 	private static final int EXAMPLE_CYCLE_SPACES = 3;
+	private static final int EXAMPLE_CYCLE_SPACES_TINY = 1;
 	private static final int EXAMPLE_QUEUE_SIZE = 5;
 	
 	private static final String EXAMPLE_PLATE = "1234Test";	
 	private static final int EXAMPLE_ARRIVAL_TIME = 5;
 	private static final int EXAMPLE_DEPARTURE_TIME = 5;
-	private static final int EXAMPLE_INTENDED_DURATION = 10;
+	private static final int EXAMPLE_INTENDED_DURATION = Constants.MINIMUM_STAY;
 	
 	private static final int EXAMPLE_LOOP = 10;
 	private CarPark testCarPark;
@@ -88,10 +91,17 @@ public class CarParkTests {
 	 */
 	@Test
 	public void testFullCarPark() throws VehicleException, SimulationException {
+		
 		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
-		testCarPark = new CarPark(EXAMPLE_SPACES_TINY, EXAMPLE_SMALL_SPACES,
-								  EXAMPLE_CYCLE_SPACES, EXAMPLE_QUEUE_SIZE);
+		Car testSmallCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
+		MotorCycle motorBike = new MotorCycle (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME); 
+		testCarPark = new CarPark(EXAMPLE_SPACES_TINY, EXAMPLE_SMALL_SPACES_TINY,
+				 EXAMPLE_CYCLE_SPACES_TINY,EXAMPLE_QUEUE_SIZE);
 		testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testCarPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(),
+				EXAMPLE_INTENDED_DURATION);
+		testCarPark.parkVehicle(motorBike, motorBike.getArrivalTime(),+
+				EXAMPLE_INTENDED_DURATION);
 		assertTrue(testCarPark.carParkFull() == true);
 	}
 	
