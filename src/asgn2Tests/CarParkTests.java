@@ -221,12 +221,51 @@ public class CarParkTests {
 	 * @throws SimulationException 
 	 */
 	@Test
-	public void testVehiclesInQueue() throws VehicleException, SimulationException{
+	public void testQueueNumVehicles() throws VehicleException, SimulationException{
 		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
 		testCarPark.enterQueue(testCar);
 		assertTrue(testCarPark.numVehiclesInQueue() == 1);
 	}
 	
+	
+	
+	
+	
+	/**
+	 * Tests if we can correctly get the number of cars
+	 * in the queue
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test(expected = SimulationException.class)
+	public void testQueueEnter_Full() throws VehicleException, SimulationException{
+		testCarPark = new CarPark(EXAMPLE_SPACES_TINY, EXAMPLE_SMALL_SPACES,
+				  EXAMPLE_CYCLE_SPACES, EXAMPLE_QUEUE_SIZE);
+		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
+		
+		// Loop an extra time on purpose
+		for (int i = 0; i < EXAMPLE_QUEUE_SIZE + 1; i++) {
+			testCarPark.enterQueue(testCar);
+		}
+	}
+
+	/**
+	 * Tests if a queue is correctly reported as being full
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test
+	public void testQueueFull() throws VehicleException, SimulationException{
+		testCarPark = new CarPark(EXAMPLE_SPACES_TINY, EXAMPLE_SMALL_SPACES,
+				  EXAMPLE_CYCLE_SPACES, EXAMPLE_QUEUE_SIZE);
+		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
+		for (int i = 0; i < EXAMPLE_QUEUE_SIZE; i++) {
+			testCarPark.enterQueue(testCar);
+		}
+		assertTrue(testCarPark.queueFull());
+	}
 	
 	
 	
@@ -241,7 +280,6 @@ public class CarParkTests {
 	public void testQueueEmpty() throws VehicleException, SimulationException{
 		assertTrue(testCarPark.queueEmpty() == true);
 	}
-	
 	
 	
 	/**
