@@ -175,15 +175,17 @@ public class CarParkTests {
 	 */
 	@Test
 	public void testNumSmallCars() throws VehicleException, SimulationException{
-		Car testSmallCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
-		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
+		
+		Car testCar;
 		
 		// adding a non small car to make sure it's excluded in the final count
-		testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		//testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
 		
 		for(int i = 0; i < EXAMPLE_LOOP; i++)  {
-		testCarPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+			testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
+			testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
 		}
+		System.out.printf("%d",testCarPark.getNumSmallCars());
 		assertTrue(testCarPark.getNumSmallCars() == EXAMPLE_LOOP);
 	}
 	
@@ -308,13 +310,14 @@ public class CarParkTests {
 	@Test
 	public void testSpacesAvailableSmallCar() throws VehicleException, SimulationException{
 		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
-		Car testSmallCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
+		Car testSmallCar;
 		
 		for (int i =0; i < EXAMPLE_SPACES; i++) {
 			testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
 		}
 		
 		for (int i =0; i < EXAMPLE_SMALL_SPACES; i++) {
+			testSmallCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
 			testCarPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
 		}
 		
