@@ -10,7 +10,7 @@
  */
 package asgn2CarParks;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -46,8 +46,9 @@ public class CarPark {
 	private int maxMotorCycleSpaces;
 	private int maxQueueSize;
 	
-	/**
-	 * CarPark constructor sets the basic size parameters. 
+	//Stores variables
+	private List<Vehicle> inQueue = new ArrayList<Vehicle>();
+	/* * CarPark constructor sets the basic size parameters. 
 	 * Uses default parameters
 	 */
 	public CarPark() {
@@ -70,8 +71,6 @@ public class CarPark {
 		this.maxSmallCarSpaces = maxSmallCarSpaces;
 		this.maxMotorCycleSpaces = maxMotorCycleSpaces;
 		this.maxQueueSize = maxQueueSize;
-		
-		
 	}
 
 	/**
@@ -114,6 +113,13 @@ public class CarPark {
 	 * @return true if car park full, false otherwise
 	 */
 	public boolean carParkFull() {
+		
+		int totalSpaces = this.maxCarSpaces + this.maxMotorCycleSpaces +
+				this.maxSmallCarSpaces;
+		if (totalSpaces <= carParkEntries.size())
+			return true;
+		else
+			return false;
 	}
 	
 	/**
@@ -125,6 +131,13 @@ public class CarPark {
 	 * @throws VehicleException if vehicle not in the correct state 
 	 */
 	public void enterQueue(Vehicle v) throws SimulationException, VehicleException {
+		
+		/*TODO
+		 * If queue is full throw exception
+		 */
+		
+		v.enterQueuedState();
+		inQueue.add(v);
 	}
 	
 	
@@ -138,6 +151,7 @@ public class CarPark {
 	 * constraints are violated
 	 */
 	public void exitQueue(Vehicle v,int exitTime) throws SimulationException, VehicleException {
+			
 	}
 	
 	/**
@@ -176,6 +190,17 @@ public class CarPark {
 	 * 		   not occupying a small car space. 
 	 */
 	public int getNumSmallCars() {
+		
+		int smallCounter = 0;
+		
+		for(int i =0; i < carParkEntries.size(); i++ ){
+			if(carParkEntries.get(i) instanceof Car){
+				Car newCar = (Car)carParkEntries.get(i);
+				if (newCar.isSmall() == true)
+					smallCounter ++;
+			}
+		}
+		return smallCounter;
 	}
 	
 	/**
@@ -233,6 +258,8 @@ public class CarPark {
 	 * @return number of vehicles in the queue
 	 */
 	public int numVehiclesInQueue() {
+		
+		return inQueue.size();
 	}
 	
 	/**
@@ -245,10 +272,17 @@ public class CarPark {
 	 * @throws SimulationException if no suitable spaces are available for parking 
 	 * @throws VehicleException if vehicle not in the correct state or timing constraints are violated
 	 * @author Thomas McCarthy
+	 * @author Ken Lewis
 	 */
 	public void parkVehicle(Vehicle v, int time, int intendedDuration) throws SimulationException, VehicleException {
 
-	
+		/* TODO
+		 * If no spaces avail throw exception
+		 * If timing constraints are violated
+		 */
+		v.enterParkedState(time, intendedDuration);
+		carParkEntries.add(v);
+		
 	}
 
 	/**
@@ -268,6 +302,12 @@ public class CarPark {
 	 * @return true if queue empty, false otherwise
 	 */
 	public boolean queueEmpty() {
+		
+		if (inQueue.size() == 0)
+			return true;
+		else
+			return false;
+		
 	}
 
 	/**
@@ -275,6 +315,11 @@ public class CarPark {
 	 * @return true if queue full, false otherwise
 	 */
 	public boolean queueFull() {
+		System.out.printf("%d\n",inQueue.size());
+		if(inQueue.size() >= Constants.DEFAULT_MAX_QUEUE_SIZE)
+			return true;
+		else
+			return false;
 	}
 	
 	/**

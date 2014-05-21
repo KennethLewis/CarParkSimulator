@@ -171,6 +171,7 @@ public class CarParkTests {
 	 * in the carpark
 	 * @throws VehicleException
 	 * @author Thomas McCarthy
+	 * @author Ken Lewis
 	 * @throws SimulationException 
 	 */
 	@Test
@@ -259,10 +260,13 @@ public class CarParkTests {
 	 */
 	@Test
 	public void testQueueFull() throws VehicleException, SimulationException{
+		
 		testCarPark = new CarPark(EXAMPLE_SPACES_TINY, EXAMPLE_SMALL_SPACES,
 				  EXAMPLE_CYCLE_SPACES, EXAMPLE_QUEUE_SIZE);
-		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
+		Car testCar; 
+		
 		for (int i = 0; i < EXAMPLE_QUEUE_SIZE; i++) {
+			testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
 			testCarPark.enterQueue(testCar);
 		}
 		assertTrue(testCarPark.queueFull());
