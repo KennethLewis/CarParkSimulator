@@ -250,6 +250,7 @@ public class CarParkTests {
 		}
 	}
 
+
 	/**
 	 * Tests if a queue is correctly reported as being full
 	 * @throws VehicleException
@@ -268,6 +269,22 @@ public class CarParkTests {
 	}
 	
 	
+	/**
+	 * Tests if a queue is correctly reported as being not full
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test
+	public void testQueueFull_Not() throws VehicleException, SimulationException{
+		testCarPark = new CarPark(EXAMPLE_SPACES_TINY, EXAMPLE_SMALL_SPACES,
+				  EXAMPLE_CYCLE_SPACES, EXAMPLE_QUEUE_SIZE);
+		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
+		testCarPark.enterQueue(testCar);
+		assertFalse(testCarPark.queueFull());
+	}
+	
+	
 	
 	/**
 	 * Tests if the queue is correctly reported as empty
@@ -279,6 +296,22 @@ public class CarParkTests {
 	@Test
 	public void testQueueEmpty() throws VehicleException, SimulationException{
 		assertTrue(testCarPark.queueEmpty() == true);
+	}
+	
+	
+	/**
+	 * Tests if a queue is correctly reported as being not empty
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test
+	public void testQueueEmpty_Not() throws VehicleException, SimulationException{
+		testCarPark = new CarPark(EXAMPLE_SPACES_TINY, EXAMPLE_SMALL_SPACES,
+				  EXAMPLE_CYCLE_SPACES, EXAMPLE_QUEUE_SIZE);
+		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
+		testCarPark.enterQueue(testCar);
+		assertFalse(testCarPark.queueEmpty());
 	}
 	
 	
