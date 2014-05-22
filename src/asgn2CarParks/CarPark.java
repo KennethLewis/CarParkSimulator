@@ -80,8 +80,20 @@ public class CarPark {
 	 * @param force boolean forcing departure to clear car park 
 	 * @throws VehicleException if vehicle to be archived is not in the correct state 
 	 * @throws SimulationException if one or more departing vehicles are not in the car park when operation applied
+	 * @author Ken Lewis
 	 */
 	public void archiveDepartingVehicles(int time,boolean force) throws VehicleException, SimulationException {
+		
+		for (int i = 0; i < carParkEntries.size(); i++){
+			//Check to make sure vehicle is parked, throw exception if not
+			if(carParkEntries.get(i).isParked() == false)
+				throw new SimulationException("One or more departing Vehicles are" +
+						" currently not in the car park. Archive Departing Vehicles failure.\n");
+			else {
+				carParkEntries.get(i).exitParkedState(time);
+				carParkEntries.remove(i);
+			}
+		}
 	}
 		
 	/**
@@ -91,6 +103,17 @@ public class CarPark {
 	 * @throws SimulationException if vehicle is currently queued or parked
 	 */
 	public void archiveNewVehicle(Vehicle v) throws SimulationException {
+		
+		if (v.isParked() == true || v.isQueued() == true)
+			throw new SimulationException("Vehicle is currently queued or parked.\n" +
+					"Vehicle is expected to be turned away. ArchiveNewVehicle failure\n");
+		/*TODO
+		 * Not sure how we're ment to use this method without altering the method
+		 * signature to include "throws VehicleException". You cant archive a vehicle
+		 * unless you throw that exception grrrr
+		 */
+		//else
+			//this.unparkVehicle(v, v.getArrivalTime());
 	}
 	
 	/**
@@ -99,6 +122,17 @@ public class CarPark {
 	 * @throws VehicleException if one or more vehicles not in the correct state or if timing constraints are violated
 	 */
 	public void archiveQueueFailures(int time) throws VehicleException {
+		
+		for (int i = 0; i < inQueue.size(); i++){
+			int timeInQueue = inQueue.get(i).getArrivalTime() + time;
+			//Arrival time should be the time they joined the queue
+			
+			if (timeInQueue > Constants.MAXIMUM_QUEUE_TIME){
+				inQueue.get(i).exitParkedState(time);
+				inQueue.remove(i);
+			}
+				
+		}
 	}
 	
 	/**
@@ -141,18 +175,17 @@ public class CarPark {
 	 */
 	public void enterQueue(Vehicle v) throws SimulationException, VehicleException {
 		
-		/*TODO
-		 * Send car away if the queue is full?
-		 */
 		if(inQueue.size() < Constants.DEFAULT_MAX_QUEUE_SIZE){
 			v.enterQueuedState();
 			inQueue.add(v);
 		}
-		else
+		else if (inQueue.size() >= Constants.DEFAULT_MAX_QUEUE_SIZE) {
+			//Time passed through to archiveQueue method should be the current time
+			//as the car arrival time will be the current time.
+			archiveQueueFailures(v.getArrivalTime());
 			throw new SimulationException ("Car cannot enter queue as the queue" +
-					" is currently full");
-		
-		
+					" is currently full.\nCar turned away and Arvhived.\n");
+		}			
 	}
 	
 	
@@ -166,6 +199,19 @@ public class CarPark {
 	 * constraints are violated
 	 */
 	public void exitQueue(Vehicle v,int exitTime) throws SimulationException, VehicleException {
+		
+		int queuedTime = v.getArrivalTime() + exitTime;
+		
+		if(v.isQueued() == false)
+			throw new SimulationException("Vehicle is currently not in the CarPark Queue!\n");
+		else if (queuedTime > Constants.MAXIMUM_QUEUE_TIME){
+			//If the vehicle has been in queue for too long.
+			v.exitParkedState(exitTime);
+			inQueue.remove(v);
+		}
+			
+			
+					
 			
 	}
 	
@@ -379,7 +425,6 @@ public class CarPark {
 		}
 		
 		int smallCarOverflow = this.maxSmallCarSpaces - this.getNumSmallCars() + motorCycleOverflow;
-		//System.out.printf("Small Car = %d\n", smallCarOverflow);
 		if (smallCarOverflow > 0) {
 			smallCarOverflow = 0;
 		}
@@ -388,7 +433,7 @@ public class CarPark {
 		int motorCycleCalc = this.maxMotorCycleSpaces + (this.maxSmallCarSpaces - this.getNumSmallCars()) - this.getNumMotorCycles();
 		int smallCarCalc = (this.maxCarSpaces - this.getNumCars()) + (this.maxSmallCarSpaces + motorCycleOverflow) - this.getNumSmallCars();
 		int carCalc = this.maxCarSpaces - this.getNumCars() + (this.maxSmallCarSpaces - this.getNumSmallCars() + motorCycleOverflow);
-		//System.out.printf("Small CarCalc = %d\n", smallCarCalc);
+		
 		if (this.carParkFull() == true) {
 			return false;
 		} else if (v instanceof MotorCycle &&  motorCycleCalc <= 0) {
