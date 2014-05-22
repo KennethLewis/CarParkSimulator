@@ -106,6 +106,12 @@ public class CarPark {
 	 * @return true if car park empty, false otherwise
 	 */
 	public boolean carParkEmpty() {
+		
+		if (carParkEntries.size() == 0)
+			return true;
+		else
+			return false;
+		
 	}
 	
 	/**
@@ -317,6 +323,7 @@ public class CarPark {
 	/**
 	 * Simple status showing whether queue is empty
 	 * @return true if queue empty, false otherwise
+	 * @author Ken Lewis
 	 */
 	public boolean queueEmpty() {
 		
@@ -330,13 +337,14 @@ public class CarPark {
 	/**
 	 * Simple status showing whether queue is full
 	 * @return true if queue full, false otherwise
+	 * @author Ken Lewis
 	 */
 	public boolean queueFull() {
-		System.out.printf("%d\n",inQueue.size());
-		if(inQueue.size() >= Constants.DEFAULT_MAX_QUEUE_SIZE)
-			return true;
-		else
+		
+		if(inQueue.size() < Constants.DEFAULT_MAX_QUEUE_SIZE)
 			return false;
+		else
+			return true;
 	}
 	
 	/**
