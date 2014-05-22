@@ -42,7 +42,7 @@ public class CarParkTests {
 	
 	private static final String EXAMPLE_PLATE = "1234Test";	
 	private static final int EXAMPLE_ARRIVAL_TIME = 5;
-	private static final int EXAMPLE_DEPARTURE_TIME = 5;
+	private static final int EXAMPLE_DEPARTURE_TIME = 7;
 	private static final int EXAMPLE_INTENDED_DURATION = Constants.MINIMUM_STAY;
 	
 	private static final int EXAMPLE_LOOP = 10;
@@ -79,7 +79,22 @@ public class CarParkTests {
 	 */
 	@Test
 	public void testEmptyCarPark() throws VehicleException{
-		assertTrue(testCarPark.carParkEmpty() == true);
+		assertTrue(testCarPark.carParkEmpty());
+	}
+	
+	
+	
+	/**
+	 * Tests if the car park is correctly returning
+	 * false when it is not empty
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 */
+	@Test
+	public void testEmptyCarPark_False() throws VehicleException{
+		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
+		testCarPark.parkVehicle(testCar, EXAMPLE_ARRIVAL_TIME, EXAMPLE_INTENDED_DURATION);
+		assertFalse(testCarPark.carParkEmpty());
 	}
 	
 	/**
@@ -102,7 +117,31 @@ public class CarParkTests {
 				EXAMPLE_INTENDED_DURATION);
 		testCarPark.parkVehicle(motorBike, motorBike.getArrivalTime(),+
 				EXAMPLE_INTENDED_DURATION);
-		assertTrue(testCarPark.carParkFull() == true);
+		assertTrue(testCarPark.carParkFull());
+	}
+	
+	
+	/**
+	 * Tests if the car park is correctly returning
+	 * false when it is not full
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test
+	public void testFullCarPark_False() throws VehicleException, SimulationException {
+		
+		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
+		Car testSmallCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
+		MotorCycle motorBike = new MotorCycle (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME); 
+		testCarPark = new CarPark(EXAMPLE_SPACES_TINY, EXAMPLE_SMALL_SPACES_TINY,
+				 EXAMPLE_CYCLE_SPACES_TINY,EXAMPLE_QUEUE_SIZE);
+		testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testCarPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(),
+				EXAMPLE_INTENDED_DURATION);
+
+		// We don't add a motorbike so the park shouldn't be full
+		assertFalse(testCarPark.carParkFull());
 	}
 	
 	
@@ -287,7 +326,7 @@ public class CarParkTests {
 	 * @throws SimulationException 
 	 */
 	@Test
-	public void testQueueFull_Not() throws VehicleException, SimulationException{
+	public void testQueueFull_False() throws VehicleException, SimulationException{
 		testCarPark = new CarPark(EXAMPLE_SPACES_TINY, EXAMPLE_SMALL_SPACES,
 				  EXAMPLE_CYCLE_SPACES, EXAMPLE_QUEUE_SIZE);
 		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
@@ -317,7 +356,7 @@ public class CarParkTests {
 	 * @throws SimulationException 
 	 */
 	@Test
-	public void testQueueEmpty_Not() throws VehicleException, SimulationException{
+	public void testQueueEmpty_False() throws VehicleException, SimulationException{
 		testCarPark = new CarPark(EXAMPLE_SPACES_TINY, EXAMPLE_SMALL_SPACES,
 				  EXAMPLE_CYCLE_SPACES, EXAMPLE_QUEUE_SIZE);
 		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
@@ -337,7 +376,7 @@ public class CarParkTests {
 		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
 		testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
 		testCarPark.unparkVehicle(testCar, EXAMPLE_DEPARTURE_TIME);
-		assertTrue(testCarPark.carParkEmpty() == true);
+		assertTrue(testCarPark.carParkEmpty());
 	}
 	
 	
@@ -354,7 +393,7 @@ public class CarParkTests {
 		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
 		testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
 		testCarPark.unparkVehicle(testCar, EXAMPLE_DEPARTURE_TIME);
-		assertTrue(testCarPark.carParkEmpty() == true);
+		assertTrue(testCarPark.carParkEmpty());
 		
 	}
 	
@@ -369,7 +408,7 @@ public class CarParkTests {
 	@Test
 	public void testSpacesAvailableCar() throws VehicleException, SimulationException{
 		
-		Car testCar = new Car ("TEST1234", 10, false); 
+		Car testCar = new Car ("TEST1234", EXAMPLE_ARRIVAL_TIME, false); 
 		Car testSmallCar; 
 		
 		for (int i =0; i < EXAMPLE_SPACES; i++) {
@@ -397,7 +436,7 @@ public class CarParkTests {
 	public void testSpacesAvailableSmallCar() throws VehicleException, SimulationException{
 		
 		Car testCar;
-		Car testSmallCar = new Car("TEST1234", 10, true);
+		Car testSmallCar = new Car("TEST1234", EXAMPLE_ARRIVAL_TIME, true);
 		
 		for (int i =0; i < EXAMPLE_SPACES; i++) {
 			testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
@@ -424,7 +463,7 @@ public class CarParkTests {
 	public void testSpacesAvailableMotorCycle() throws VehicleException, SimulationException{
 		
 		Car testSmallCar;
-		MotorCycle testBike = new MotorCycle("TEST1234", 10); 
+		MotorCycle testBike = new MotorCycle("TEST1234", EXAMPLE_ARRIVAL_TIME); 
 		
 		for (int i =0; i < EXAMPLE_SMALL_SPACES; i++) {
 			testSmallCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
@@ -438,6 +477,164 @@ public class CarParkTests {
 		assertFalse(testCarPark.spacesAvailable(testBike));
 	}
 	
+	
+	/**
+	 * Tests if an exception is thrown when we try to
+	 * archive a vehicle that isn't 'new', since it's parked already
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test(expected = SimulationException.class)
+	public void testArchiveNewVehicle_Parked() throws SimulationException, VehicleException{
+		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
+		testCarPark.parkVehicle(testCar, EXAMPLE_ARRIVAL_TIME, EXAMPLE_INTENDED_DURATION);
+		testCarPark.archiveNewVehicle(testCar);
+	}
+	
+	
+	
+	/**
+	 * Tests if an exception is thrown when we try to
+	 * archive a vehicle that isn't 'new', since it's queued already
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test(expected = SimulationException.class)
+	public void testArchiveNewVehicle_Queued() throws SimulationException, VehicleException{
+		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
+		testCarPark.enterQueue(testCar);
+		testCarPark.archiveNewVehicle(testCar);
+	}
+	
+	
+/**
+	 * Tests if this method actually archives the vehicle
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+ */
+	@Test
+	public void testArchiveNewVehicle() throws SimulationException, VehicleException{
+		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
+		testCarPark.archiveNewVehicle(testCar);
+		assertTrue(testCarPark.getStatus(testCar.getArrivalTime()).contains("A:1"));
+	}
+
+	
+	
+	
+	/**
+	 * Tests if new vehicles that are archived are truly 'new',
+	 * by verifying that they were never queued
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test(expected = SimulationException.class)
+	public void testArchiveNewVehicle_NeverQueued() throws SimulationException, VehicleException{
+		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
+		testCarPark.archiveNewVehicle(testCar);
+		assertFalse(testCar.wasQueued());
+	}
+	
+	
+	
+	/**
+	 * Tests if new vehicles that are archived are truly 'new',
+	 * by verifying that they were never parked
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test(expected = SimulationException.class)
+	public void testArchiveNewVehicle_NeverParked() throws SimulationException, VehicleException{
+		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
+		testCarPark.archiveNewVehicle(testCar);
+		assertFalse(testCar.wasParked());
+	}
+	
+	
+	/**
+	 * Tests if parked departing vehicles are correctly archived
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test(expected = SimulationException.class)
+	public void testArchiveDepartingVehicles() throws SimulationException, VehicleException{
+		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
+		testCarPark.parkVehicle(testCar, EXAMPLE_ARRIVAL_TIME, EXAMPLE_INTENDED_DURATION);
+		testCarPark.archiveDepartingVehicles(EXAMPLE_DEPARTURE_TIME, false);
+		assertTrue(testCarPark.getStatus(testCar.getArrivalTime()).contains("A:1"));
+	}
+
+	
+	/**
+	 * Tests if parked departing vehicles are correctly cleared
+	 * (if set to do so) at end of the day
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test(expected = SimulationException.class)
+	public void testArchiveDepartingVehicles_ForceClear() throws SimulationException, VehicleException{
+		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
+		testCarPark.parkVehicle(testCar, EXAMPLE_ARRIVAL_TIME, EXAMPLE_INTENDED_DURATION);
+		testCarPark.archiveDepartingVehicles(EXAMPLE_DEPARTURE_TIME, true);
+		assertTrue(testCarPark.getStatus(testCar.getArrivalTime()).contains("P:0"));
+	}
+	
+	
+	/**
+	 * TODO How do we test this?!
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test(expected = SimulationException.class)
+	public void testArchiveDepartingVehicles_NotInCarPark() throws SimulationException, VehicleException{
+		
+	}
+
+		
+	
+	/**
+	 * Tests if this method actually archives the vehicle
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+ */
+	@Test(expected = SimulationException.class)
+	public void testArchiveQueueFailures() throws SimulationException, VehicleException{
+		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
+		int finishTime = EXAMPLE_ARRIVAL_TIME + Constants.MAXIMUM_QUEUE_TIME;
+		
+		testCarPark.enterQueue(testCar);
+		testCarPark.archiveQueueFailures(finishTime);
+		assertTrue(testCarPark.getStatus(finishTime).contains("C:Q>A"));
+	}
+	
+
+	/**
+	 * Tests if this method doesn't archive the vehicle
+	 * if the vehicle hasn't been in the queue long enough
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test(expected = SimulationException.class)
+	public void testArchiveQueueFailures_NotLongEnough() throws SimulationException, VehicleException{
+		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
+		
+		// Just below maximum queue time
+		int finishTime = EXAMPLE_ARRIVAL_TIME + Constants.MAXIMUM_QUEUE_TIME - 1;
+		
+		testCarPark.enterQueue(testCar);
+		testCarPark.archiveQueueFailures(finishTime);
+		assertFalse(testCarPark.getStatus(finishTime).contains("C:Q>A"));
+	}
 	
 	
 	
