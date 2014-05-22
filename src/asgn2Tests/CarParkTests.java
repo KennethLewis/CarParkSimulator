@@ -89,6 +89,7 @@ public class CarParkTests {
 	 * false when it is not empty
 	 * @throws VehicleException
 	 * @author Thomas McCarthy
+	 * @throws SimulationException 
 	 */
 	@Test
 	public void testEmptyCarPark_False() throws VehicleException, SimulationException{
@@ -609,8 +610,73 @@ public class CarParkTests {
 		assertFalse(testCarPark.getStatus(finishTime).contains("C:Q>A"));
 	}
 	
+	/**
+	 * Tests if getStatus returns the correct string
+	 * for a completely empty simulation
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test
+	public void testGetStatus_Empty() throws SimulationException, VehicleException{
+		String stringToTest = EXAMPLE_ARRIVAL_TIME + "::0::P:0::C:0::S:0::M:0::D:0::A:0::Q:0");
+
+		assertEquals(testCarPark.getStatus(EXAMPLE_ARRIVAL_TIME), stringToTest);
+	}	
 	
 	
 	
+	/**
+	 * Tests if getStatus returns the correct string
+	 * for one car parked
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test
+	public void testGetStatus_CarParked() throws SimulationException, VehicleException{
+		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
+		String stringToTest = EXAMPLE_ARRIVAL_TIME + "::1::P:1::C:1::S:0::M:0::D:0::A:0::Q:0|C:N>P|");
+
+		testCarPark.parkVehicle(testCar, EXAMPLE_ARRIVAL_TIME, EXAMPLE_INTENDED_DURATION);
+		
+		assertEquals(testCarPark.getStatus(EXAMPLE_ARRIVAL_TIME), stringToTest);
+	}
 	
+	/**
+	 * Tests if getStatus returns the correct string
+	 * for one car queued
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test
+	public void testGetStatus_CarQueued() throws SimulationException, VehicleException{
+		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
+		String stringToTest = EXAMPLE_ARRIVAL_TIME + "::1::P:0::C:0::S:0::M:0::D:0::A:0::Q:1C|C:N>Q|");
+
+		testCarPark.enterQueue(testCar);
+		
+		assertEquals(testCarPark.getStatus(EXAMPLE_ARRIVAL_TIME), stringToTest);
+	}
+	
+	
+	/**
+	 * Tests if getStatus returns the correct string
+	 * for one car queued
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test
+	public void testGetStatus_CarArchived() throws SimulationException, VehicleException{
+		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
+		String stringToTest = EXAMPLE_ARRIVAL_TIME + "::0::P:1::C:1::S:0::M:0::D:0::A:0::Q:0|C:N>Q|");
+
+		testCarPark.enterQueue(testCar);
+		testCarPark.exitQueue(testCar, EXAMPLE_DEPARTURE_TIME);
+		testCar.
+		
+		assertEquals(testCarPark.getStatus(EXAMPLE_ARRIVAL_TIME), stringToTest);
+	}
 }
