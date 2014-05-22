@@ -539,4 +539,19 @@ public class CarPark {
 		}
 		return "|"+str+":"+source+">"+target+"|";
 	}
+	
+	private void vehicleNumbersMonitor(Vehicle v){
+		
+	 if (v instanceof MotorCycle)
+		this.numMotorCycles ++;
+	 else if (v instanceof Car && ((Car) v).isSmall() == true) {
+		this.numSmallCars ++;
+		this.numCars ++;
+	 }
+	 else if (v instanceof Car && ((Car) v).isSmall() == false) 
+		this.numCars ++;
+	 
+	 this.count++;
+	}
+	
 }
