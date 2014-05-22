@@ -31,12 +31,12 @@ import asgn2CarParks.CarPark;
 public class CarParkTests {
 
 
-	private static final int EXAMPLE_SPACES = 20;
+	private static final int EXAMPLE_SPACES = Constants.DEFAULT_MAX_CAR_SPACES;
 	private static final int EXAMPLE_SPACES_TINY = 1;
 	
-	private static final int EXAMPLE_SMALL_SPACES = 5;
+	private static final int EXAMPLE_SMALL_SPACES = Constants.DEFAULT_MAX_SMALL_CAR_SPACES;
 	private static final int EXAMPLE_SMALL_SPACES_TINY = 1;
-	private static final int EXAMPLE_CYCLE_SPACES = 3;
+	private static final int EXAMPLE_CYCLE_SPACES = Constants.DEFAULT_MAX_MOTORCYCLE_SPACES;
 	private static final int EXAMPLE_CYCLE_SPACES_TINY = 1;
 	private static final int EXAMPLE_QUEUE_SIZE = Constants.DEFAULT_MAX_QUEUE_SIZE;
 	
@@ -245,12 +245,14 @@ public class CarParkTests {
 	 */
 	@Test(expected = SimulationException.class)
 	public void testQueueEnter_Full() throws VehicleException, SimulationException{
+		
 		testCarPark = new CarPark(EXAMPLE_SPACES_TINY, EXAMPLE_SMALL_SPACES,
 				  EXAMPLE_CYCLE_SPACES, EXAMPLE_QUEUE_SIZE);
-		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
+		Car testCar; 
 		
 		// Loop an extra time on purpose
 		for (int i = 0; i < EXAMPLE_QUEUE_SIZE + 1; i++) {
+			testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
 			testCarPark.enterQueue(testCar);
 		}
 	}
@@ -348,6 +350,7 @@ public class CarParkTests {
 	 */
 	@Test(expected = VehicleException.class)
 	public void testRemoveFromCarpark_WithoutBeingParked() throws VehicleException, SimulationException{
+		
 		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
 		testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
 		testCarPark.unparkVehicle(testCar, EXAMPLE_DEPARTURE_TIME);
@@ -365,14 +368,17 @@ public class CarParkTests {
 	 */
 	@Test
 	public void testSpacesAvailableCar() throws VehicleException, SimulationException{
-		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
-		Car testSmallCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
+		
+		Car testCar = new Car ("TEST1234", 10, false); 
+		Car testSmallCar; 
 		
 		for (int i =0; i < EXAMPLE_SPACES; i++) {
+			testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
 			testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
 		}
 		
 		for (int i =0; i < EXAMPLE_SMALL_SPACES; i++) {
+			testSmallCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
 			testCarPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
 		}
 		
@@ -390,10 +396,11 @@ public class CarParkTests {
 	@Test
 	public void testSpacesAvailableSmallCar() throws VehicleException, SimulationException{
 		
-		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
-		Car testSmallCar;
+		Car testCar;
+		Car testSmallCar = new Car("TEST1234", 10, true);
 		
 		for (int i =0; i < EXAMPLE_SPACES; i++) {
+			testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
 			testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
 		}
 		
@@ -401,7 +408,6 @@ public class CarParkTests {
 			testSmallCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
 			testCarPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
 		}
-		
 		assertFalse(testCarPark.spacesAvailable(testSmallCar));
 	}
 	
@@ -416,18 +422,19 @@ public class CarParkTests {
 	 */
 	@Test
 	public void testSpacesAvailableMotorCycle() throws VehicleException, SimulationException{
-		Car testSmallCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
-		MotorCycle testBike = new MotorCycle(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME);
-
+		
+		Car testSmallCar;
+		MotorCycle testBike = new MotorCycle("TEST1234", 10); 
 		
 		for (int i =0; i < EXAMPLE_SMALL_SPACES; i++) {
+			testSmallCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
 			testCarPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
 		}
 		
 		for (int i =0; i < EXAMPLE_CYCLE_SPACES; i++) {
+			testBike = new MotorCycle(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME);
 			testCarPark.parkVehicle(testBike, testBike.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
 		}
-		
 		assertFalse(testCarPark.spacesAvailable(testBike));
 	}
 	

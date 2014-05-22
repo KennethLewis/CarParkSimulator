@@ -104,6 +104,7 @@ public class CarPark {
 	/**
 	 * Simple status showing whether carPark is empty
 	 * @return true if car park empty, false otherwise
+	 * @author Ken Lewis
 	 */
 	public boolean carParkEmpty() {
 		
@@ -117,6 +118,7 @@ public class CarPark {
 	/**
 	 * Simple status showing whether carPark is full
 	 * @return true if car park full, false otherwise
+	 * @author Ken Lewis
 	 */
 	public boolean carParkFull() {
 		
@@ -135,15 +137,22 @@ public class CarPark {
 	 * @param v Vehicle to be added 
 	 * @throws SimulationException if queue is full  
 	 * @throws VehicleException if vehicle not in the correct state 
+	 * @author Ken Lewis
 	 */
 	public void enterQueue(Vehicle v) throws SimulationException, VehicleException {
 		
 		/*TODO
-		 * If queue is full throw exception
+		 * Send car away if the queue is full?
 		 */
+		if(inQueue.size() < Constants.DEFAULT_MAX_QUEUE_SIZE){
+			v.enterQueuedState();
+			inQueue.add(v);
+		}
+		else
+			throw new SimulationException ("Car cannot enter queue as the queue" +
+					" is currently full");
 		
-		v.enterQueuedState();
-		inQueue.add(v);
+		
 	}
 	
 	
@@ -178,6 +187,7 @@ public class CarPark {
 	/**
 	 * Simple getter for number of cars in the car park 
 	 * @return number of cars in car park, including small cars
+	 * @author Ken Lewis
 	 */
 	public int getNumCars() {
 		
@@ -194,6 +204,7 @@ public class CarPark {
 	 * Simple getter for number of motorcycles in the car park 
 	 * @return number of MotorCycles in car park, including those occupying 
 	 * 			a small car space
+	 * @author Ken Lewis
 	 */
 	public int getNumMotorCycles() {
 		
@@ -211,6 +222,7 @@ public class CarPark {
 	 * Simple getter for number of small cars in the car park 
 	 * @return number of small cars in car park, including those 
 	 * 		   not occupying a small car space. 
+	 * @author Ken Lewis
 	 */
 	public int getNumSmallCars() {
 		
@@ -279,6 +291,7 @@ public class CarPark {
 	/**
 	 * Simple status showing number of vehicles in the queue 
 	 * @return number of vehicles in the queue
+	 * @author Ken Lewis
 	 */
 	public int numVehiclesInQueue() {
 		
@@ -352,6 +365,7 @@ public class CarPark {
 	 * type in the car park under the parking policy in the class header.  
 	 * @param v Vehicle to be stored. 
 	 * @return true if space available for v, false otherwise 
+	 * @author Thomas McCarthy
 	 */
 	public boolean spacesAvailable(Vehicle v) {
 		
@@ -359,11 +373,13 @@ public class CarPark {
 		// it means that there are still optimal spare spaces for these
 		// types of vehicles (i.e. the opposite of overflowing)
 		int motorCycleOverflow = this.maxMotorCycleSpaces - this.getNumMotorCycles();
+		//System.out.printf("Bike = %d\n", motorCycleOverflow);
 		if (motorCycleOverflow > 0) {
 			motorCycleOverflow = 0;
 		}
 		
 		int smallCarOverflow = this.maxSmallCarSpaces - this.getNumSmallCars() + motorCycleOverflow;
+		//System.out.printf("Small Car = %d\n", smallCarOverflow);
 		if (smallCarOverflow > 0) {
 			smallCarOverflow = 0;
 		}
@@ -372,7 +388,7 @@ public class CarPark {
 		int motorCycleCalc = this.maxMotorCycleSpaces + (this.maxSmallCarSpaces - this.getNumSmallCars()) - this.getNumMotorCycles();
 		int smallCarCalc = (this.maxCarSpaces - this.getNumCars()) + (this.maxSmallCarSpaces + motorCycleOverflow) - this.getNumSmallCars();
 		int carCalc = this.maxCarSpaces - this.getNumCars() + (this.maxSmallCarSpaces - this.getNumSmallCars() + motorCycleOverflow);
-		
+		//System.out.printf("Small CarCalc = %d\n", smallCarCalc);
 		if (this.carParkFull() == true) {
 			return false;
 		} else if (v instanceof MotorCycle &&  motorCycleCalc <= 0) {
@@ -413,6 +429,12 @@ public class CarPark {
 	 * @throws SimulationException if vehicle is not in car park
 	 */
 	public void unparkVehicle(Vehicle v,int departureTime) throws VehicleException, SimulationException {
+		
+		/*TODO
+		 *  SimulationException if vehicle is not in carpark
+		 */
+		v.exitParkedState(departureTime);
+		carParkEntries.remove(v);
 	}
 	
 	/**
