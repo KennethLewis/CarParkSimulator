@@ -143,6 +143,9 @@ public class CarPark {
 		 */
 		//else
 			//this.unparkVehicle(v, v.getArrivalTime());
+			//v.exitParkedState(v.getArrivalTime());
+		past.add(v); //adds vehicle to the past list
+		numDissatisfied++;
 			
 	}
 	
@@ -516,6 +519,8 @@ public class CarPark {
 	 * @throws VehicleException if vehicle creation violates constraints 
 	 */
 	public void tryProcessNewVehicles(int time,Simulator sim) throws VehicleException, SimulationException {
+		
+		
 	}
 
 	/**
@@ -556,7 +561,12 @@ public class CarPark {
 		}
 		return "|"+str+":"+source+">"+target+"|";
 	}
-	
+	/**
+	 * Helper to set vehicle message for transitions 
+	 * @param v Vehicle helping to make sure what addition to
+	 * 			the numbers is being required.
+	 * @author Ken Lewis
+	 */
 	private void incomingVehicleMonitor(Vehicle v){
 		
 	 if (v instanceof MotorCycle)
@@ -571,6 +581,12 @@ public class CarPark {
 	 this.count++;
 	}
 	
+	/**
+	 * Helper to set vehicle message for transitions 
+	 * @param v Vehicle helping to make sure what subtraction to
+	 * 			the numbers is being required.
+	 * @author Ken Lewis
+	 */
 	private void outgoingVehicleMonitor (Vehicle v){
 		
 		if (v instanceof MotorCycle)
