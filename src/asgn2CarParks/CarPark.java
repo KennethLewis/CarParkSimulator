@@ -117,6 +117,8 @@ public class CarPark {
 			else {
 				spaces.get(i).exitParkedState(time);
 				spaces.remove(i);
+				outgoingVehicleMonitor(spaces.get(i));//changing carpark numbers making sure
+													  //it ends up empty
 			}
 		}
 	}
@@ -139,6 +141,7 @@ public class CarPark {
 		 */
 		//else
 			//this.unparkVehicle(v, v.getArrivalTime());
+			
 	}
 	
 	/**
@@ -155,6 +158,7 @@ public class CarPark {
 			if (timeInQueue > Constants.MAXIMUM_QUEUE_TIME){
 				queue.get(i).exitParkedState(time);
 				queue.remove(i);
+				numDissatisfied++;
 			}
 				
 		}
@@ -234,7 +238,11 @@ public class CarPark {
 			v.exitParkedState(exitTime);
 			queue.remove(v);
 		}
-			
+		else {
+			v.enterParkedState(exitTime, Constants.MINIMUM_STAY);
+			spaces.add(v);
+			incomingVehicleMonitor(v);
+		}
 			
 					
 			
@@ -386,14 +394,17 @@ public class CarPark {
 		if(v instanceof Car && ((Car) v).isSmall() == false && spacesAvailable(v) == true) {
 			v.enterParkedState(time, intendedDuration);
 			spaces.add(v);
+			incomingVehicleMonitor(v);
 		}
 		else if (v instanceof Car && ((Car) v).isSmall() == true && spacesAvailable(v) == true){
 			v.enterParkedState(time, intendedDuration);
 			spaces.add(v);
+			incomingVehicleMonitor(v);
 		}
 		else if (v instanceof MotorCycle && spacesAvailable(v) == true){
 			v.enterParkedState(time, intendedDuration);
 			spaces.add(v);
+			incomingVehicleMonitor(v);
 		}
 		else
 			throw new SimulationException("Vehicle cannot park, as there are no available"+
@@ -517,6 +528,7 @@ public class CarPark {
 		 */
 		v.exitParkedState(departureTime);
 		spaces.remove(v);
+		outgoingVehicleMonitor(v);
 	}
 	
 	/**
@@ -540,7 +552,7 @@ public class CarPark {
 		return "|"+str+":"+source+">"+target+"|";
 	}
 	
-	private void vehicleNumbersMonitor(Vehicle v){
+	private void incomingVehicleMonitor(Vehicle v){
 		
 	 if (v instanceof MotorCycle)
 		this.numMotorCycles ++;
@@ -552,6 +564,21 @@ public class CarPark {
 		this.numCars ++;
 	 
 	 this.count++;
+	}
+	
+	private void outgoingVehicleMonitor (Vehicle v){
+		
+		if (v instanceof MotorCycle)
+			this.numMotorCycles --;
+		 else if (v instanceof Car && ((Car) v).isSmall() == true) {
+			this.numSmallCars --;
+			this.numCars --;
+		 }
+		 else if (v instanceof Car && ((Car) v).isSmall() == false) 
+			this.numCars --;
+		 
+		 this.count--;
+		
 	}
 	
 }
