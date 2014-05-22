@@ -91,7 +91,7 @@ public class CarParkTests {
 	 * @author Thomas McCarthy
 	 */
 	@Test
-	public void testEmptyCarPark_False() throws VehicleException{
+	public void testEmptyCarPark_False() throws VehicleException, SimulationException{
 		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
 		testCarPark.parkVehicle(testCar, EXAMPLE_ARRIVAL_TIME, EXAMPLE_INTENDED_DURATION);
 		assertFalse(testCarPark.carParkEmpty());
@@ -161,31 +161,6 @@ public class CarParkTests {
 		testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
 	}
 	
-	
-	/**
-	 * TODO
-	 * Tests if an exception is throw when we try
-	 * adding a car to a carpark with invalid time constraints
-	 * @throws VehicleException
-	 * @author Thomas McCarthy
-	 * @throws SimulationException 
-	 */
-	@Test(expected = SimulationException.class)
-	public void testParkVehicle_InvalidTimeConstraints() throws VehicleException, SimulationException {
-	}
-	
-	
-	/**
-	 * TODO
-	 * Tests if an exception is throw when we try
-	 * adding a car with an invalid state to a carpark
-	 * @throws VehicleException
-	 * @author Thomas McCarthy
-	 * @throws SimulationException 
-	 */
-	@Test(expected = SimulationException.class)
-	public void testParkVehicle_InvalidState() throws VehicleException, SimulationException {
-	}
 	
 	/**
 	 * Tests if we can correctly get the number of cars
@@ -405,7 +380,7 @@ public class CarParkTests {
 	 * @author Thomas McCarthy
 	 * @throws SimulationException 
 	 */
-	@Test
+	@Test (expected = SimulationException.class)
 	public void testSpacesAvailableCar() throws VehicleException, SimulationException{
 		
 		Car testCar = new Car ("TEST1234", EXAMPLE_ARRIVAL_TIME, false); 
@@ -420,8 +395,6 @@ public class CarParkTests {
 			testSmallCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
 			testCarPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
 		}
-		
-		assertFalse(testCarPark.spacesAvailable(testCar));
 	}
 	
 	
@@ -432,7 +405,7 @@ public class CarParkTests {
 	 * @author Thomas McCarthy
 	 * @throws SimulationException 
 	 */
-	@Test
+	@Test (expected = SimulationException.class)
 	public void testSpacesAvailableSmallCar() throws VehicleException, SimulationException{
 		
 		Car testCar;
@@ -447,7 +420,6 @@ public class CarParkTests {
 			testSmallCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
 			testCarPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
 		}
-		assertFalse(testCarPark.spacesAvailable(testSmallCar));
 	}
 	
 	
@@ -562,8 +534,9 @@ public class CarParkTests {
 	 * @author Thomas McCarthy
 	 * @throws SimulationException 
 	 */
-	@Test(expected = SimulationException.class)
+	@Test//(expected = SimulationException.class)
 	public void testArchiveDepartingVehicles() throws SimulationException, VehicleException{
+		
 		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
 		testCarPark.parkVehicle(testCar, EXAMPLE_ARRIVAL_TIME, EXAMPLE_INTENDED_DURATION);
 		testCarPark.archiveDepartingVehicles(EXAMPLE_DEPARTURE_TIME, false);

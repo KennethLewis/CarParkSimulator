@@ -116,9 +116,11 @@ public class CarPark {
 						" currently not in the car park. Archive Departing Vehicles failure.\n");
 			else {
 				spaces.get(i).exitParkedState(time);
-				spaces.remove(i);
 				outgoingVehicleMonitor(spaces.get(i));//changing carpark numbers making sure
-													  //it ends up empty
+				  									 //it ends up empty
+				past.add(spaces.get(i));
+				spaces.remove(i);
+				
 			}
 		}
 	}
@@ -157,6 +159,7 @@ public class CarPark {
 			
 			if (timeInQueue > Constants.MAXIMUM_QUEUE_TIME){
 				queue.get(i).exitParkedState(time);
+				past.add(queue.get(i));
 				queue.remove(i);
 				numDissatisfied++;
 			}
@@ -236,7 +239,9 @@ public class CarPark {
 		else if (queuedTime > Constants.MAXIMUM_QUEUE_TIME){
 			//If the vehicle has been in queue for too long.
 			v.exitParkedState(exitTime);
+			past.add(v);
 			queue.remove(v);
+			numDissatisfied++;
 		}
 		else {
 			v.enterParkedState(exitTime, Constants.MINIMUM_STAY);
