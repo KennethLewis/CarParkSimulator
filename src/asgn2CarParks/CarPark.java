@@ -133,17 +133,10 @@ public class CarPark {
 	 */
 	public void archiveNewVehicle(Vehicle v) throws SimulationException {
 		
-		if (v.isParked() == true || v.isQueued() == true)
+		if (v.isParked() == true || v.isQueued() == true) {
 			throw new SimulationException("Vehicle is currently queued or parked.\n" +
 					"Vehicle is expected to be turned away. ArchiveNewVehicle failure\n");
-		/*TODO
-		 * Not sure how we're ment to use this method without altering the method
-		 * signature to include "throws VehicleException". You cant archive a vehicle
-		 * unless you throw that exception grrrr
-		 */
-		//else
-			//this.unparkVehicle(v, v.getArrivalTime());
-			//v.exitParkedState(v.getArrivalTime());
+		}
 		past.add(v); //adds vehicle to the past list
 		numDissatisfied++;
 			
@@ -152,18 +145,19 @@ public class CarPark {
 	/**
 	 * Archive vehicles which have stayed in the queue too long 
 	 * @param time int holding current simulation time 
+	 * @author Thomas McCarthy
+	 * @author Ken Lewis
 	 * @throws VehicleException if one or more vehicles not in the correct state or if timing constraints are violated
 	 */
 	public void archiveQueueFailures(int time) throws VehicleException {
 		
 		for (int i = 0; i < queue.size(); i++){
-			int timeInQueue = queue.get(i).getArrivalTime() + time;
+			int timeInQueue = time - queue.get(i).getArrivalTime();
 			//Arrival time should be the time they joined the queue
 			
-			if (timeInQueue > Constants.MAXIMUM_QUEUE_TIME){
-				queue.get(i).exitParkedState(time);
+			if (timeInQueue == Constants.MAXIMUM_QUEUE_TIME){
 				past.add(queue.get(i));
-				queue.remove(i);
+				queue.get(i).exitQueuedState(time);
 				numDissatisfied++;
 			}
 				
@@ -236,20 +230,19 @@ public class CarPark {
 	public void exitQueue(Vehicle v,int exitTime) throws SimulationException, VehicleException {
 		
 		int queuedTime = v.getArrivalTime() + exitTime;
+
 		
 		if(v.isQueued() == false)
 			throw new SimulationException("Vehicle is currently not in the CarPark Queue!\n");
 		else if (queuedTime > Constants.MAXIMUM_QUEUE_TIME){
 			//If the vehicle has been in queue for too long.
-			v.exitParkedState(exitTime);
+			v.exitQueuedState(exitTime);
 			past.add(v);
 			queue.remove(v);
 			numDissatisfied++;
 		}
 		else {
-			v.enterParkedState(exitTime, Constants.MINIMUM_STAY);
-			spaces.add(v);
-			incomingVehicleMonitor(v);
+			this.parkVehicle(v, exitTime, Constants.MINIMUM_STAY);			
 		}
 			
 					
@@ -429,6 +422,7 @@ public class CarPark {
 	 * 
 	 */
 	public void processQueue(int time, Simulator sim) throws VehicleException, SimulationException {
+		
 	}
 
 	/**
@@ -520,7 +514,33 @@ public class CarPark {
 	 */
 	public void tryProcessNewVehicles(int time,Simulator sim) throws VehicleException, SimulationException {
 		
+		Vehicle newCar;
+		MotorCycle newBike;
+		List<Vehicle> newVehicles = new ArrayList<Vehicle>();
 		
+		if (sim.newCarTrial()) {
+			newCar = new Car("Asdasd", time, false);
+			if (sim.smallCarTrial()) {
+				newCar = new Car("Asdasd", time, true);
+			}
+			newVehicles.add(newCar);
+		}
+		
+
+		if (sim.motorCycleTrial()) {
+			newBike = new MotorCycle("Asdasd", time);
+			newVehicles.add(newBike);
+		}
+		
+		for (int i=0; i < newVehicles.size(); i++) {
+			if (this.queueFull()) {
+				past.add(newVehicles.get(i));
+			} else if (this.numVehiclesInQueue() > 0) {
+				this.enterQueue(newVehicles.get(i));
+			} else {
+				this.parkVehicle(newVehicles.get(i), time, sim.setDuration());
+			}
+		}
 	}
 
 	/**
@@ -529,7 +549,6 @@ public class CarPark {
 	 * So vehicle should be in parked state prior to entry to this method. 
 	 * @param v Vehicle to be removed from the car park 
 	 * @throws VehicleException if Vehicle is not parked, is in a queue, or violates timing constraints 
-	 * @throws SimulationException if vehicle is not in car park
 	 */
 	public void unparkVehicle(Vehicle v,int departureTime) throws VehicleException, SimulationException {
 		
