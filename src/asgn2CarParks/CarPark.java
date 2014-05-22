@@ -174,6 +174,14 @@ public class CarPark {
 	 * @return number of cars in car park, including small cars
 	 */
 	public int getNumCars() {
+		
+		int carCounter = 0;
+		
+		for (int i =0; i < carParkEntries.size(); i++)
+			if (carParkEntries.get(i) instanceof Car)
+				carCounter++;
+		
+		return carCounter;
 	}
 	
 	/**
@@ -182,6 +190,15 @@ public class CarPark {
 	 * 			a small car space
 	 */
 	public int getNumMotorCycles() {
+		
+		int bikeCounter = 0;
+		
+		for(int i =0; i < carParkEntries.size();i++)
+			if(carParkEntries.get(i) instanceof MotorCycle)
+				bikeCounter++;
+		
+		return bikeCounter;
+				
 	}
 	
 	/**
