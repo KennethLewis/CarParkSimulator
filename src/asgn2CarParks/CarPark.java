@@ -48,11 +48,13 @@ public class CarPark {
 	
 	//Stores variables
 	private List<Vehicle> queue;
+	private List<Vehicle> past;
 	private int count;
 	private int numCars;
 	private int numSmallCars;
 	private int numMotorCycles;
 	private int numDissatisfied;
+	private String status;
 	/* * CarPark constructor sets the basic size parameters. 
 	 * Uses default parameters
 	 */
@@ -63,6 +65,7 @@ public class CarPark {
 		spaces = new ArrayList<Vehicle>(maxCarSpaces);
 		
 		this.queue = new ArrayList<Vehicle>();
+		this.past = new ArrayList<Vehicle>();
 		this.count = 0;
 		this.numCars = 0;
 		this.numSmallCars = 0;
@@ -87,6 +90,7 @@ public class CarPark {
 		this.maxQueueSize = maxQueueSize;
 		
 		this.queue = new ArrayList<Vehicle>();
+		this.past = new ArrayList<Vehicle>();
 		this.count = 0;
 		this.numCars = 0;
 		this.numSmallCars = 0;
