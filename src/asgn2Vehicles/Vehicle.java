@@ -92,9 +92,9 @@ public abstract class Vehicle {
 	 */
 	public void enterParkedState(int parkingTime, int intendedDuration) throws VehicleException {
 		
-		if(vehicleState.contains("P") || vehicleState.contains("Q"))
+		if(vehicleState.contains("P") || vehicleState.get(vehicleState.size() - 1) == "Q")
 			throw new VehicleException ("Vehicle is currently either already parked"
-					+ " or in the que to enter the CarPark.\n");
+					+ " or in the queue to enter the CarPark.\n");
 		else if (parkingTime < 0)
 			throw new VehicleException ("Vehicle parking time cannot be less than 0\n");
 		else if (intendedDuration < Constants.MINIMUM_STAY)
@@ -159,7 +159,7 @@ public abstract class Vehicle {
 	 */
 	public void exitQueuedState(int exitTime) throws VehicleException {
 	
-		int timeInQueue = this.getArrivalTime() + exitTime;
+		int timeInQueue = exitTime - this.getArrivalTime();
 		
 		if(vehicleState.contains("P") || vehicleState.contains("Q") == false)
 			throw new VehicleException ("Vehicle  cannot exit Queued state, as it is" +
@@ -171,16 +171,21 @@ public abstract class Vehicle {
 			this.vehicleState.add("A");
 		}
 		else {
+			
+			// need this to transition from queued to parked
+			this.vehicleState.add("");
+			
+			
 			/* TODO
 			 * Prob need another if else statement here which uses is satisfied as
 			 * if they have queued for too long they leave the car park and the process
 			 * is archived. 
 			 */
 			
-				this.vehicleState.add("P");
-				this.parkingTime = exitTime;
-				this.intendedDuration = Constants.MINIMUM_STAY;
-				this.exitTime = exitTime;
+				//this.vehicleState.add("P");
+				//this.parkingTime = exitTime;
+				//this.intendedDuration = Constants.MINIMUM_STAY;
+				//this.exitTime = exitTime;
 		}
 	}
 	

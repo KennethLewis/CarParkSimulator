@@ -114,7 +114,7 @@ public class CarPark {
 			if(spaces.get(i).isParked() == false)
 				throw new SimulationException("One or more departing Vehicles are" +
 						" currently not in the car park. Archive Departing Vehicles failure.\n");
-			else {
+			else if (time == spaces.get(i).getDepartureTime()) {
 				spaces.get(i).exitParkedState(time);
 				outgoingVehicleMonitor(spaces.get(i));//changing carpark numbers making sure
 				  									 //it ends up empty
@@ -204,11 +204,11 @@ public class CarPark {
 	 */
 	public void enterQueue(Vehicle v) throws SimulationException, VehicleException {
 		
-		if(queue.size() < Constants.DEFAULT_MAX_QUEUE_SIZE){
+		if(queue.size() != maxQueueSize){
 			v.enterQueuedState();
 			queue.add(v);
 		}
-		else if (queue.size() >= Constants.DEFAULT_MAX_QUEUE_SIZE) {
+		else {
 			//Time passed through to archiveQueue method should be the current time
 			//as the car arrival time will be the current time.
 			archiveQueueFailures(v.getArrivalTime());
@@ -229,7 +229,7 @@ public class CarPark {
 	 */
 	public void exitQueue(Vehicle v,int exitTime) throws SimulationException, VehicleException {
 		
-		int queuedTime = v.getArrivalTime() + exitTime;
+		int queuedTime =  exitTime - v.getArrivalTime();
 
 		
 		if(v.isQueued() == false)
@@ -242,7 +242,10 @@ public class CarPark {
 			numDissatisfied++;
 		}
 		else {
-			this.parkVehicle(v, exitTime, Constants.MINIMUM_STAY);			
+			v.exitQueuedState(exitTime);
+			queue.remove(v);
+
+
 		}
 			
 					
@@ -422,7 +425,12 @@ public class CarPark {
 	 * 
 	 */
 	public void processQueue(int time, Simulator sim) throws VehicleException, SimulationException {
-		
+		for (int i = 0; i < this.queue.size(); i++) {
+			while (spacesAvailable(this.queue.get(i))) {
+				this.exitQueue(this.queue.get(i), time);
+				this.parkVehicle(this.queue.get(i), time, sim.setDuration());	
+				}
+		}
 	}
 
 	/**
@@ -499,10 +507,13 @@ public class CarPark {
 	 */
 	@Override
 	public String toString() {
-		/* TODO
-		 * Write a proper toString lolz
-		 */
-		return "IM A CARPARK WOOOOOO\n";
+		return "CarPark [count: " + count
+				+ " numCars: " + numCars
+				+ " numSmallCars: " + numSmallCars
+				+ " numMotorCycles: " + numMotorCycles
+				+ " queue: " + (queue.size())
+				+ " numDissatisfied: " + numDissatisfied
+				+ " past: " + past.size() + "]";
 	}
 
 	/**
@@ -534,11 +545,12 @@ public class CarPark {
 		
 		for (int i=0; i < newVehicles.size(); i++) {
 			if (this.queueFull()) {
-				past.add(newVehicles.get(i));
-			} else if (this.numVehiclesInQueue() > 0) {
-				this.enterQueue(newVehicles.get(i));
-			} else {
+				this.archiveNewVehicle(newVehicles.get(i));
+			} else if (this.spacesAvailable(newVehicles.get(i))) {
 				this.parkVehicle(newVehicles.get(i), time, sim.setDuration());
+			} else {
+				this.enterQueue(newVehicles.get(i));
+
 			}
 		}
 	}
@@ -549,12 +561,14 @@ public class CarPark {
 	 * So vehicle should be in parked state prior to entry to this method. 
 	 * @param v Vehicle to be removed from the car park 
 	 * @throws VehicleException if Vehicle is not parked, is in a queue, or violates timing constraints 
+	 * @author Ken Lewis
+	 * @author Thomas McCarthy
 	 */
 	public void unparkVehicle(Vehicle v,int departureTime) throws VehicleException, SimulationException {
 		
-		/*TODO
-		 *  SimulationException if vehicle is not in carpark
-		 */
+		if (!spaces.contains(v)) {
+			throw new SimulationException("Cannot unpark vehicle as it is not in the carpark");
+		}
 		v.exitParkedState(departureTime);
 		spaces.remove(v);
 		outgoingVehicleMonitor(v);

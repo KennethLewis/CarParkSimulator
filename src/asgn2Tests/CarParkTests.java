@@ -40,6 +40,7 @@ public class CarParkTests {
 	private static final int EXAMPLE_CYCLE_SPACES_TINY = 1;
 	private static final int EXAMPLE_QUEUE_SIZE = Constants.DEFAULT_MAX_QUEUE_SIZE;
 	
+	
 	private static final String EXAMPLE_PLATE = "1234Test";	
 	private static final int EXAMPLE_ARRIVAL_TIME = 5;
 	private static final int EXAMPLE_DEPARTURE_TIME = 7;
@@ -234,8 +235,7 @@ public class CarParkTests {
 	
 	
 	/**
-	 * Tests if we can correctly get the number of cars
-	 * in the queue
+	 * Tests if we can add a car to the queue and correctly get number of vehicles
 	 * @throws VehicleException
 	 * @author Thomas McCarthy
 	 * @throws SimulationException 
@@ -247,31 +247,20 @@ public class CarParkTests {
 		assertTrue(testCarPark.numVehiclesInQueue() == 1);
 	}
 	
-	
-	
-	
-	
 	/**
-	 * Tests if we can correctly get the number of cars
-	 * in the queue
+	 * Tests if numVehiclesInQueue returns 0 when the queue is empty
 	 * @throws VehicleException
 	 * @author Thomas McCarthy
 	 * @throws SimulationException 
 	 */
-	@Test(expected = SimulationException.class)
-	public void testQueueEnter_Full() throws VehicleException, SimulationException{
-		
-		testCarPark = new CarPark(EXAMPLE_SPACES_TINY, EXAMPLE_SMALL_SPACES,
-				  EXAMPLE_CYCLE_SPACES, EXAMPLE_QUEUE_SIZE);
-		Car testCar; 
-		
-		// Loop an extra time on purpose
-		for (int i = 0; i < EXAMPLE_QUEUE_SIZE + 1; i++) {
-			testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
-			testCarPark.enterQueue(testCar);
-		}
+	@Test
+	public void testQueueNumVehicles_Empty() throws VehicleException, SimulationException{
+		assertEquals(testCarPark.numVehiclesInQueue(), 0);
 	}
-
+	
+	
+	
+	
 
 	/**
 	 * Tests if a queue is correctly reported as being full
@@ -535,7 +524,7 @@ public class CarParkTests {
 	 * @author Thomas McCarthy
 	 * @throws SimulationException 
 	 */
-	@Test//(expected = SimulationException.class)
+	@Test
 	public void testArchiveDepartingVehicles() throws SimulationException, VehicleException{
 		
 		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
@@ -552,7 +541,7 @@ public class CarParkTests {
 	 * @author Thomas McCarthy
 	 * @throws SimulationException 
 	 */
-	@Test(expected = SimulationException.class)
+	@Test
 	public void testArchiveDepartingVehicles_ForceClear() throws SimulationException, VehicleException{
 		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
 		testCarPark.parkVehicle(testCar, EXAMPLE_ARRIVAL_TIME, EXAMPLE_INTENDED_DURATION);
@@ -610,5 +599,80 @@ public class CarParkTests {
 		assertFalse(testCarPark.getStatus(finishTime).contains("C:Q>A"));
 	}
 	
-
+	/**
+	 * Tests if vehicles are added to the queue
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+ */
+	@Test
+	public void testEnterQueue() throws SimulationException, VehicleException{
+		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
+		
+		testCarPark.enterQueue(testCar);
+		assertTrue(testCarPark.getStatus(EXAMPLE_ARRIVAL_TIME).contains("Q:1"));
+	}
+	
+	/**
+	 * Tests if exception is thrown when vehicle is added to a queue with
+	 * a max size of 0
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+ */
+	@Test(expected = SimulationException.class)
+	public void testEnterQueue_Full_ZeroQueue() throws SimulationException, VehicleException{
+		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
+		testCarPark = new CarPark(EXAMPLE_SPACES, EXAMPLE_SMALL_SPACES, EXAMPLE_CYCLE_SPACES, 0);
+		testCarPark.enterQueue(testCar);
+	}
+	
+	/**
+	 * Tests if exception is thrown when vehicle is added to a full queue
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+ */
+	@Test(expected = SimulationException.class)
+	public void testEnterQueue_Full() throws SimulationException, VehicleException{
+		for (int i = 0; i < EXAMPLE_QUEUE_SIZE; i++) {
+			Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
+			testCarPark.enterQueue(testCar);
+		}
+		
+		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
+		testCarPark.enterQueue(testCar);
+	
+	}
+	
+	/**
+	 * Tests if vehicles are properly removed from the queue
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+ */
+	@Test
+	public void testExitQueue() throws SimulationException, VehicleException{
+		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
+		
+		testCarPark.enterQueue(testCar);
+		testCarPark.exitQueue(testCar, EXAMPLE_DEPARTURE_TIME);
+		
+		assertTrue(testCarPark.getStatus(EXAMPLE_DEPARTURE_TIME).contains("Q:0"));
+	}
+	
+	
+	/**
+	 * Tests if exception is thrown when we attempt to remove
+	 * a car from the queue that doesn't exist in the queue
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+ */
+	@Test(expected = SimulationException.class)
+	public void testExitQueue_NotInQueue() throws SimulationException, VehicleException{
+		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
+		testCarPark.exitQueue(testCar, EXAMPLE_DEPARTURE_TIME);
+	}
+	
 }
