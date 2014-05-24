@@ -157,19 +157,12 @@ public class CarPark {
 			
 			int timeInQueue = time - queue.get(i).getArrivalTime();
 			
-<<<<<<< HEAD
 			if (timeInQueue >= Constants.MAXIMUM_QUEUE_TIME){
 				Vehicle vehicleToRemove = queue.get(i);
 				
 				past.add(vehicleToRemove);
 				queue.remove(i);
 				vehicleToRemove.exitQueuedState(time);
-=======
-			if (timeInQueue == Constants.MAXIMUM_QUEUE_TIME){
-				past.add(queue.get(i));
-				queue.get(i).exitQueuedState(time);
-				queue.remove(i);
->>>>>>> b3f195e53713222eba0dcf8a13e7c241784be3a1
 				numDissatisfied++;
 			}
 				
@@ -435,18 +428,12 @@ public class CarPark {
 	 * 
 	 */
 	public void processQueue(int time, Simulator sim) throws VehicleException, SimulationException {
-<<<<<<< HEAD
+
 		if(this.queueEmpty() == false){
 			
 			for (int i = 0; i < this.queue.size(); i++) {
 					if (spacesAvailable(this.queue.get(i))) {
-=======
-		
-		if(this.queue.isEmpty() == false){
-			for (int i = 0; i < this.queue.size(); i++) {
-			
-				while (spacesAvailable(this.queue.get(i))) {
->>>>>>> b3f195e53713222eba0dcf8a13e7c241784be3a1
+
 					Vehicle v = this.queue.get(i);
 					this.exitQueue(this.queue.get(i), time);
 					this.parkVehicle(v, time, sim.setDuration());
