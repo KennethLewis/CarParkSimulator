@@ -152,12 +152,13 @@ public class CarPark {
 	public void archiveQueueFailures(int time) throws VehicleException {
 		
 		for (int i = 0; i < queue.size(); i++){
+			
 			int timeInQueue = time - queue.get(i).getArrivalTime();
-			//Arrival time should be the time they joined the queue
 			
 			if (timeInQueue == Constants.MAXIMUM_QUEUE_TIME){
 				past.add(queue.get(i));
 				queue.get(i).exitQueuedState(time);
+				queue.remove(i);
 				numDissatisfied++;
 			}
 				
@@ -423,8 +424,10 @@ public class CarPark {
 	 * 
 	 */
 	public void processQueue(int time, Simulator sim) throws VehicleException, SimulationException {
-		for (int i = 0; i < this.queue.size(); i++) {
-			if(this.queue.isEmpty() == false){
+		
+		if(this.queue.isEmpty() == false){
+			for (int i = 0; i < this.queue.size(); i++) {
+			
 				while (spacesAvailable(this.queue.get(i))) {
 					Vehicle v = this.queue.get(i);
 					this.exitQueue(this.queue.get(i), time);

@@ -91,11 +91,7 @@ public abstract class Vehicle {
 	 * @author Ken Lewis
 	 */
 	public void enterParkedState(int parkingTime, int intendedDuration) throws VehicleException {
-		
-		for(int i =0; i < vehicleState.size(); i++){
-			System.out.printf("VEHICLE STATE IS: %s\n", vehicleState.get(i));
-		}
-		
+				
 		if(vehicleState.contains("P") || vehicleState.get(vehicleState.size() - 1) == "Q")
 			throw new VehicleException ("Vehicle is currently either already parked"
 					+ " or in the queue to enter the CarPark.\n");
@@ -171,7 +167,7 @@ public abstract class Vehicle {
 					" currently either parked or not in the que to enter the CarPark.\n");
 		else if (exitTime < arrivalTime)
 			throw new VehicleException ("Exit time cannot be greater than arrival time\n");
-		else if (timeInQueue > Constants.MAXIMUM_QUEUE_TIME){
+		else if (timeInQueue >= Constants.MAXIMUM_QUEUE_TIME){
 			this.departureTime = exitTime;
 			this.vehicleState.add("A");
 		}
