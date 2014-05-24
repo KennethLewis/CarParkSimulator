@@ -230,7 +230,6 @@ public class CarPark {
 	public void exitQueue(Vehicle v,int exitTime) throws SimulationException, VehicleException {
 		
 		int queuedTime =  exitTime - v.getArrivalTime();
-
 		
 		if(v.isQueued() == false)
 			throw new SimulationException("Vehicle is currently not in the CarPark Queue!\n");
@@ -244,7 +243,6 @@ public class CarPark {
 		else {
 			v.exitQueuedState(exitTime);
 			queue.remove(v);
-
 
 		}
 			
@@ -426,10 +424,17 @@ public class CarPark {
 	 */
 	public void processQueue(int time, Simulator sim) throws VehicleException, SimulationException {
 		for (int i = 0; i < this.queue.size(); i++) {
-			while (spacesAvailable(this.queue.get(i))) {
-				this.exitQueue(this.queue.get(i), time);
-				this.parkVehicle(this.queue.get(i), time, sim.setDuration());	
+			if(this.queue.isEmpty() == false){
+				while (spacesAvailable(this.queue.get(i))) {
+					Vehicle v = this.queue.get(i);
+					this.exitQueue(this.queue.get(i), time);
+				
+				//THINK PROBLEM WAS HERE. CALLING LAST QUEUE SPOT WHICH WAS DELETED IN 
+				//QUEUE ARRAY AS THE CAR LEFT QUEUE
+					this.parkVehicle(v, time, sim.setDuration());
+
 				}
+			}
 		}
 	}
 

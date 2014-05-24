@@ -92,6 +92,10 @@ public abstract class Vehicle {
 	 */
 	public void enterParkedState(int parkingTime, int intendedDuration) throws VehicleException {
 		
+		for(int i =0; i < vehicleState.size(); i++){
+			System.out.printf("VEHICLE STATE IS: %s\n", vehicleState.get(i));
+		}
+		
 		if(vehicleState.contains("P") || vehicleState.get(vehicleState.size() - 1) == "Q")
 			throw new VehicleException ("Vehicle is currently either already parked"
 					+ " or in the queue to enter the CarPark.\n");
@@ -160,6 +164,7 @@ public abstract class Vehicle {
 	public void exitQueuedState(int exitTime) throws VehicleException {
 	
 		int timeInQueue = exitTime - this.getArrivalTime();
+		int lastState = vehicleState.size() -1;
 		
 		if(vehicleState.contains("P") || vehicleState.contains("Q") == false)
 			throw new VehicleException ("Vehicle  cannot exit Queued state, as it is" +
@@ -170,10 +175,9 @@ public abstract class Vehicle {
 			this.departureTime = exitTime;
 			this.vehicleState.add("A");
 		}
-		else {
-			
-			// need this to transition from queued to parked
-			this.vehicleState.add("");
+		else if (timeInQueue < Constants.MAXIMUM_QUEUE_TIME && 
+				vehicleState.get(lastState).equals("Q"))				
+			this.vehicleState.add("N");
 			
 			
 			/* TODO
@@ -186,7 +190,7 @@ public abstract class Vehicle {
 				//this.parkingTime = exitTime;
 				//this.intendedDuration = Constants.MINIMUM_STAY;
 				//this.exitTime = exitTime;
-		}
+		
 	}
 	
 	/**
