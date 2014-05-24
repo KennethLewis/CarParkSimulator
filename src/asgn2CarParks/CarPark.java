@@ -485,36 +485,35 @@ public class CarPark {
 	 */
 	public boolean spacesAvailable(Vehicle v) {
 		
-		// If either of these two overflow variables are over 0,
-		// it means that there are still optimal spare spaces for these
-		// types of vehicles (i.e. the opposite of overflowing)
-		int motorCycleOverflow = this.maxMotorCycleSpaces - this.getNumMotorCycles();
-		//System.out.printf("Bike = %d\n", motorCycleOverflow);
-		if (motorCycleOverflow > 0) {
-			motorCycleOverflow = 0;
+		// Math.max used to convert any negatives into 0s (negatives occurring when there are
+		// still spaces left)
+		
+		//  TODO: There is a bug here. Sometimes the carpark goes over its limits slightly.
+		// I think the issue is that Math.max converts to 0 if the value is negative (we need this to make overflow equations easier).
+		// However, there is no way to tell between a converted 0 (i.e. negative overly, meaning some empty spaces left) and a 'true' 0 (i.e. no spaces left)
+		int motorCycleOverflow =  Math.max(0, this.getNumMotorCycles() - this.maxMotorCycleSpaces);
+		int smallCarOverflow = Math.max(0, this.getNumSmallCars() + motorCycleOverflow - this.maxSmallCarSpaces);
+		boolean normalCarFull = false;
+		
+		if (this.getNumCars() >= (this.maxCarSpaces - smallCarOverflow)) {
+			normalCarFull = true;
 		}
 		
-		int smallCarOverflow = this.maxSmallCarSpaces - this.getNumSmallCars() + motorCycleOverflow;
-		if (smallCarOverflow > 0) {
-			smallCarOverflow = 0;
+		
+		
+		if (this.carParkFull()) {
+			return false;
+		} else if (motorCycleOverflow > 0 && smallCarOverflow > 0 && v instanceof MotorCycle) {
+			return false;
+		} else if (smallCarOverflow > 0 && normalCarFull && v instanceof Car && ((Car) v).isSmall() == true ) {
+			return false;
+		} else if (normalCarFull && v instanceof Car && ((Car) v).isSmall() == false) {
+			return false;
+		} else {
+			return true;
 		}
 		
-		// These are the calculations used to figure out if there are spaces left.
-		int motorCycleCalc = this.maxMotorCycleSpaces + (this.maxSmallCarSpaces - this.getNumSmallCars()) - this.getNumMotorCycles();
-		int smallCarCalc = (this.maxCarSpaces - this.getNumCars()) + (this.maxSmallCarSpaces + motorCycleOverflow) - this.getNumSmallCars();
-		int carCalc = this.maxCarSpaces - this.getNumCars() + (this.maxSmallCarSpaces - this.getNumSmallCars() + motorCycleOverflow);
-		
-		if (this.carParkFull() == true) {
-			return false;
-		} else if (v instanceof MotorCycle &&  motorCycleCalc <= 0) {
-			return false;
-		} else if (v instanceof Car && smallCarCalc <= 0 && ((Car) v).isSmall() == true) {
-			return false;
-		} else if (v instanceof Car && carCalc <= 0 && ((Car) v).isSmall() == false) {
-			return false;
-		}
-		
-		return true;
+
 	}
 
 

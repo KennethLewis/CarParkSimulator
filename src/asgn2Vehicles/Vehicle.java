@@ -92,9 +92,9 @@ public abstract class Vehicle {
 	 */
 	public void enterParkedState(int parkingTime, int intendedDuration) throws VehicleException {
 		
-		for(int i =0; i < vehicleState.size(); i++){
-			System.out.printf("VEHICLE STATE IS: %s\n", vehicleState.get(i));
-		}
+		///for(int i =0; i < vehicleState.size(); i++){
+		///	System.out.printf("VEHICLE STATE IS: %s\n", vehicleState.get(i));
+		///}
 		
 		if(vehicleState.contains("P") || vehicleState.get(vehicleState.size() - 1) == "Q")
 			throw new VehicleException ("Vehicle is currently either already parked"
