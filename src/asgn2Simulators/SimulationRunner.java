@@ -12,6 +12,8 @@ package asgn2Simulators;
 
 import java.io.IOException;
 
+import javax.swing.JFrame;
+
 import asgn2CarParks.CarPark;
 import asgn2Exceptions.SimulationException;
 import asgn2Exceptions.VehicleException;
@@ -27,7 +29,6 @@ public class SimulationRunner {
 	private Simulator sim;
 	
 	private Log log;
-	
 	/**
 	 * Constructor just does initialisation 
 	 * @param carPark CarPark currently used 
@@ -38,6 +39,7 @@ public class SimulationRunner {
 		this.carPark = carPark;
 		this.sim = sim;
 		this.log = log;
+		
 	}
 	
 	
@@ -84,6 +86,11 @@ public class SimulationRunner {
 	 * @param args Arguments to the simulation 
 	 */
 	public static void main(String[] args) {
+		
+		GUISimulator frame = new GUISimulator();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+		
 		CarPark cp = new CarPark();
 		Simulator s = null;
 		Log l = null; 
