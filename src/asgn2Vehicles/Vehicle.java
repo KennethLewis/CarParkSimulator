@@ -171,7 +171,7 @@ public abstract class Vehicle {
 					" currently either parked or not in the que to enter the CarPark.\n");
 		else if (exitTime < arrivalTime)
 			throw new VehicleException ("Exit time cannot be greater than arrival time\n");
-		else if (timeInQueue > Constants.MAXIMUM_QUEUE_TIME){
+		else if (timeInQueue >= Constants.MAXIMUM_QUEUE_TIME){
 			this.departureTime = exitTime;
 			this.vehicleState.add("A");
 		}

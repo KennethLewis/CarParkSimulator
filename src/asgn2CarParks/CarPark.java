@@ -48,6 +48,7 @@ public class CarPark {
 	
 	//Stores variables
 	private List<Vehicle> queue;
+	private List<Vehicle> carParkEntries;
 	private List<Vehicle> past;
 	private int count;
 	private int numCars;
@@ -66,6 +67,7 @@ public class CarPark {
 		
 		this.queue = new ArrayList<Vehicle>();
 		this.past = new ArrayList<Vehicle>();
+		this.carParkEntries = new ArrayList<Vehicle>();
 		this.count = 0;
 		this.numCars = 0;
 		this.numSmallCars = 0;
@@ -155,9 +157,12 @@ public class CarPark {
 			int timeInQueue = time - queue.get(i).getArrivalTime();
 			//Arrival time should be the time they joined the queue
 			
-			if (timeInQueue == Constants.MAXIMUM_QUEUE_TIME){
-				past.add(queue.get(i));
-				queue.get(i).exitQueuedState(time);
+			if (timeInQueue >= Constants.MAXIMUM_QUEUE_TIME){
+				Vehicle vehicleToRemove = queue.get(i);
+				
+				past.add(vehicleToRemove);
+				queue.remove(i);
+				vehicleToRemove.exitQueuedState(time);
 				numDissatisfied++;
 			}
 				
@@ -232,17 +237,17 @@ public class CarPark {
 		int queuedTime =  exitTime - v.getArrivalTime();
 		
 		if(v.isQueued() == false)
-			throw new SimulationException("Vehicle is currently not in the CarPark Queue!\n");
+			throw new SimulationException("Vehicle is currently not in the CarPark Queue!\n" + v.toString());
 		else if (queuedTime > Constants.MAXIMUM_QUEUE_TIME){
 			//If the vehicle has been in queue for too long.
-			v.exitQueuedState(exitTime);
 			past.add(v);
 			queue.remove(v);
+			v.exitQueuedState(exitTime);
 			numDissatisfied++;
 		}
 		else {
 			v.exitQueuedState(exitTime);
-			queue.remove(v);
+			carParkEntries.add(v);
 
 		}
 			
@@ -423,20 +428,26 @@ public class CarPark {
 	 * 
 	 */
 	public void processQueue(int time, Simulator sim) throws VehicleException, SimulationException {
-		for (int i = 0; i < this.queue.size(); i++) {
-			if(this.queue.isEmpty() == false){
-				while (spacesAvailable(this.queue.get(i))) {
+		if(this.queueEmpty() == false){
+			
+			for (int i = 0; i < this.queue.size(); i++) {
+					if (spacesAvailable(this.queue.get(i))) {
 					Vehicle v = this.queue.get(i);
 					this.exitQueue(this.queue.get(i), time);
-				
-				//THINK PROBLEM WAS HERE. CALLING LAST QUEUE SPOT WHICH WAS DELETED IN 
-				//QUEUE ARRAY AS THE CAR LEFT QUEUE
 					this.parkVehicle(v, time, sim.setDuration());
+					} else {
+						break;
+					}
+					
 
 				}
 			}
+			// We're removing the queue elements now, since we can't do it mid-iteration
+			this.queue.removeAll(carParkEntries);
+			
+			this.carParkEntries = new ArrayList<Vehicle>();
+
 		}
-	}
 
 	/**
 	 * Simple status showing whether queue is empty
