@@ -44,7 +44,12 @@ public class GUISimulator extends JFrame implements Runnable {
 	
 	private JPanel allComponents;
 	private JPanel userOptionsPanel;
-	private JPanel bottemButtons;
+	private JPanel bottomButtons;
+	private JPanel topHeadings;
+	
+	//Text Area's
+	private JTextArea carParkLog, carParkSummary;
+	//Charts
 	
 	//Buttons
 	private JButton run, chart, text, exit;
@@ -52,7 +57,7 @@ public class GUISimulator extends JFrame implements Runnable {
 	//Titles
 	
 	private JLabel title = new JLabel ("Car Park");
-	private JLabel userOptions, variables, probabilities, statusCharts;
+	private JLabel userOptions, variables, probabilities, statusCharts,log,summary;
 	private JLabel blank1 = new JLabel("");
 	private JLabel blank2 = new JLabel ("");
 	private JLabel blank3 = new JLabel ("");
@@ -76,7 +81,6 @@ public class GUISimulator extends JFrame implements Runnable {
 				setSize(PREFSIZE);
 				allComponents = new JPanel();
 				allComponents.setLayout(new BorderLayout());
-				allComponents.add(title, BorderLayout.PAGE_START);
 				initilizeComponents();
 				this.getContentPane().add(allComponents);
 				repaint();
@@ -89,8 +93,26 @@ public class GUISimulator extends JFrame implements Runnable {
 		userOptionsPanel.setLayout(new GridLayout(15,2));
 		userOptionsPanel.setBorder(BorderFactory.createEtchedBorder());
 		
-		bottemButtons = new JPanel();
-		bottemButtons.setLayout(new FlowLayout());
+		//Create Bottom Buttons
+		bottomButtons = new JPanel();
+		bottomButtons.setLayout(new FlowLayout());
+		
+		//Center print out of carpark log
+		carParkLog = new JTextArea();
+		carParkLog.setAutoscrolls(true);
+		carParkLog.setBorder(BorderFactory.createEtchedBorder());
+		
+		//Right print out of final status?
+		carParkSummary = new JTextArea();
+		carParkSummary.setAutoscrolls(true);
+		carParkSummary.setBorder(BorderFactory.createEtchedBorder());
+		
+		//Top Panel with headings
+		topHeadings = new JPanel();
+		topHeadings.setLayout(new FlowLayout());
+		
+		log = new JLabel("Car Park Log");
+		summary = new JLabel("Car Park Summary");
 		
 		//Top User Options
 		userOptions = new JLabel("User Data Entry Options");
@@ -120,8 +142,7 @@ public class GUISimulator extends JFrame implements Runnable {
 		intended_stay_sd = new JLabel ("Intended Stay SD");
 		
 		//Add Everything to User Options Panel
-		userOptionsPanel.add(userOptions);
-		userOptionsPanel.add(blank1);
+		
 		userOptionsPanel.add(variables);
 		userOptionsPanel.add(blank3);
 		userOptionsPanel.add(max_car_spaces);
@@ -147,22 +168,30 @@ public class GUISimulator extends JFrame implements Runnable {
 		userOptionsPanel.add(intended_stay_sd);
 		userOptionsPanel.add(default_intended_stay_sd);
 		
-		//Add user options to the main component panel
-		allComponents.add(userOptionsPanel, BorderLayout.LINE_START);
+		//Add Headings to the top panel
+		topHeadings.add(userOptions);
+		topHeadings.add(log);
+		topHeadings.add(summary);
 		
 		//Create Buttons
 		run = new JButton("Run");
+		//run.addActionListener(this);
 		chart = new JButton("Charts");
 		text = new JButton ("Text");
 		exit = new JButton ("Exit");
 		
 		//Add Butons to button panel
-		bottemButtons.add(run);
-		bottemButtons.add(chart);
-		bottemButtons.add (text);
-		bottemButtons.add(exit);
+		bottomButtons.add(run);
+		bottomButtons.add(chart);
+		bottomButtons.add (text);
+		bottomButtons.add(exit);
 		
-		allComponents.add(bottemButtons, BorderLayout.PAGE_END);
+		//Add user options to the main component panel
+		allComponents.add(topHeadings, BorderLayout.PAGE_START);
+		allComponents.add(userOptionsPanel, BorderLayout.LINE_START);
+		allComponents.add(carParkLog, BorderLayout.CENTER);
+		allComponents.add(carParkSummary, BorderLayout.LINE_END);
+		allComponents.add(bottomButtons, BorderLayout.PAGE_END);
 		
 	}
 	/**
