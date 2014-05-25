@@ -11,6 +11,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -19,10 +20,17 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import asgn2CarParks.CarPark;
+import asgn2Exceptions.SimulationException;
+import asgn2Exceptions.VehicleException;
+
 @SuppressWarnings("serial")
 public class GUIPanel extends JPanel implements ActionListener{
 	
-	//Window Size
+	private CarPark carPark;
+	private Simulator sim;
+	private Log log;
+	private SimulationRunner sr;
 	
 		
 	//private JPanel allComponents = new JPanel(new BorderLayout());
@@ -62,8 +70,6 @@ public class GUIPanel extends JPanel implements ActionListener{
 	public GUIPanel (){
 		
 		this.setLayout(new BorderLayout());
-		//allComponents = new JPanel();
-		//allComponents.setLayout(new BorderLayout());
 		initilizeComponents();
 		repaint();
 	}
@@ -170,10 +176,13 @@ public class GUIPanel extends JPanel implements ActionListener{
 		
 		//Create Buttons
 		run = new JButton("Run");
-		//run.addActionListener(this);
+		run.addActionListener(this);
 		chart = new JButton("Charts");
+		chart.addActionListener(this);
 		text = new JButton ("Text");
+		text.addActionListener(this);
 		exit = new JButton ("Exit");
+		exit.addActionListener(this);
 		
 		//Add Butons to button panel
 		bottomButtons.add(run);
@@ -191,9 +200,39 @@ public class GUIPanel extends JPanel implements ActionListener{
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
+	public void actionPerformed(ActionEvent evt) {
 		// TODO Auto-generated method stub
+		Object src = evt.getSource();
 		
+		if (src == run){
+			try{
+				this.carPark = new CarPark();
+				this.log = new Log();
+				this.sim = new Simulator();
+				this.sr = new SimulationRunner (carPark,sim,log);
+				sr.runSimulation();
+			}
+			catch (IOException ioe){
+				System.out.printf("There was a problem running the program.\n" +
+						"Details are:%s\n", ioe);
+			}
+			catch (SimulationException se){
+				System.out.printf("There was a problem running the program.\n" +
+						"Details are: %s\n", se);
+			}
+			catch (VehicleException ve){
+				System.out.printf("There was a problem running the program.\n" +
+						"Details are: %s\n", ve);
+			}
+		}
+		else if (src == chart){
+			
+		}
+		else if (src == text){
+			
+		}
+		else if (src == exit)
+			System.exit(0);
 	}
 
 }
