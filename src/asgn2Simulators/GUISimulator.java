@@ -13,6 +13,7 @@ package asgn2Simulators;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -37,17 +38,16 @@ import javax.swing.JTextField;
 public class GUISimulator extends JFrame implements Runnable {
 
 	//Window Size
-	protected static final int WIDTH = 1080;
-	protected static final int HEIGHT = 920;
+	protected static final int WIDTH = 640;
+	protected static final int HEIGHT = 480;
 	protected static final Dimension PREFSIZE = new Dimension(WIDTH, HEIGHT);
 	
 	private JPanel allComponents;
 	private JPanel userOptionsPanel;
+	private JPanel bottemButtons;
+	
 	//Buttons
-	private JButton run;
-	private JButton chart;
-	private JButton text;
-	private JButton exit;
+	private JButton run, chart, text, exit;
 	
 	//Titles
 	
@@ -88,6 +88,9 @@ public class GUISimulator extends JFrame implements Runnable {
 		userOptionsPanel = new JPanel();
 		userOptionsPanel.setLayout(new GridLayout(15,2));
 		userOptionsPanel.setBorder(BorderFactory.createEtchedBorder());
+		
+		bottemButtons = new JPanel();
+		bottemButtons.setLayout(new FlowLayout());
 		
 		//Top User Options
 		userOptions = new JLabel("User Data Entry Options");
@@ -144,7 +147,22 @@ public class GUISimulator extends JFrame implements Runnable {
 		userOptionsPanel.add(intended_stay_sd);
 		userOptionsPanel.add(default_intended_stay_sd);
 		
+		//Add user options to the main component panel
 		allComponents.add(userOptionsPanel, BorderLayout.LINE_START);
+		
+		//Create Buttons
+		run = new JButton("Run");
+		chart = new JButton("Charts");
+		text = new JButton ("Text");
+		exit = new JButton ("Exit");
+		
+		//Add Butons to button panel
+		bottemButtons.add(run);
+		bottemButtons.add(chart);
+		bottemButtons.add (text);
+		bottemButtons.add(exit);
+		
+		allComponents.add(bottemButtons, BorderLayout.PAGE_END);
 		
 	}
 	/**
