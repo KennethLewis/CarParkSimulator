@@ -33,13 +33,14 @@ public class GUIPanel extends JPanel implements ActionListener{
 	private SimulationRunner sr;
 	
 		
-	//private JPanel allComponents = new JPanel(new BorderLayout());
+	private JPanel allComponents = new JPanel(new GridLayout());
 	private JPanel userOptionsPanel;
 	private JPanel bottomButtons;
 	private JPanel topHeadings;
 	
 	//Text Area's
 	private JTextArea carParkLogData, carParkSummary;
+	private JScrollPane logScroll,summaryScroll;
 	//Charts
 	
 	
@@ -89,18 +90,19 @@ public class GUIPanel extends JPanel implements ActionListener{
 		carParkLogData = new JTextArea();
 		carParkLogData.setAutoscrolls(true);
 		carParkLogData.setBorder(BorderFactory.createEtchedBorder());
-		//carParkLog.setText(carPark.toString());
+		logScroll = new JScrollPane(carParkLogData);
 		
 		
 		//Right print out of final status?
 		carParkSummary = new JTextArea();
 		carParkSummary.setAutoscrolls(true);
 		carParkSummary.setBorder(BorderFactory.createEtchedBorder());
-		//carParkSummary.setText(carPark.finalState());
+		summaryScroll = new JScrollPane(carParkSummary);
+		
 		
 		//Top Panel with headings
 		topHeadings = new JPanel();
-		topHeadings.setLayout(new FlowLayout());
+		topHeadings.setLayout(new GridLayout());
 		
 		carParkLog = new JLabel("Car Park Log");
 		summary = new JLabel("Car Park Summary");
@@ -191,12 +193,14 @@ public class GUIPanel extends JPanel implements ActionListener{
 		bottomButtons.add(exit);
 		
 		//Add user options to the main component panel
-		this.add(topHeadings, BorderLayout.PAGE_START);
-		this.add(userOptionsPanel, BorderLayout.LINE_START);
-		this.add(carParkLogData, BorderLayout.CENTER);
-		this.add(carParkSummary, BorderLayout.LINE_END);
+		//allComponents.add(topHeadings, BorderLayout.PAGE_START);
+		allComponents.add(userOptionsPanel);
+		allComponents.add(logScroll);
+		allComponents.add(summaryScroll);
+		//allComponents.add(bottomButtons, BorderLayout.PAGE_END);
+		this.add(topHeadings,BorderLayout.PAGE_START);
+		this.add(allComponents, BorderLayout.CENTER);
 		this.add(bottomButtons, BorderLayout.PAGE_END);
-		
 	}
 
 	@Override
@@ -211,6 +215,10 @@ public class GUIPanel extends JPanel implements ActionListener{
 				this.sim = new Simulator();
 				this.sr = new SimulationRunner (carPark,sim,log);
 				sr.runSimulation();
+				
+				carParkLogData.setText(carPark.finalState());
+				carParkSummary.setText("Customers Parked: %d\n"
+						+"Customers Dissatisfied: %d\n");
 			}
 			catch (IOException ioe){
 				System.out.printf("There was a problem running the program.\n" +
@@ -234,5 +242,6 @@ public class GUIPanel extends JPanel implements ActionListener{
 		else if (src == exit)
 			System.exit(0);
 	}
+	
 
 }
