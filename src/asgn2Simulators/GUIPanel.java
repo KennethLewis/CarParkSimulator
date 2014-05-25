@@ -27,12 +27,13 @@ import asgn2Exceptions.VehicleException;
 @SuppressWarnings("serial")
 public class GUIPanel extends JPanel implements ActionListener{
 	
+	//Objects to help the GUI run the Simulation
 	private CarPark carPark;
 	private Simulator sim;
 	private Log log;
 	private SimulationRunner sr;
 	
-		
+	//4 Panels which are placed on the GUIPANEL (this.)	
 	private JPanel allComponents = new JPanel(new GridLayout());
 	private JPanel userOptionsPanel;
 	private JPanel bottomButtons;
@@ -47,8 +48,7 @@ public class GUIPanel extends JPanel implements ActionListener{
 	//Buttons
 	private JButton run, chart, text, exit;
 	
-	//Titles
-	
+	//Titles and blanks (blanks were used to help balance layout)
 	private JLabel title = new JLabel ("Car Park");
 	private JLabel userOptions, variables, probabilities, statusCharts,carParkLog,summary;
 	private JLabel blank1 = new JLabel("");
@@ -56,7 +56,7 @@ public class GUIPanel extends JPanel implements ActionListener{
 	private JLabel blank3 = new JLabel ("");
 	private JLabel blank4 = new JLabel ("");
 	
-	//User Options 
+	//All Fields and Labels for the User Options area
 	private JTextField default_max_car_spaces, default_max_small_car_spaces,
 						default_max_motorcycle_spaces, default_max_queue_size;
 	private JLabel max_car_spaces, max_small_car_spaces, max_motorcycle_spaces,
@@ -68,6 +68,11 @@ public class GUIPanel extends JPanel implements ActionListener{
 	private JLabel seed, car_prob, small_car_prob, motorcycle_prob, intended_stay_mean,
 						intended_stay_sd;
 	
+	/**
+	 * Handles the creation and initilisation of the main panel
+	 * for the GUI.
+	 * @author Ken Lewis
+	 */
 	public GUIPanel (){
 		
 		this.setLayout(new BorderLayout());
@@ -75,6 +80,10 @@ public class GUIPanel extends JPanel implements ActionListener{
 		repaint();
 	}
 	
+	/**
+	 *  Initilises all components for the GUIPanel. 
+	 *  @author Ken Lewis
+	 */
 	private void initilizeComponents (){
 		
 		//Create User Options Panel
@@ -107,7 +116,7 @@ public class GUIPanel extends JPanel implements ActionListener{
 		carParkLog = new JLabel("Car Park Log");
 		summary = new JLabel("Car Park Summary");
 		
-		//Top User Options
+		//Top User Options VARIABLES
 		userOptions = new JLabel("User Data Entry Options");
 		variables = new JLabel ("Variables");
 		default_max_car_spaces = new JTextField();
@@ -123,7 +132,7 @@ public class GUIPanel extends JPanel implements ActionListener{
 		default_max_queue_size.setText(Integer.toString(Constants.DEFAULT_MAX_QUEUE_SIZE));
 		max_queue_size = new JLabel ("Max Queue Size");
 		
-		//Probability Options
+		//User Options PROBABILITY
 		probabilities = new JLabel ("Probabilities");
 		default_seed = new JTextField();
 		default_seed.setText(Integer.toString(Constants.DEFAULT_SEED));
@@ -176,7 +185,7 @@ public class GUIPanel extends JPanel implements ActionListener{
 		topHeadings.add(carParkLog);
 		topHeadings.add(summary);
 		
-		//Create Buttons
+		//Create Buttons with ActionListeners
 		run = new JButton("Run");
 		run.addActionListener(this);
 		chart = new JButton("Charts");
@@ -186,36 +195,44 @@ public class GUIPanel extends JPanel implements ActionListener{
 		exit = new JButton ("Exit");
 		exit.addActionListener(this);
 		
-		//Add Butons to button panel
+		//Add Buttons to button panel
 		bottomButtons.add(run);
 		bottomButtons.add(chart);
 		bottomButtons.add (text);
 		bottomButtons.add(exit);
 		
-		//Add user options to the main component panel
-		//allComponents.add(topHeadings, BorderLayout.PAGE_START);
+		//Adds the three main panels to a central panel to help display
 		allComponents.add(userOptionsPanel);
 		allComponents.add(logScroll);
 		allComponents.add(summaryScroll);
-		//allComponents.add(bottomButtons, BorderLayout.PAGE_END);
+		
+		//Add the final 2 panels plus the central panel to the GUIPANEL
 		this.add(topHeadings,BorderLayout.PAGE_START);
 		this.add(allComponents, BorderLayout.CENTER);
 		this.add(bottomButtons, BorderLayout.PAGE_END);
 	}
 
-	@Override
+	/**
+	 * Method used to handle mouse clicks on the buttons.
+	 * Depending on the button pressed program will then perform the
+	 * required option.
+	 * @param ActionEvent: Mouse click on buttons
+	 */
 	public void actionPerformed(ActionEvent evt) {
 		// TODO Auto-generated method stub
 		Object src = evt.getSource();
 		
 		if (src == run){
 			try{
+				//Need to create brand new variables so SimulationRunner
+				//has new data each time.
 				this.carPark = new CarPark();
 				this.log = new Log();
 				this.sim = new Simulator();
 				this.sr = new SimulationRunner (carPark,sim,log);
 				sr.runSimulation();
 				
+				//Prints data to the required panels after program run
 				carParkLogData.setText(carPark.finalState());
 				carParkSummary.setText("Customers Parked: %d\n"
 						+"Customers Dissatisfied: %d\n");
