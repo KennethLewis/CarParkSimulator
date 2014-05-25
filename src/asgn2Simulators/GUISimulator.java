@@ -10,8 +10,12 @@
  */
 package asgn2Simulators;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.HeadlessException;
 
 import javax.swing.BorderFactory;
@@ -37,6 +41,7 @@ public class GUISimulator extends JFrame implements Runnable {
 	protected static final int HEIGHT = 920;
 	protected static final Dimension PREFSIZE = new Dimension(WIDTH, HEIGHT);
 	
+	private JPanel allComponents;
 	private JPanel userOptionsPanel;
 	//Buttons
 	private JButton run;
@@ -46,7 +51,12 @@ public class GUISimulator extends JFrame implements Runnable {
 	
 	//Titles
 	
+	private JLabel title = new JLabel ("Car Park");
 	private JLabel userOptions, variables, probabilities, statusCharts;
+	private JLabel blank1 = new JLabel("");
+	private JLabel blank2 = new JLabel ("");
+	private JLabel blank3 = new JLabel ("");
+	private JLabel blank4 = new JLabel ("");
 	
 	//User Options 
 	private JTextField default_max_car_spaces, default_max_small_car_spaces,
@@ -64,15 +74,19 @@ public class GUISimulator extends JFrame implements Runnable {
 		// Initialize the Frame and add the GamePanel
 				setTitle("Car Park Application");
 				setSize(PREFSIZE);
+				allComponents = new JPanel();
+				allComponents.setLayout(new BorderLayout());
+				allComponents.add(title, BorderLayout.PAGE_START);
 				initilizeComponents();
-				this.getContentPane().add(userOptionsPanel);
+				this.getContentPane().add(allComponents);
 				repaint();
 	}
 	
 	private void initilizeComponents (){
 		
 		//Create User Options Panel
-		userOptionsPanel = new JPanel(new GridBagLayout());
+		userOptionsPanel = new JPanel();
+		userOptionsPanel.setLayout(new GridLayout(15,2));
 		userOptionsPanel.setBorder(BorderFactory.createEtchedBorder());
 		
 		//Top User Options
@@ -104,7 +118,9 @@ public class GUISimulator extends JFrame implements Runnable {
 		
 		//Add Everything to User Options Panel
 		userOptionsPanel.add(userOptions);
+		userOptionsPanel.add(blank1);
 		userOptionsPanel.add(variables);
+		userOptionsPanel.add(blank3);
 		userOptionsPanel.add(max_car_spaces);
 		userOptionsPanel.add(default_max_car_spaces);
 		userOptionsPanel.add(max_small_car_spaces);
@@ -114,6 +130,7 @@ public class GUISimulator extends JFrame implements Runnable {
 		userOptionsPanel.add(max_queue_size);
 		userOptionsPanel.add(default_max_queue_size);
 		userOptionsPanel.add(probabilities);
+		userOptionsPanel.add(blank2);
 		userOptionsPanel.add(seed);
 		userOptionsPanel.add(default_seed);
 		userOptionsPanel.add(car_prob);
@@ -127,6 +144,7 @@ public class GUISimulator extends JFrame implements Runnable {
 		userOptionsPanel.add(intended_stay_sd);
 		userOptionsPanel.add(default_intended_stay_sd);
 		
+		allComponents.add(userOptionsPanel, BorderLayout.LINE_START);
 		
 	}
 	/**
@@ -155,4 +173,26 @@ public class GUISimulator extends JFrame implements Runnable {
 
 	}
 
+	/**
+	 * Same method as above except this takes an aditional param of
+	 * JPanel. This is so the individual grids can place items onto 
+	 * a panel so that panel can then be placed onto the main panel's
+	 * grid layout.
+	 * @param p panel to place component
+	 * @param c component to add panel
+	 * @param constraints placement within the gridbaglayout
+	 * @param x column placement
+	 * @param y row placement
+	 * @param w grid width
+	 * @param h grid height
+	 * @author Code due to Cay Horstmann
+	 */
+	private void addToPanel(JPanel p,Component c, GridBagConstraints constraints, int x,
+			int y, int w, int h) {
+		constraints.gridx = x;
+		constraints.gridy = y;
+		constraints.gridwidth = w;
+		constraints.gridheight = h;
+		p.add(c, constraints);
+	}
 }
