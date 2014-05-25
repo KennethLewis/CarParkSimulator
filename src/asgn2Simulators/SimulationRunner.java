@@ -87,11 +87,12 @@ public class SimulationRunner {
 	 */
 	public static void main(String[] args) {
 		
+		CarPark cp = new CarPark();
 		GUISimulator frame = new GUISimulator();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 		
-		CarPark cp = new CarPark();
+		
 		Simulator s = null;
 		Log l = null; 
 		try {
