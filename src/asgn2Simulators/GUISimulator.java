@@ -142,18 +142,20 @@ public class GUISimulator extends JFrame implements Runnable {
 	
 	public void gatherArgs(int maxCarSpaces, int maxSmallSpaces, int maxBikeSpaces, int maxQueue,
 			int seed, double carProb, double smallCarProb, double bikeProb, double stayMean,
-			double staySD){
+			double staySD) throws SimulationException{
 		
-		this.maxCarSpaces = maxCarSpaces;
-		this.maxSmallSpaces = maxSmallSpaces;
-		this.maxBikeSpaces = maxBikeSpaces;
-		this.maxQueue = maxQueue;
-		this.seed = seed;
-		this.carProb = carProb;
-		this.smallCarProb = smallCarProb;
-		this.bikeProb = bikeProb;
-		this.stayMean = stayMean;
-		this.staySD = staySD;
+			this.maxCarSpaces = maxCarSpaces;
+			this.maxSmallSpaces = maxSmallSpaces;
+			this.maxBikeSpaces = maxBikeSpaces;
+			this.maxQueue = maxQueue;
+			this.seed = seed;
+			this.carProb = carProb;
+			this.smallCarProb = smallCarProb;
+			this.bikeProb = bikeProb;
+			this.stayMean = stayMean;
+			this.staySD = staySD;
+		
+		
 		
 	}
 	
@@ -163,19 +165,32 @@ public class GUISimulator extends JFrame implements Runnable {
 	 * UserOptions Panel from the various positions and converted to be passed 
 	 * on.
 	 */
-	private void gatherUserEnteredVariables(){
+	private void gatherUserEnteredVariables() throws SimulationException{
 		
-		this.maxCarSpaces = Integer.parseInt(default_max_car_spaces.getText());
-		this.maxSmallSpaces = Integer.parseInt(default_max_small_car_spaces.getText());;
-		this.maxBikeSpaces = Integer.parseInt(default_max_motorcycle_spaces.getText());; 
-		this.maxQueue = Integer.parseInt(default_max_queue_size.getText());;
+		try{
+			this.maxCarSpaces = Integer.parseInt(default_max_car_spaces.getText());
+			this.maxSmallSpaces = Integer.parseInt(default_max_small_car_spaces.getText());;
+			this.maxBikeSpaces = Integer.parseInt(default_max_motorcycle_spaces.getText());; 
+			this.maxQueue = Integer.parseInt(default_max_queue_size.getText());;
+			
+			this.seed = Integer.parseInt(default_seed.getText());;
+			this.carProb = Double.parseDouble(default_car_prob.getText());
+			this.smallCarProb = Double.parseDouble(default_small_car_prob.getText());
+			this.bikeProb = Double.parseDouble(default_motorcycle_prob.getText());
+			this.stayMean = Double.parseDouble(default_intended_stay_mean.getText());
+			this.staySD = Double.parseDouble(default_intended_stay_sd.getText());
+		}
+		catch (NumberFormatException nfe){
+			//Displays error if parameters are incorrect and will restart
+			//the program.
+			JOptionPane.showMessageDialog(this,
+				    "One or more perameters were incorrect!");
+			this.setVisible(false);
+			GUISimulator frame = new GUISimulator();
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.setVisible(true);
+		}
 		
-		this.seed = Integer.parseInt(default_seed.getText());;
-		this.carProb = Double.parseDouble(default_car_prob.getText());
-		this.smallCarProb = Double.parseDouble(default_small_car_prob.getText());
-		this.bikeProb = Double.parseDouble(default_motorcycle_prob.getText());
-		this.stayMean = Double.parseDouble(default_intended_stay_mean.getText());
-		this.staySD = Double.parseDouble(default_intended_stay_sd.getText());
 	}
 	/**
 	 * @param args
@@ -293,6 +308,7 @@ public class GUISimulator extends JFrame implements Runnable {
 	        public void actionPerformed(ActionEvent event) {
 				try{
 					gatherUserEnteredVariables();
+					System.out.printf("SPACES = %d\n\n",maxCarSpaces);
 					//Need to create brand new variables so SimulationRunner
 					//has new data each time.
 					carPark = new CarPark(maxCarSpaces,maxSmallSpaces,maxBikeSpaces,maxQueue);
