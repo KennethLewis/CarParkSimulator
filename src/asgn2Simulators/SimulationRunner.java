@@ -83,32 +83,37 @@ public class SimulationRunner {
 	 */
 	public static void main(String[] args) {
 		
-		CarPark cp = new CarPark();
+		
 		GUISimulator frame = new GUISimulator();
+		
+		if(args.length == 10){//need to check this number might be 9
+		
+			try{
+				int maxCarSpaces = Integer.parseInt(args[0]);
+				int maxSmallSpaces = Integer.parseInt(args[1]);
+				int maxBikeSpaces = Integer.parseInt(args[2]);
+				int maxQueue = Integer.parseInt(args[3]);
+				int seed = Integer.parseInt(args[4]);
+				double carProb = Double.parseDouble(args[5]);
+				double smallCarProb = Double.parseDouble(args[6]);
+				double bikeProb = Double.parseDouble(args[7]);
+				double stayMean = Double.parseDouble(args[8]);
+				double staySD = Double.parseDouble(args[9]);
+				frame.gatherArgs(maxCarSpaces, maxSmallSpaces, maxBikeSpaces, 
+						maxQueue, seed, carProb, smallCarProb, bikeProb, stayMean, staySD);
+			} catch(Exception e){
+				System.out.printf("There were one or more incorrect entries entered on" +
+						" the command line.\nError message is: %s\n",e);
+			}
+			
+		}
+			
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 		
 		
-		Simulator s = null;
-		Log l = null; 
-		try {
-			s = new Simulator();
-			l = new Log();
-		} catch (IOException | SimulationException e1) {
-			e1.printStackTrace();
-			System.exit(-1);
-		}
-		
 		//TODO: Implement Argument Processing 
 		
-		//Run the simulation 
-		SimulationRunner sr = new SimulationRunner(cp,s,l);
-		try {
-			sr.runSimulation();
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(-1);
-		} 
 	} 
 
 	/**

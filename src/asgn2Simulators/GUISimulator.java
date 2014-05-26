@@ -41,6 +41,9 @@ public class GUISimulator extends JFrame implements Runnable {
 	
 	private ArrayList<String> statuses;
 	
+	private int maxCarSpaces,maxSmallSpaces, maxBikeSpaces, maxQueue, seed;
+	private double carProb,smallCarProb,bikeProb,stayMean, staySD;
+	
 	//4 Panels which are placed on the GUIPANEL (this.)	
 	private JPanel allComponents = new JPanel(new GridLayout());
 	private JPanel userOptionsPanel;
@@ -73,7 +76,7 @@ public class GUISimulator extends JFrame implements Runnable {
 	private JTextField default_seed, default_car_prob, default_small_car_prob,
 						default_motorcycle_prob, default_intended_stay_mean,
 						default_intended_stay_sd;
-	private JLabel seed, car_prob, small_car_prob, motorcycle_prob, intended_stay_mean,
+	private JLabel probabilitySeed, car_prob, small_car_prob, motorcycle_prob, intended_stay_mean,
 						intended_stay_sd;
 	
 	
@@ -90,6 +93,22 @@ public class GUISimulator extends JFrame implements Runnable {
 		this.setTitle("Car Park Application");
 		setSize(PREFSIZE);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		//Set CarPark spaces to constant variables for initial display if
+		//no args are entered
+		this.maxCarSpaces = Constants.DEFAULT_MAX_CAR_SPACES;
+		this.maxSmallSpaces = Constants.DEFAULT_MAX_SMALL_CAR_SPACES;
+		this.maxBikeSpaces = Constants.DEFAULT_MAX_MOTORCYCLE_SPACES;
+		this.maxQueue = Constants.MAXIMUM_QUEUE_TIME;
+		
+		//Set Probability variables to constant variables for initial display
+		//if no args are entered.
+		this.seed = Constants.DEFAULT_SEED;
+		this.carProb = Constants.DEFAULT_CAR_PROB;
+		this.smallCarProb = Constants.DEFAULT_SMALL_CAR_PROB;
+		this.bikeProb = Constants.DEFAULT_MOTORCYCLE_PROB;
+		this.stayMean = Constants.DEFAULT_INTENDED_STAY_MEAN;
+		this.staySD = Constants.DEFAULT_INTENDED_STAY_SD;
 		theGUI.setLayout(new BorderLayout());
 		initilizeComponents();
 		repaint();
@@ -109,12 +128,34 @@ public class GUISimulator extends JFrame implements Runnable {
 	/* (non-Javadoc)
 	 * @see java.lang.Runnable#run()
 	 */
-	@Override
-	public void run() {
+	
+	public void run(){
 		// TODO Auto-generated method stub
 
 	}
-
+	/**
+	 * GatherArgs is designed to be called in SimulationRunner if args are detected
+	 * on the command line. If they are this method is called and the variables which
+	 * have initially been set to the constants will be changed to the new variables
+	 * Inputed in the command line.
+	 */
+	
+	public void gatherArgs(int maxCarSpaces, int maxSmallSpaces, int maxBikeSpaces, int maxQueue,
+			int seed, double carProb, double smallCarProb, double bikeProb, double stayMean,
+			double staySD){
+		
+		this.maxCarSpaces = maxCarSpaces;
+		this.maxSmallSpaces = maxSmallSpaces;
+		this.maxBikeSpaces = maxBikeSpaces;
+		this.maxQueue = maxQueue;
+		this.seed = seed;
+		this.carProb = carProb;
+		this.smallCarProb = smallCarProb;
+		this.bikeProb = bikeProb;
+		this.stayMean = stayMean;
+		this.staySD = staySD;
+		
+	}
 	/**
 	 * @param args
 	 */
@@ -159,37 +200,37 @@ public class GUISimulator extends JFrame implements Runnable {
 		userOptions = new JLabel("User Data Entry Options");
 		variables = new JLabel ("Variables");
 		default_max_car_spaces = new JTextField();
-		default_max_car_spaces.setText(Integer.toString(Constants.DEFAULT_MAX_CAR_SPACES));
+		default_max_car_spaces.setText(Integer.toString(maxCarSpaces));
 		max_car_spaces = new JLabel("Max Car Spaces");
 		default_max_small_car_spaces = new JTextField();
-		default_max_small_car_spaces.setText(Integer.toString(Constants.DEFAULT_MAX_SMALL_CAR_SPACES));
+		default_max_small_car_spaces.setText(Integer.toString(maxSmallSpaces));
 		max_small_car_spaces = new JLabel ("Max Small Car Spaces");
 		default_max_motorcycle_spaces = new JTextField();
-		default_max_motorcycle_spaces.setText(Integer.toString(Constants.DEFAULT_MAX_MOTORCYCLE_SPACES));
+		default_max_motorcycle_spaces.setText(Integer.toString(maxBikeSpaces));
 		max_motorcycle_spaces = new JLabel("Max Motorcycle Spaces");
 		default_max_queue_size = new JTextField();
-		default_max_queue_size.setText(Integer.toString(Constants.DEFAULT_MAX_QUEUE_SIZE));
+		default_max_queue_size.setText(Integer.toString(maxQueue));
 		max_queue_size = new JLabel ("Max Queue Size");
 		
 		//User Options PROBABILITY
 		probabilities = new JLabel ("Probabilities");
 		default_seed = new JTextField();
-		default_seed.setText(Integer.toString(Constants.DEFAULT_SEED));
-		seed = new JLabel("Seed");
+		default_seed.setText(Integer.toString(seed));
+		probabilitySeed = new JLabel("Seed");
 		default_car_prob = new JTextField();
-		default_car_prob.setText(Double.toString(Constants.DEFAULT_CAR_PROB));
+		default_car_prob.setText(Double.toString(carProb));
 		car_prob = new JLabel ("Car Probibility");
 		default_small_car_prob = new JTextField();
-		default_small_car_prob.setText(Double.toString(Constants.DEFAULT_SMALL_CAR_PROB));
+		default_small_car_prob.setText(Double.toString(smallCarProb));
 		small_car_prob = new JLabel("Small Car Probibility");
 		default_motorcycle_prob = new JTextField();
-		default_motorcycle_prob.setText(Double.toString(Constants.DEFAULT_MOTORCYCLE_PROB));
+		default_motorcycle_prob.setText(Double.toString(bikeProb));
 		motorcycle_prob = new JLabel ("Motorcycle Probibility");
 		default_intended_stay_mean = new JTextField();
-		default_intended_stay_mean.setText(Double.toString(Constants.DEFAULT_INTENDED_STAY_MEAN));
+		default_intended_stay_mean.setText(Double.toString(stayMean));
 		intended_stay_mean = new JLabel("Intended Stay Mean");
 		default_intended_stay_sd = new JTextField();
-		default_intended_stay_sd.setText(Double.toString(Constants.DEFAULT_INTENDED_STAY_SD));
+		default_intended_stay_sd.setText(Double.toString(staySD));
 		intended_stay_sd = new JLabel ("Intended Stay SD");
 		
 		//Add Everything to User Options Panel
@@ -206,7 +247,7 @@ public class GUISimulator extends JFrame implements Runnable {
 		userOptionsPanel.add(default_max_queue_size);
 		userOptionsPanel.add(probabilities);
 		userOptionsPanel.add(blank2);
-		userOptionsPanel.add(seed);
+		userOptionsPanel.add(probabilitySeed);
 		userOptionsPanel.add(default_seed);
 		userOptionsPanel.add(car_prob);
 		userOptionsPanel.add(default_car_prob);
@@ -232,9 +273,9 @@ public class GUISimulator extends JFrame implements Runnable {
 				try{
 					//Need to create brand new variables so SimulationRunner
 					//has new data each time.
-					carPark = new CarPark();
+					carPark = new CarPark(maxCarSpaces,maxSmallSpaces,maxBikeSpaces,maxQueue);
 					log = new Log();
-					sim = new Simulator();
+					sim = new Simulator(seed,stayMean,staySD,carProb,smallCarProb,bikeProb);
 					sr = new SimulationRunner (carPark,sim,log);
 					sr.runSimulation();
 					
