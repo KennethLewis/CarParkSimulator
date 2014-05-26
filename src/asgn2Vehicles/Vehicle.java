@@ -319,21 +319,21 @@ public abstract class Vehicle {
 	public String toString() {
 		
 		String wasQueued = "";
-		if (wasQueued() == true)
-			wasQueued.equals("not");
+		if (this.wasQueued() == true)
+			wasQueued = "was not";
 		else
-			wasQueued.equals("was");
+			wasQueued = "was";
 		
 		String wasSatisfied = "";
-		if (isSatisfied() == true)
-			wasSatisfied.equals("satisfied");
+		if (this.isSatisfied() == true)
+			wasSatisfied = "satisfied";
 		else
-			wasSatisfied.equals("not satisfied");
+			wasSatisfied ="not satisfied";
 		
 		return "Vehicle ID: " + this.vehID +
-				"\nArrival Time: " + this.arrivalTime +
-				"\nVehicle was " + wasQueued + "queued" +
-				"\nEntry to the Car Park: " + this.arrivalTime +
+				"\nArrival Time: " + this.arrivalTime.toString() +
+				"\nVehicle " + wasQueued + " queued" +
+				"\nEntry to the Car Park: " + this.parkingTime +
 				"\nExit from Car Park: " + getDepartureTime() +
 				"\nParking Time: " + 
 				(this.arrivalTime + this.departureTime) +

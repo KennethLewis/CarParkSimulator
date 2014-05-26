@@ -179,12 +179,14 @@ public class GUISimulator extends JFrame implements Runnable {
 			this.bikeProb = Double.parseDouble(default_motorcycle_prob.getText());
 			this.stayMean = Double.parseDouble(default_intended_stay_mean.getText());
 			this.staySD = Double.parseDouble(default_intended_stay_sd.getText());
+			
 		}
 		catch (NumberFormatException nfe){
 			//Displays error if parameters are incorrect and will restart
 			//the program.
 			JOptionPane.showMessageDialog(this,
-				    "One or more perameters were incorrect!");
+				    "One or more perameters were incorrect!","Incorrect Entry",
+				    JOptionPane.ERROR_MESSAGE);
 			this.setVisible(false);
 			GUISimulator frame = new GUISimulator();
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -308,7 +310,6 @@ public class GUISimulator extends JFrame implements Runnable {
 	        public void actionPerformed(ActionEvent event) {
 				try{
 					gatherUserEnteredVariables();
-					System.out.printf("SPACES = %d\n\n",maxCarSpaces);
 					//Need to create brand new variables so SimulationRunner
 					//has new data each time.
 					carPark = new CarPark(maxCarSpaces,maxSmallSpaces,maxBikeSpaces,maxQueue);

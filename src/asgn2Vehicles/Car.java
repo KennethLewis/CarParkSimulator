@@ -59,12 +59,12 @@ public class Car extends Vehicle {
 		
 		String carSize = "";
 		if (isSmall() == true)
-			carSize.equals("can");
+			carSize = "can";
 		else
-			carSize.equals("cannot");
+			carSize = "cannot";
 			
 		return super.toString() +
 				"\nCar " + carSize +
-				"use small parking space\n";
+				" use small parking space\n";
 	}
 }
