@@ -257,6 +257,7 @@ public class CarPark {
 		else {
 			v.exitQueuedState(exitTime);
 			carParkEntries.add(v);
+			incomingVehicleMonitor(v);
 
 		}
 			
@@ -446,6 +447,7 @@ public class CarPark {
 					Vehicle v = this.queue.get(i);
 					this.exitQueue(this.queue.get(i), time);
 					this.parkVehicle(v, time, sim.setDuration());
+					incomingVehicleMonitor(v);
 					status += setVehicleMsg(v, "Q", "P");
 					} else {
 						break;
@@ -549,12 +551,12 @@ public class CarPark {
 	@Override
 	public String toString() {
 		return "CarPark [count: " + count
-				+ " numCars: " + numCars
-				+ " numSmallCars: " + numSmallCars
-				+ " numMotorCycles: " + numMotorCycles
-				+ " queue: " + (queue.size())
-				+ " numDissatisfied: " + numDissatisfied
-				+ " past: " + past.size() + "]";
+				+ "\nnumCars: " + numCars
+				+ "\nnumSmallCars: " + numSmallCars
+				+ "\nnumMotorCycles: " + numMotorCycles
+				+ "\nqueue: " + (queue.size())
+				+ "\nnumDissatisfied: " + numDissatisfied
+				+ "\npast: " + past.size() + "]";
 	}
 
 	/**

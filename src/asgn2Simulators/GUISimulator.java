@@ -224,6 +224,7 @@ public class GUISimulator extends JFrame implements Runnable {
 		carParkSummary = new JTextArea();
 		carParkSummary.setAutoscrolls(true);
 		carParkSummary.setBorder(BorderFactory.createEtchedBorder());
+		carParkSummary.setLineWrap(true);
 		summaryScroll = new JScrollPane(carParkSummary);
 		
 		
@@ -321,7 +322,7 @@ public class GUISimulator extends JFrame implements Runnable {
 					//Prints data to the required panels after program run
 					carParkLogData.setText(carPark.finalState());
 					carParkSummary.setText("Customers Parked: %d\n"
-							+"Customers Dissatisfied: %d\n");
+							+"Customers Dissatisfied: %d\n\n" + carPark.toString() );
 				}
 				catch (IOException ioe){
 					System.out.printf("There was a problem running the program.\n" +
