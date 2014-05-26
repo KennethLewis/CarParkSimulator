@@ -124,6 +124,13 @@ public class CarPark {
 				spaces.remove(i);
 				
 			}
+			else if (force == true){ //Forces cars to leave at the end of the day. Removes
+									//all cars from the CarPark and archives them.
+				spaces.get(i).exitParkedState(time);
+				outgoingVehicleMonitor(spaces.get(i));
+				past.add(spaces.get(i));
+				spaces.remove(i);
+			}
 		}
 	}
 		
