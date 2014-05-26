@@ -457,7 +457,7 @@ public class CarPark {
 					Vehicle v = this.queue.get(i);
 					this.exitQueue(v, time);
 					this.parkVehicle(v, time, sim.setDuration());
-					incomingVehicleMonitor(v);
+					//incomingVehicleMonitor(v);
 					status += setVehicleMsg(v, "Q", "P");
 					} else {
 						break;
