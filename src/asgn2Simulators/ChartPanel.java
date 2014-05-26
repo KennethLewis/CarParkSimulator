@@ -90,6 +90,9 @@ public class ChartPanel extends GUISimulator {
 		//Base time, data set up - the calendar is needed for the time points
 		Calendar cal = GregorianCalendar.getInstance();
 
+		Random rng = new Random(250); 
+		int cars = 0;
+		int mc = 0; 
 		//Hack loop to make it interesting. Grows for half of it, then declines
 		for (int i=0; i<=18*60; i++) {
 			//These lines are important 
