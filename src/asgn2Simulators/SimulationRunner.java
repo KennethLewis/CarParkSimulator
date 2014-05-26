@@ -71,10 +71,6 @@ public class SimulationRunner {
 			if (newVehiclesAllowed(time)) { 
 				this.carPark.tryProcessNewVehicles(time,this.sim);
 			}
-			
-			// TODO DELETE this 
-			System.out.println(carPark.getStatus(time));
-			
 			//Log progress 
 			this.log.logEntry(time,this.carPark);
 		}

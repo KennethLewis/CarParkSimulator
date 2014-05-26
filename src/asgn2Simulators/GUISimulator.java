@@ -17,6 +17,8 @@ import java.io.IOException;
 
 import javax.swing.*;
 
+import org.jfree.ui.RefineryUtilities;
+
 import asgn2CarParks.CarPark;
 import asgn2Exceptions.SimulationException;
 import asgn2Exceptions.VehicleException;
@@ -28,6 +30,7 @@ import asgn2Exceptions.VehicleException;
  */
 @SuppressWarnings("serial")
 public class GUISimulator extends JFrame implements Runnable {
+	
 
 	//Objects to help the GUI run the Simulation
 	private CarPark carPark;
@@ -83,9 +86,11 @@ public class GUISimulator extends JFrame implements Runnable {
 		// Initialize the Frame and add the GamePanel
 		this.setTitle("Car Park Application");
 		setSize(PREFSIZE);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		theGUI.setLayout(new BorderLayout());
 		initilizeComponents();
 		repaint();
+
 	}
 	
 	
@@ -250,6 +255,17 @@ public class GUISimulator extends JFrame implements Runnable {
 	        }
 		});
 		chart = new JButton("Charts");
+		chart.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent event) {
+                ChartPanel chartWindow = new ChartPanel("lol");
+                
+                chartWindow.getChartDialog().pack();
+                RefineryUtilities.centerFrameOnScreen(chartWindow);
+                chartWindow.getChartDialog().repaint();
+                chartWindow.getChartDialog().setVisible(true);
+	        }
+		});
+		
 		text = new JButton ("Text");
 		exit = new JButton ("Exit");
 		exit.addActionListener(new ActionListener() {
@@ -273,29 +289,6 @@ public class GUISimulator extends JFrame implements Runnable {
 		this.add(topHeadings,BorderLayout.PAGE_START);
 		this.add(allComponents, BorderLayout.CENTER);
 		this.add(bottomButtons, BorderLayout.PAGE_END);
-	}
-	
-	/**
-	 * Method used to handle mouse clicks on the buttons.
-	 * Depending on the button pressed program will then perform the
-	 * required option.
-	 * @param ActionEvent: Mouse click on buttons
-	 */
-	public void actionPerformed(ActionEvent evt) {
-		// TODO Auto-generated method stub
-		Object src = evt.getSource();
-		
-		if (src == run){
-
-		}
-		else if (src == chart){
-			
-		}
-		else if (src == text){
-			
-		}
-		else if (src == exit)
-
 	}
 	
 
