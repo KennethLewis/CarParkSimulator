@@ -110,20 +110,19 @@ public class CarPark {
 	 * @author Ken Lewis
 	 */
 	public void archiveDepartingVehicles(int time,boolean force) throws VehicleException, SimulationException {
-		
+		ArrayList<Vehicle> departingVehicles = new ArrayList<Vehicle>();
 		for (int i = 0; i < spaces.size(); i++){
 			//Check to make sure vehicle is parked, throw exception if not
 			if(spaces.get(i).isParked() == false)
 				throw new SimulationException("One or more departing Vehicles are" +
 						" currently not in the car park. Archive Departing Vehicles failure.\n");
-			else if (time >= spaces.get(i).getDepartureTime()) {
+			else if (time == spaces.get(i).getDepartureTime()) {
 				spaces.get(i).exitParkedState(time);
 				outgoingVehicleMonitor(spaces.get(i));//changing carpark numbers making sure
 				  									 //it ends up empty
 				past.add(spaces.get(i));
 				status += setVehicleMsg(spaces.get(i), "P", "A");
-				spaces.remove(i);
-
+				departingVehicles.add(spaces.get(i));
 				
 			}
 			else if (force == true){ //Forces cars to leave at the end of the day. Removes
@@ -132,9 +131,11 @@ public class CarPark {
 				outgoingVehicleMonitor(spaces.get(i));
 				past.add(spaces.get(i));
 				status += setVehicleMsg(spaces.get(i), "P", "A");
-				spaces.remove(i);
+				departingVehicles.add(spaces.get(i));
 			}
 		}
+		
+		spaces.removeAll(departingVehicles);
 	}
 		
 	/**

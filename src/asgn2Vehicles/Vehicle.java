@@ -213,7 +213,7 @@ public abstract class Vehicle {
 		else if (this.vehicleState.get(lastState).equals("A"))
 			//Presume this is where the EnterParkedState method mentions
 			//returning proper departure time
-				return this.parkingTime + (this.exitTime - this.arrivalTime);
+				return this.departureTime;
 		else if (this.vehicleState.get(lastState)== "N" || this.vehicleState.get(lastState) == "Q")
 			//Car may be in queue or just arrived.
 			return 0;
