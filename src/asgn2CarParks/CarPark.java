@@ -267,7 +267,7 @@ public class CarPark {
 		else {
 			v.exitQueuedState(exitTime);
 			carParkEntries.add(v);
-			incomingVehicleMonitor(v);
+			//incomingVehicleMonitor(v);
 
 		}
 			
