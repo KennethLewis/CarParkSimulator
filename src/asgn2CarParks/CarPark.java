@@ -65,7 +65,7 @@ public class CarPark {
 		
 		spaces = new ArrayList<Vehicle>(maxCarSpaces);
 		
-		this.queue = new ArrayList<Vehicle>();
+		this.queue = new ArrayList<Vehicle>(Constants.DEFAULT_MAX_QUEUE_SIZE);
 		this.past = new ArrayList<Vehicle>();
 		this.carParkEntries = new ArrayList<Vehicle>();
 		this.count = 0;
@@ -494,11 +494,12 @@ public class CarPark {
 	 */
 	public boolean queueFull() {
 		
-		if(queue.size() < Constants.DEFAULT_MAX_QUEUE_SIZE)
-			return false;
-		else
+		if(queue.size() == maxQueueSize) {
 			return true;
-	}
+		}	else {
+			return false;
+			}
+}
 	
 	/**
 	 * Method determines, given a vehicle of a particular type, whether there are spaces available for that 
