@@ -122,6 +122,7 @@ public class CarPark {
 				  									 //it ends up empty
 				past.add(spaces.get(i));
 				spaces.remove(i);
+				status += setVehicleMsg(spaces.get(i), "P", "A");
 				
 			}
 			else if (force == true){ //Forces cars to leave at the end of the day. Removes
@@ -219,6 +220,7 @@ public class CarPark {
 		if(queue.size() != maxQueueSize){
 			v.enterQueuedState();
 			queue.add(v);
+			status += setVehicleMsg(v, "N", "Q");
 		}
 		else {
 			//Time passed through to archiveQueue method should be the current time
@@ -444,6 +446,7 @@ public class CarPark {
 					Vehicle v = this.queue.get(i);
 					this.exitQueue(this.queue.get(i), time);
 					this.parkVehicle(v, time, sim.setDuration());
+					status += setVehicleMsg(v, "Q", "P");
 					} else {
 						break;
 					}
@@ -494,15 +497,29 @@ public class CarPark {
 	 */
 	public boolean spacesAvailable(Vehicle v) {
 		
+		boolean motorCycleFull = false;
+		boolean smallCarFull = false;
+		boolean normalCarFull = false;
 		// Math.max used to convert any negatives into 0s (negatives occurring when there are
 		// still spaces left)
 		
 		//  TODO: There is a bug here. Sometimes the carpark goes over its limits slightly.
 		// I think the issue is that Math.max converts to 0 if the value is negative (we need this to make overflow equations easier).
 		// However, there is no way to tell between a converted 0 (i.e. negative overly, meaning some empty spaces left) and a 'true' 0 (i.e. no spaces left)
-		int motorCycleOverflow =  Math.max(0, this.getNumMotorCycles() - this.maxMotorCycleSpaces);
-		int smallCarOverflow = Math.max(0, this.getNumSmallCars() + motorCycleOverflow - this.maxSmallCarSpaces);
-		boolean normalCarFull = false;
+		int motorCycleOverflow =  this.getNumMotorCycles() - this.maxMotorCycleSpaces;
+		int smallCarOverflow = this.getNumSmallCars() + motorCycleOverflow - this.maxSmallCarSpaces;
+		
+		if (motorCycleOverflow >= 0) {
+			motorCycleFull = true;
+		}
+		
+		if (smallCarOverflow >= 0) {
+			smallCarFull = true;
+		}
+		
+
+		motorCycleOverflow = Math.max(0, motorCycleOverflow);
+		smallCarOverflow = Math.max(0, smallCarOverflow);
 		
 		if (this.getNumCars() >= (this.maxCarSpaces - smallCarOverflow)) {
 			normalCarFull = true;
@@ -512,9 +529,9 @@ public class CarPark {
 		
 		if (this.carParkFull()) {
 			return false;
-		} else if (motorCycleOverflow > 0 && smallCarOverflow > 0 && v instanceof MotorCycle) {
+		} else if (motorCycleFull && smallCarFull && v instanceof MotorCycle) {
 			return false;
-		} else if (smallCarOverflow > 0 && normalCarFull && v instanceof Car && ((Car) v).isSmall() == true ) {
+		} else if (smallCarFull && normalCarFull && v instanceof Car && ((Car) v).isSmall() == true ) {
 			return false;
 		} else if (normalCarFull && v instanceof Car && ((Car) v).isSmall() == false) {
 			return false;
@@ -554,31 +571,31 @@ public class CarPark {
 		List<Vehicle> newVehicles = new ArrayList<Vehicle>();
 		
 		if (sim.newCarTrial()) {
-			newCar = new Car("Asdasd", time, false);
-			if (sim.smallCarTrial()) {
-				newCar = new Car("Asdasd", time, true);
-			}
+			newCar = new Car("Asdasd", time, sim.smallCarTrial());
 			newVehicles.add(newCar);
+			handleNewVehicle(newCar, time, sim);
+			this.count++;
 		}
 		
-
 		if (sim.motorCycleTrial()) {
 			newBike = new MotorCycle("Asdasd", time);
 			newVehicles.add(newBike);
-		}
-		
-		for (int i=0; i < newVehicles.size(); i++) {
-			if (this.queueFull()) {
-				this.archiveNewVehicle(newVehicles.get(i));
-			} else if (this.spacesAvailable(newVehicles.get(i))) {
-				this.parkVehicle(newVehicles.get(i), time, sim.setDuration());
-			} else {
-				this.enterQueue(newVehicles.get(i));
-
-			}
+			handleNewVehicle(newBike, time, sim);
+			this.count++;
 		}
 	}
 
+	
+	private void handleNewVehicle(Vehicle v, int time, Simulator sim) throws SimulationException, VehicleException {
+		if (this.queueFull()) {
+			this.archiveNewVehicle(v);
+		} else if (this.spacesAvailable(v)) {
+			this.parkVehicle(v, time, sim.setDuration());
+		} else {
+			this.enterQueue(v);
+
+		}
+	}
 	/**
 	 * Method to remove vehicle from the carpark. 
 	 * For symmetry with parkVehicle, include transition via Vehicle.exitParkedState.  
@@ -625,17 +642,17 @@ public class CarPark {
 	 * @author Ken Lewis
 	 */
 	private void incomingVehicleMonitor(Vehicle v){
-		
-	 if (v instanceof MotorCycle)
-		this.numMotorCycles ++;
-	 else if (v instanceof Car && ((Car) v).isSmall() == true) {
-		this.numSmallCars ++;
-		this.numCars ++;
-	 }
-	 else if (v instanceof Car && ((Car) v).isSmall() == false) 
-		this.numCars ++;
+	 ///this.count++;
+	 if (v instanceof MotorCycle) {
+		this.numMotorCycles++;
+	 } else if (v instanceof Car && ((Car) v).isSmall() == true) {
+		this.numSmallCars++;
+		this.numCars++;
+	 } else if (v instanceof Car && ((Car) v).isSmall() == false) {
+		this.numCars++;
+	}
+
 	 
-	 this.count++;
 	}
 	
 	/**
@@ -655,7 +672,7 @@ public class CarPark {
 		 else if (v instanceof Car && ((Car) v).isSmall() == false) 
 			this.numCars --;
 		 
-		 this.count--;
+		 //this.count--;
 		
 	}
 	
