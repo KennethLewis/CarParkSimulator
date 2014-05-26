@@ -27,7 +27,7 @@ import asgn2Exceptions.VehicleException;
  * @author Thomas McCarthy
  */
 @SuppressWarnings("serial")
-public class GUISimulator extends JFrame implements Runnable, ActionListener {
+public class GUISimulator extends JFrame implements Runnable {
 
 	//Objects to help the GUI run the Simulation
 	private CarPark carPark;
@@ -219,13 +219,44 @@ public class GUISimulator extends JFrame implements Runnable, ActionListener {
 		//Create Buttons with ActionListeners
 		run = new JButton("Run");
 		
-		run.addActionListener(this);
+		run.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent event) {
+				try{
+					//Need to create brand new variables so SimulationRunner
+					//has new data each time.
+					carPark = new CarPark();
+					log = new Log();
+					sim = new Simulator();
+					sr = new SimulationRunner (carPark,sim,log);
+					sr.runSimulation();
+					
+					//Prints data to the required panels after program run
+					carParkLogData.setText(carPark.finalState());
+					carParkSummary.setText("Customers Parked: %d\n"
+							+"Customers Dissatisfied: %d\n");
+				}
+				catch (IOException ioe){
+					System.out.printf("There was a problem running the program.\n" +
+							"Details are:%s\n", ioe);
+				}
+				catch (SimulationException se){
+					System.out.printf("There was a problem running the program.\n" +
+							"Details are: %s\n", se);
+				}
+				catch (VehicleException ve){
+					System.out.printf("There was a problem running the program.\n" +
+							"Details are: %s\n", ve);
+				}
+	        }
+		});
 		chart = new JButton("Charts");
-		chart.addActionListener(this);
 		text = new JButton ("Text");
-		text.addActionListener(this);
 		exit = new JButton ("Exit");
-		exit.addActionListener(this);
+		exit.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent event) {
+				System.exit(0);
+	        }
+		});
 		
 		//Add Buttons to button panel
 		bottomButtons.add(run);
@@ -255,32 +286,7 @@ public class GUISimulator extends JFrame implements Runnable, ActionListener {
 		Object src = evt.getSource();
 		
 		if (src == run){
-			try{
-				//Need to create brand new variables so SimulationRunner
-				//has new data each time.
-				this.carPark = new CarPark();
-				this.log = new Log();
-				this.sim = new Simulator();
-				this.sr = new SimulationRunner (carPark,sim,log);
-				sr.runSimulation();
-				
-				//Prints data to the required panels after program run
-				carParkLogData.setText(carPark.finalState());
-				carParkSummary.setText("Customers Parked: %d\n"
-						+"Customers Dissatisfied: %d\n");
-			}
-			catch (IOException ioe){
-				System.out.printf("There was a problem running the program.\n" +
-						"Details are:%s\n", ioe);
-			}
-			catch (SimulationException se){
-				System.out.printf("There was a problem running the program.\n" +
-						"Details are: %s\n", se);
-			}
-			catch (VehicleException ve){
-				System.out.printf("There was a problem running the program.\n" +
-						"Details are: %s\n", ve);
-			}
+
 		}
 		else if (src == chart){
 			
@@ -289,7 +295,7 @@ public class GUISimulator extends JFrame implements Runnable, ActionListener {
 			
 		}
 		else if (src == exit)
-			System.exit(0);
+
 	}
 	
 
