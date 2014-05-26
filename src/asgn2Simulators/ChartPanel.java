@@ -96,15 +96,35 @@ public class ChartPanel extends GUISimulator {
 			cal.set(2014,0,1,6,i);
 	        Date timePoint = cal.getTime();
 	        
-	        dataProcessList = new ArrayList<Integer>();
 	        //HACK BEGINS
-	        processData(dataProcessList, dataList.get(i));
+	        if (i<9*60) {
+	        	if (randomSuccess(0.2,rng)) {
+	        		cars++; 
+	        	}
+	        	if (randomSuccess(0.1,rng)) {
+	        		mc++;
+	        	}
+	        } else if (i < 18*60) {
+	        	if (randomSuccess(0.15,rng)) {
+	        		cars++; 
+	        	} else if (randomSuccess(0.4,rng)) {
+	        		cars = Math.max(cars-1,0);
+	        	}
+	        	if (randomSuccess(0.05,rng)) {
+	        		mc++; 
+	        	} else if (randomSuccess(0.2,rng)) {
+	        		mc = Math.max(mc-1,0);
+	        	}
+	        } else {
+	        	cars=0; 
+	        	mc =0;
+	        }
 	        //HACK ENDS
 	        
 	        //This is important - steal it shamelessly 
-			mcTotal.add(new Minute(timePoint), dataProcessList.get(5));
-			carTotal.add(new Minute(timePoint),dataProcessList.get(3));
-			vehTotal.add(new Minute(timePoint),dataProcessList.get(5) + dataProcessList.get(3));
+			mcTotal.add(new Minute(timePoint),mc);
+			carTotal.add(new Minute(timePoint),cars);
+			vehTotal.add(new Minute(timePoint),cars+mc);
 		}
 		
 		//Collection
