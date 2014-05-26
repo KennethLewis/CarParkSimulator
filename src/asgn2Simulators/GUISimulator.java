@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
@@ -37,6 +38,8 @@ public class GUISimulator extends JFrame implements Runnable {
 	private Simulator sim;
 	private Log log;
 	private SimulationRunner sr;
+	
+	private ArrayList<String> statuses;
 	
 	//4 Panels which are placed on the GUIPANEL (this.)	
 	private JPanel allComponents = new JPanel(new GridLayout());
@@ -257,7 +260,7 @@ public class GUISimulator extends JFrame implements Runnable {
 		chart = new JButton("Charts");
 		chart.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent event) {
-                ChartPanel chartWindow = new ChartPanel("lol");
+                ChartPanel chartWindow = new ChartPanel("lol", statuses);
                 
                 chartWindow.getChartDialog().pack();
                 RefineryUtilities.centerFrameOnScreen(chartWindow);
