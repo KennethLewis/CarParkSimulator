@@ -45,6 +45,8 @@ public class GUISimulator extends JFrame implements Runnable {
 	private int maxCarSpaces,maxSmallSpaces, maxBikeSpaces, maxQueue, seed;
 	private double carProb,smallCarProb,bikeProb,stayMean, staySD;
 	
+	private boolean argsChecker = false;
+	
 	//4 Panels which are placed on the GUIPANEL (this.)	
 	private JPanel allComponents = new JPanel(new GridLayout());
 	private JPanel userOptionsPanel;
@@ -156,7 +158,12 @@ public class GUISimulator extends JFrame implements Runnable {
 			this.stayMean = stayMean;
 			this.staySD = staySD;
 		
-		
+			//If program makes it here it means that the method was called
+			//in SimulationRunner. Set to true so that the program will use
+			//the args commands.
+			//TODO not sure if it really matter cause user should be able to
+			//change them anyway even after inputting the args?
+			this.argsChecker = true;
 		
 	}
 	
@@ -316,7 +323,9 @@ public class GUISimulator extends JFrame implements Runnable {
 		run.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent event) {
 				try{
-					gatherUserEnteredVariables();
+					//if (argsChecker == false)TODO uncomment if only args required for first run
+						gatherUserEnteredVariables();
+					
 					//Need to create brand new variables so SimulationRunner
 					//has new data each time.
 					carPark = new CarPark(maxCarSpaces,maxSmallSpaces,maxBikeSpaces,maxQueue);

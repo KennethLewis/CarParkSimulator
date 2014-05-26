@@ -104,21 +104,17 @@ public class SimulationRunner {
 				double bikeProb = Double.parseDouble(args[7]);
 				double stayMean = Double.parseDouble(args[8]);
 				double staySD = Double.parseDouble(args[9]);
+				
 				frame.gatherArgs(maxCarSpaces, maxSmallSpaces, maxBikeSpaces, 
 						maxQueue, seed, carProb, smallCarProb, bikeProb, stayMean, staySD);
 			} catch(Exception e){
 				System.out.printf("There were one or more incorrect entries entered on" +
 						" the command line.\nError message is: %s\n",e);
 			}
-			
 		}
 			
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
-		
-		
-		//TODO: Implement Argument Processing 
-		
 	} 
 
 	/**
