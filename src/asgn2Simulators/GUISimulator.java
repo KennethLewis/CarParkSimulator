@@ -156,6 +156,27 @@ public class GUISimulator extends JFrame implements Runnable {
 		this.staySD = staySD;
 		
 	}
+	
+	/**
+	 * Method to gather the variables which the user has entered/changed
+	 * from the beginning of the gui being written. Variables are taken from the 
+	 * UserOptions Panel from the various positions and converted to be passed 
+	 * on.
+	 */
+	private void gatherUserEnteredVariables(){
+		
+		this.maxCarSpaces = Integer.parseInt(default_max_car_spaces.getText());
+		this.maxSmallSpaces = Integer.parseInt(default_max_small_car_spaces.getText());;
+		this.maxBikeSpaces = Integer.parseInt(default_max_motorcycle_spaces.getText());; 
+		this.maxQueue = Integer.parseInt(default_max_queue_size.getText());;
+		
+		this.seed = Integer.parseInt(default_seed.getText());;
+		this.carProb = Double.parseDouble(default_car_prob.getText());
+		this.smallCarProb = Double.parseDouble(default_small_car_prob.getText());
+		this.bikeProb = Double.parseDouble(default_motorcycle_prob.getText());
+		this.stayMean = Double.parseDouble(default_intended_stay_mean.getText());
+		this.staySD = Double.parseDouble(default_intended_stay_sd.getText());
+	}
 	/**
 	 * @param args
 	 */
@@ -271,6 +292,7 @@ public class GUISimulator extends JFrame implements Runnable {
 		run.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent event) {
 				try{
+					gatherUserEnteredVariables();
 					//Need to create brand new variables so SimulationRunner
 					//has new data each time.
 					carPark = new CarPark(maxCarSpaces,maxSmallSpaces,maxBikeSpaces,maxQueue);
