@@ -11,6 +11,7 @@
 package asgn2Simulators;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
@@ -27,6 +28,8 @@ import asgn2Exceptions.VehicleException;
 public class SimulationRunner {
 	private CarPark carPark;
 	private Simulator sim;
+
+	private static ArrayList<String> chartData = new ArrayList<String>();
 	
 	private Log log;
 	/**
@@ -51,6 +54,7 @@ public class SimulationRunner {
 	 * @throws IOException on logging failures
 	 */
 	public void runSimulation() throws VehicleException, SimulationException, IOException {
+		
 		this.log.initialEntry(this.carPark,this.sim);
 		for (int time=0; time<=Constants.CLOSING_TIME; time++) {
 			//queue elements exceed max waiting time
@@ -73,6 +77,8 @@ public class SimulationRunner {
 			}
 			//Log progress 
 			this.log.logEntry(time,this.carPark);
+			chartData.add(carPark.getStatus(time));
+			//System.out.printf("%s\n",carPark.getStatus(time));
 		}
 		this.log.finalise(this.carPark);
 	}
@@ -83,9 +89,8 @@ public class SimulationRunner {
 	 */
 	public static void main(String[] args) {
 		
-		
 		GUISimulator frame = new GUISimulator();
-		
+		frame.gatherChartData(chartData);
 		if(args.length == 10){//need to check this number might be 9
 		
 			try{

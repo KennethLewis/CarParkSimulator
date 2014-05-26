@@ -69,7 +69,6 @@ public class ChartPanel extends GUISimulator {
         
 		chartDialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
-
     
     public JDialog getChartDialog() {
     	return chartDialog;

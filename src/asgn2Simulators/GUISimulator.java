@@ -40,6 +40,7 @@ public class GUISimulator extends JFrame implements Runnable {
 	private SimulationRunner sr;
 	
 	private ArrayList<String> statuses;
+	private ArrayList<String> chartData = new ArrayList<String>();
 	
 	private int maxCarSpaces,maxSmallSpaces, maxBikeSpaces, maxQueue, seed;
 	private double carProb,smallCarProb,bikeProb,stayMean, staySD;
@@ -194,6 +195,11 @@ public class GUISimulator extends JFrame implements Runnable {
 		}
 		
 	}
+	
+	public void gatherChartData(ArrayList<String> chartData){
+		
+		this.chartData = chartData;
+	}
 	/**
 	 * @param args
 	 */
@@ -320,7 +326,13 @@ public class GUISimulator extends JFrame implements Runnable {
 					sr.runSimulation();
 					
 					//Prints data to the required panels after program run
-					carParkLogData.setText(carPark.finalState());
+					//carParkLogData.setText(carPark.finalState());
+					String data ="";
+					for(int i =0; i < chartData.size(); i++){
+						data += chartData.get(i) + "\n";
+						//System.out.printf("%s\n", chartData.get(i));
+					}
+					carParkLogData.setText(data);
 					carParkSummary.setText("Customers Parked: %d\n"
 							+"Customers Dissatisfied: %d\n\n" + carPark.toString() );
 				}
