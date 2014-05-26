@@ -181,17 +181,6 @@ public abstract class Vehicle {
 				vehicleState.get(lastState).equals("Q"))				
 			this.vehicleState.add("N");
 			
-			
-			/* TODO
-			 * Prob need another if else statement here which uses is satisfied as
-			 * if they have queued for too long they leave the car park and the process
-			 * is archived. 
-			 */
-			
-				//this.vehicleState.add("P");
-				//this.parkingTime = exitTime;
-				//this.intendedDuration = Constants.MINIMUM_STAY;
-				//this.exitTime = exitTime;
 		
 	}
 	
@@ -224,11 +213,9 @@ public abstract class Vehicle {
 		else if (this.vehicleState.get(lastState).equals("A"))
 			//Presume this is where the EnterParkedState method mentions
 			//returning proper departure time
-				return this.parkingTime + this.departureTime;
-		else if (this.vehicleState.get(lastState)== "N")
+				return this.parkingTime + (this.exitTime - this.arrivalTime);
+		else if (this.vehicleState.get(lastState)== "N" || this.vehicleState.get(lastState) == "Q")
 			//Car may be in queue or just arrived.
-			return 0;
-		else if (this.vehicleState.get(lastState) == "Q")
 			return 0;
 		else
 			return this.departureTime;
@@ -318,26 +305,26 @@ public abstract class Vehicle {
 	@Override
 	public String toString() {
 		
-		String wasQueued = "";
+		String wasQueuedTxt = "";
 		if (wasQueued() == true)
-			wasQueued.equals("not");
+			wasQueuedTxt = "was";
 		else
-			wasQueued.equals("was");
+			wasQueuedTxt = "was not";
 		
-		String wasSatisfied = "";
+		String wasSatisfiedTxt = "";
 		if (isSatisfied() == true)
-			wasSatisfied.equals("satisfied");
+			wasSatisfiedTxt = "satisfied";
 		else
-			wasSatisfied.equals("not satisfied");
+			wasSatisfiedTxt = "not satisfied";
 		
 		return "Vehicle ID: " + this.vehID +
 				"\nArrival Time: " + this.arrivalTime +
-				"\nVehicle was " + wasQueued + "queued" +
+				"\nVehicle " + wasQueuedTxt + " queued" +
 				"\nEntry to the Car Park: " + this.arrivalTime +
-				"\nExit from Car Park: " + getDepartureTime() +
+				"\nExit from Car Park: " + (getDepartureTime()) +
 				"\nParking Time: " + 
-				(this.arrivalTime + this.departureTime) +
-				"\nCustomer was " + wasSatisfied;
+				(getDepartureTime() - getArrivalTime()) +
+				"\nCustomer was " + wasSatisfiedTxt;
 		//EXAMPLE toString from Assingment Specs part II		
 		/*Vehicle vehID:
 			C9

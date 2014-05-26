@@ -116,13 +116,14 @@ public class CarPark {
 			if(spaces.get(i).isParked() == false)
 				throw new SimulationException("One or more departing Vehicles are" +
 						" currently not in the car park. Archive Departing Vehicles failure.\n");
-			else if (time == spaces.get(i).getDepartureTime()) {
+			else if (time >= spaces.get(i).getDepartureTime()) {
 				spaces.get(i).exitParkedState(time);
 				outgoingVehicleMonitor(spaces.get(i));//changing carpark numbers making sure
 				  									 //it ends up empty
 				past.add(spaces.get(i));
-				spaces.remove(i);
 				status += setVehicleMsg(spaces.get(i), "P", "A");
+				spaces.remove(i);
+
 				
 			}
 			else if (force == true){ //Forces cars to leave at the end of the day. Removes
@@ -247,7 +248,7 @@ public class CarPark {
 		
 		if(v.isQueued() == false)
 			throw new SimulationException("Vehicle is currently not in the CarPark Queue!\n" + v.toString());
-		else if (queuedTime > Constants.MAXIMUM_QUEUE_TIME){
+		else if (queuedTime >= Constants.MAXIMUM_QUEUE_TIME){
 			//If the vehicle has been in queue for too long.
 			past.add(v);
 			queue.remove(v);
@@ -507,21 +508,18 @@ public class CarPark {
 		// I think the issue is that Math.max converts to 0 if the value is negative (we need this to make overflow equations easier).
 		// However, there is no way to tell between a converted 0 (i.e. negative overly, meaning some empty spaces left) and a 'true' 0 (i.e. no spaces left)
 		int motorCycleOverflow =  this.getNumMotorCycles() - this.maxMotorCycleSpaces;
-		int smallCarOverflow = this.getNumSmallCars() + motorCycleOverflow - this.maxSmallCarSpaces;
-		
 		if (motorCycleOverflow >= 0) {
 			motorCycleFull = true;
 		}
+		motorCycleOverflow = Math.max(0, motorCycleOverflow);
 		
+		int smallCarOverflow = this.getNumSmallCars() + motorCycleOverflow - this.maxSmallCarSpaces;
 		if (smallCarOverflow >= 0) {
 			smallCarFull = true;
 		}
-		
-
-		motorCycleOverflow = Math.max(0, motorCycleOverflow);
 		smallCarOverflow = Math.max(0, smallCarOverflow);
 		
-		if (this.getNumCars() >= (this.maxCarSpaces - smallCarOverflow)) {
+		if (this.getNumCars() - this.getNumSmallCars() >= (this.maxCarSpaces - this.maxSmallCarSpaces)) {
 			normalCarFull = true;
 		}
 		
@@ -567,21 +565,25 @@ public class CarPark {
 	public void tryProcessNewVehicles(int time,Simulator sim) throws VehicleException, SimulationException {
 		
 		Vehicle newCar;
+		String plates;
 		MotorCycle newBike;
 		List<Vehicle> newVehicles = new ArrayList<Vehicle>();
 		
 		if (sim.newCarTrial()) {
-			newCar = new Car("Asdasd", time, sim.smallCarTrial());
+			this.count++;
+			plates = "C" + this.count;
+			newCar = new Car(plates, time, sim.smallCarTrial());
 			newVehicles.add(newCar);
 			handleNewVehicle(newCar, time, sim);
-			this.count++;
+			
 		}
 		
 		if (sim.motorCycleTrial()) {
-			newBike = new MotorCycle("Asdasd", time);
+			this.count++;
+			plates = "M" + this.count;
+			newBike = new MotorCycle(plates, time);
 			newVehicles.add(newBike);
 			handleNewVehicle(newBike, time, sim);
-			this.count++;
 		}
 	}
 
@@ -589,8 +591,10 @@ public class CarPark {
 	private void handleNewVehicle(Vehicle v, int time, Simulator sim) throws SimulationException, VehicleException {
 		if (this.queueFull()) {
 			this.archiveNewVehicle(v);
+			status += setVehicleMsg(v, "N", "A");
 		} else if (this.spacesAvailable(v)) {
 			this.parkVehicle(v, time, sim.setDuration());
+			status += setVehicleMsg(v, "N", "P");
 		} else {
 			this.enterQueue(v);
 

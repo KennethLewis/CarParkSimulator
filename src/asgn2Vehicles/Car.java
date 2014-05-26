@@ -57,14 +57,14 @@ public class Car extends Vehicle {
 	@Override
 	public String toString() {
 		
-		String carSize = "";
+		String carSizeTxt = "";
 		if (isSmall() == true)
-			carSize.equals("can");
+			carSizeTxt = "can use small car";
 		else
-			carSize.equals("cannot");
+			carSizeTxt = "cannot use small";
 			
 		return super.toString() +
-				"\nCar " + carSize +
-				"use small parking space\n";
+				"\nCar " + carSizeTxt +
+				" parking space\n";
 	}
 }
