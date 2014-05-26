@@ -100,7 +100,7 @@ public class GUISimulator extends JFrame implements Runnable {
 		this.maxCarSpaces = Constants.DEFAULT_MAX_CAR_SPACES;
 		this.maxSmallSpaces = Constants.DEFAULT_MAX_SMALL_CAR_SPACES;
 		this.maxBikeSpaces = Constants.DEFAULT_MAX_MOTORCYCLE_SPACES;
-		this.maxQueue = Constants.MAXIMUM_QUEUE_TIME;
+		this.maxQueue = Constants.DEFAULT_MAX_QUEUE_SIZE;
 		
 		//Set Probability variables to constant variables for initial display
 		//if no args are entered.
@@ -326,13 +326,13 @@ public class GUISimulator extends JFrame implements Runnable {
 					sr.runSimulation();
 					
 					//Prints data to the required panels after program run
-					//carParkLogData.setText(carPark.finalState());
+					carParkLogData.setText(carPark.finalState());
 					String data ="";
 					for(int i =0; i < chartData.size(); i++){
 						data += chartData.get(i) + "\n";
 						//System.out.printf("%s\n", chartData.get(i));
 					}
-					carParkLogData.setText(data);
+					//carParkLogData.setText(data);
 					carParkSummary.setText("Customers Parked: %d\n"
 							+"Customers Dissatisfied: %d\n\n" + carPark.toString() );
 				}
