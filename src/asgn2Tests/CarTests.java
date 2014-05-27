@@ -18,6 +18,7 @@ import java.lang.reflect.Array;
 import org.junit.Test;
 
 import asgn2Exceptions.VehicleException;
+import asgn2Simulators.Constants;
 import asgn2Vehicles.Vehicle;
 import asgn2Vehicles.Car;
 
@@ -30,6 +31,17 @@ public class CarTests {
 	private Vehicle testVehicle;
 	private static final String EXAMPLE_PLATE = "1234Test";
 	private static final int EXAMPLE_TIME = 10;
+	private static final int EXAMPLE_DURATION = 20;
+	private static final int LOW_DURATION = 0;
+	private static final int LOW_ARRIVAL_TIME = 0;
+	private static final int NEG_ARRIVAL_TIME = -8;
+	private static final int NEG_PARKING_TIME = -8;
+	private static final int UNDER_DEFAULT_STAY = 19;
+	private static final int NEG_DEFAULT_STAY = -19;
+	private static final int NORM_LEAVE_TIME = 12;
+	private static final int LOW_LEAVE_TIME = 9;
+	private static final int NEG_LEAVE_TIME = -9999;
+	private static final int NORM_QUEUE_LEAVE_TIME = 11;
 	
 	
 	/*
@@ -95,7 +107,7 @@ public class CarTests {
 	@Test (expected = VehicleException.class)
 	public void testLowArrivalTime() throws VehicleException {
 		
-		testVehicle = new Car (EXAMPLE_PLATE, 0, true);
+		testVehicle = new Car (EXAMPLE_PLATE, LOW_ARRIVAL_TIME, true);
 	}
 	
 	/**
@@ -108,33 +120,7 @@ public class CarTests {
 	@Test (expected = VehicleException.class)
 	public void testNegativeArrivalTime() throws VehicleException {
 		
-		testVehicle = new Car (EXAMPLE_PLATE, -8, true);
-	}
-	
-	/**
-	 * Testing the creation of a small car object with a negative
-	 * arrival time which should throw an error as the time
-	 * cannot be <= 0
-	 * @throws VehicleException
-	 * @author Ken Lewis
-	 */	
-	@Test (expected = VehicleException.class)
-	public void testLargeNegativeArrivalTime() throws VehicleException {
-		
-		testVehicle = new Car (EXAMPLE_PLATE, -100000, true);
-	}
-	
-	/**
-	 * Testing the creation of a large car object with a negative
-	 * arrival time which should throw an error as the time
-	 * cannot be <= 0
-	 * @throws VehicleException
-	 * @author Ken Lewis
-	 */	
-	@Test (expected = VehicleException.class)
-	public void testLargeCarNegativeArrivalTime() throws VehicleException {
-		
-		testVehicle = new Car (EXAMPLE_PLATE, -8, false);
+		testVehicle = new Car (EXAMPLE_PLATE, NEG_ARRIVAL_TIME, true);
 	}
 	
 	/**
@@ -149,7 +135,7 @@ public class CarTests {
 	public void parkVehicle() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(10, 20);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
 		assertTrue(testVehicle.isParked() == true);
 	}
 	
@@ -164,8 +150,8 @@ public class CarTests {
 	public void parkVehicleAlreadyParked() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(10, 20);
-		testVehicle.enterParkedState(10,20);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
 	}
 	
 	/**
@@ -181,9 +167,9 @@ public class CarTests {
 	public void parkVehicleWhichIsInQue() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(10, 20);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
 		testVehicle.enterQueuedState();
-		testVehicle.enterParkedState(10,20);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
 	}
 	
 	/**
@@ -197,7 +183,7 @@ public class CarTests {
 	public void parkVehicleWithNegParkingTime() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(-5, 20);
+		testVehicle.enterParkedState(NEG_PARKING_TIME, EXAMPLE_DURATION);
 	}
 	
 	/**
@@ -212,7 +198,7 @@ public class CarTests {
 	public void parkVehicleWithLowIntendedDur() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(10, 19);
+		testVehicle.enterParkedState(EXAMPLE_TIME, NEG_DEFAULT_STAY);
 	}
 	
 	/**
@@ -227,7 +213,7 @@ public class CarTests {
 	public void parkVehicleWithBothBadVariables() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(-8, 19);
+		testVehicle.enterParkedState(NEG_PARKING_TIME, UNDER_DEFAULT_STAY);
 	}
 	
 	/**
@@ -242,7 +228,7 @@ public class CarTests {
 	public void parkVehicleWithVeryLowIntendedDur() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(10, -19);
+		testVehicle.enterParkedState(EXAMPLE_TIME, LOW_DURATION);
 	}
 	
 	/**
@@ -255,7 +241,7 @@ public class CarTests {
 	public void testParkTimeVar() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(10, 20);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
 		assertTrue(testVehicle.getParkingTime() == 10);
 	}
 
@@ -286,7 +272,7 @@ public class CarTests {
 	public void testEnteringQueueWhileParked() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(10, 20);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
 		testVehicle.enterQueuedState();
 	}
 	
@@ -314,8 +300,8 @@ public class CarTests {
 	public void testExitParkedState() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(10,20);
-		testVehicle.exitParkedState(12);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
+		testVehicle.exitParkedState(NORM_LEAVE_TIME);
 		assertTrue(testVehicle.wasParked() == true);
 	}
 	
@@ -329,8 +315,8 @@ public class CarTests {
 	public void testExitParkedStateDepartTime() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(10,20);
-		testVehicle.exitParkedState(12);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
+		testVehicle.exitParkedState(NORM_LEAVE_TIME);
 		assertEquals(testVehicle.getDepartureTime(), 12);
 	}
 	
@@ -346,7 +332,7 @@ public class CarTests {
 	public void exitingParkWithoutParking() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.exitParkedState(12);
+		testVehicle.exitParkedState(NORM_LEAVE_TIME);
 	}
 	
 	/**
@@ -360,7 +346,7 @@ public class CarTests {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterQueuedState();
-		testVehicle.exitParkedState(12);
+		testVehicle.exitParkedState(NORM_LEAVE_TIME);
 	}
 	
 	/**
@@ -373,8 +359,8 @@ public class CarTests {
 	public void testingDepartTimeVsParkTime() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(10,20);
-		testVehicle.exitParkedState(9);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
+		testVehicle.exitParkedState(LOW_LEAVE_TIME);
 	}
 	
 	/**
@@ -387,8 +373,8 @@ public class CarTests {
 	public void testingLargeNegDepartTimeVsParkTime() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(10,20);
-		testVehicle.exitParkedState(-99999);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
+		testVehicle.exitParkedState(NEG_LEAVE_TIME);
 	}
 	
 	/**
@@ -402,7 +388,8 @@ public class CarTests {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterQueuedState();
-		testVehicle.exitQueuedState(11);
+		testVehicle.exitQueuedState(NORM_QUEUE_LEAVE_TIME);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
 		assertTrue(testVehicle.wasParked() == true);
 	}
 	
@@ -416,8 +403,8 @@ public class CarTests {
 	public void testingParkedExitQueue() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(10, 20);
-		testVehicle.exitQueuedState(10);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
+		testVehicle.exitQueuedState(NORM_QUEUE_LEAVE_TIME);
 	}
 	
 	/**
@@ -430,7 +417,7 @@ public class CarTests {
 	public void testingNotAlreadyQueued() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.exitQueuedState(11);
+		testVehicle.exitQueuedState(NORM_QUEUE_LEAVE_TIME);
 	}
 	
 	/**
@@ -458,9 +445,9 @@ public class CarTests {
 	public void testingDepartureTime() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(11, 20);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
 		testVehicle.exitParkedState(12);
-		assertTrue(testVehicle.getDepartureTime() == 23);
+		assertTrue(testVehicle.getDepartureTime() == 12);
 	}
 	
 	/**
@@ -491,7 +478,7 @@ public class CarTests {
 	public void testingParkedDepartureTime() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(10,20);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
 		assertTrue(testVehicle.getDepartureTime() == 30);
 	}
 	
@@ -507,9 +494,10 @@ public class CarTests {
 	public void testingFinalDepartureTime() throws VehicleException {
 		
 		testVehicle = new Car ("1234Test",10,false);
-		testVehicle.enterParkedState(10,20);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
 		testVehicle.exitParkedState(50);
-		assertTrue(testVehicle.getDepartureTime() == 60);
+		System.out.printf("%s\n",testVehicle.getDepartureTime());
+		assertTrue(testVehicle.getDepartureTime() == 50);
 	}
 	
 	/**
@@ -522,7 +510,7 @@ public class CarTests {
 	public void testGetParkingTime() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(10,20);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
 		assertTrue(testVehicle.getParkingTime() == 10);
 	}
 	
@@ -550,7 +538,7 @@ public class CarTests {
 	public void testIsParked() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(10,20);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
 		assertTrue(testVehicle.isParked() ==  true);
 	}
 	
@@ -565,8 +553,8 @@ public class CarTests {
 	public void testIsParkedAfterLeaving() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(10,20);
-		testVehicle.exitParkedState(12);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
+		testVehicle.exitParkedState(NORM_LEAVE_TIME);
 		assertTrue(testVehicle.isParked() ==  false);
 	}
 	
@@ -610,15 +598,9 @@ public class CarTests {
 	public void testIsNotQueued() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(10,20);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
 		assertTrue(testVehicle.isQueued() == false);
 	}
-	
-	/* TODO More tests to check length of time if < or >
-	 * max allow time etc.
-	 * Still to write 
-	 * IS SATISFIED
-	 */
 	
 	/**
 	 * Testing isSatisfied to check that if they car parks that
@@ -630,15 +612,10 @@ public class CarTests {
 	public void isSatisfied() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(10,20);
-		testVehicle.exitParkedState(12);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
+		testVehicle.exitParkedState(NORM_LEAVE_TIME);
 		assertTrue(testVehicle.isSatisfied() == true);
 	}
-	
-	/* TODO
-	 *  Still to write 
-	 * TOSTRING
-	 */
 	
 	/**
 	 * Testing was parked method to ensure that if the car was 
@@ -650,7 +627,7 @@ public class CarTests {
 	public void wasParked() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(10,20);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
 		assertTrue(testVehicle.wasParked() == true);
 	}
 	
@@ -679,8 +656,8 @@ public class CarTests {
 	public void hasParkedAndLeft() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(10,20);
-		testVehicle.exitParkedState(12);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
+		testVehicle.exitParkedState(NORM_LEAVE_TIME);
 		assertTrue(testVehicle.wasParked() == true);
 	}
 
@@ -695,7 +672,7 @@ public class CarTests {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterQueuedState();
-		testVehicle.exitQueuedState(11);
+		testVehicle.exitQueuedState(NORM_LEAVE_TIME);
 		assertTrue(testVehicle.wasQueued() == true);
 	}
 	
@@ -709,9 +686,38 @@ public class CarTests {
 	public void wasNotQueued() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
-		testVehicle.enterParkedState(10,20);
-		testVehicle.exitParkedState(12);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
+		testVehicle.exitParkedState(NORM_LEAVE_TIME);
 		assertTrue(testVehicle.wasQueued() == false);
+	}
+	
+	/**
+	 * Testing the is satisfied method to make sure that it is returning
+	 * the correct variable. Should return true because the car was satisfied.
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */
+	@Test
+	public void testIsSatisfied () throws VehicleException {
+		
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
+		testVehicle.enterParkedState(EXAMPLE_TIME, EXAMPLE_DURATION);
+		testVehicle.exitParkedState(NORM_LEAVE_TIME);
+		assertTrue(testVehicle.isSatisfied() == true);
+	}
+	/**
+	 * Testing the is satisfied method to make sure that it is returning
+	 * the correct variable. Should return true because the car was satisfied.
+	 * @throws VehicleException
+	 * @author Ken Lewis
+	 */
+	@Test
+	public void testIsNotSatisfied () throws VehicleException {
+		
+		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
+		testVehicle.enterQueuedState();
+		testVehicle.exitQueuedState(Constants.MAXIMUM_QUEUE_TIME +1);
+		assertTrue(testVehicle.isSatisfied() == false);
 	}
 	
 
