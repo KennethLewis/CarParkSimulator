@@ -2,19 +2,16 @@ package asgn2Simulators;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Random;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
@@ -32,28 +29,11 @@ import org.jfree.data.time.Minute;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
-import org.jfree.ui.ApplicationFrame;
-import org.jfree.ui.RefineryUtilities;
 
-import asgn2CarParks.CarPark;
-import asgn2Vehicles.Vehicle;
 
 
 public class ChartPanel extends GUISimulator {
-
-/** 
- * Example code based on the Stack Overflow example and the 
- * standard JFreeChart demos showing the construction of a time series 
- * data set. Some of the data creation code is clearly a quick hack
- * and should not be taken as indicative of the required coding style. 
- * @see http://stackoverflow.com/questions/5048852
- * 
- *  */
-    
-    /**
-     * Constructor shares the work with the run method. 
-     * @param title Frame display title
-     */
+	private static final long serialVersionUID=100L;
 	
 	private String chartTitle;
 	private JDialog chartDialog;

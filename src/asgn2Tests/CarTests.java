@@ -14,12 +14,10 @@ import static org.junit.Assert.*;
 
 import java.lang.reflect.Array;
 
-import org.junit.After;
-import org.junit.Before;
+
 import org.junit.Test;
 
 import asgn2Exceptions.VehicleException;
-import asgn2Simulators.Constants;
 import asgn2Vehicles.Vehicle;
 import asgn2Vehicles.Car;
 

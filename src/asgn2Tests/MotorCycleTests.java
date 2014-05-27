@@ -12,12 +12,11 @@ package asgn2Tests;
 
 import static org.junit.Assert.*;
 
-import org.junit.After;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import asgn2Exceptions.VehicleException;
-import asgn2Vehicles.Car;
 import asgn2Vehicles.MotorCycle;
 import asgn2Vehicles.Vehicle;
 

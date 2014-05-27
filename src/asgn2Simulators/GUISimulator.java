@@ -345,7 +345,7 @@ public class GUISimulator extends JFrame implements Runnable {
 	        public void actionPerformed(ActionEvent event) {
 
 				try{
-					//if (argsChecker == false)TODO uncomment if only args required for first run
+					
 					gatherUserEnteredVariables();
 					
 					//Need to create brand new variables so SimulationRunner
@@ -364,11 +364,11 @@ public class GUISimulator extends JFrame implements Runnable {
 					
 					//Prints data to the required panels after program run
 					carParkLogData.setText(carPark.finalState());
-					String data ="";
-					for(int i =0; i < chartData.size(); i++){
-						data += chartData.get(i) + "\n";
+					//String data ="";
+					//for(int i =0; i < chartData.size(); i++){
+					//	data += chartData.get(i) + "\n";
 						//System.out.printf("%s\n", chartData.get(i));
-					}
+					//}
 					//carParkLogData.setText(data);
 					carParkSummary.setText("Customers Parked: %d\n"
 							+"Customers Dissatisfied: %d\n\n" + carPark.toString() );
