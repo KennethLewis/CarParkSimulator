@@ -41,7 +41,7 @@ public class GUISimulator extends JFrame implements Runnable {
 	
 	private ArrayList<String> chartData = new ArrayList<String>();
 	
-	private int maxCarSpaces,maxSmallSpaces, maxBikeSpaces, maxQueue, seed;
+	private int maxCarSpaces, maxSmallSpaces, maxBikeSpaces, maxQueue, seed;
 	private double carProb,smallCarProb,bikeProb,stayMean, staySD;
 	
 	

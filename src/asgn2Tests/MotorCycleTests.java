@@ -12,14 +12,12 @@ package asgn2Tests;
 
 import static org.junit.Assert.*;
 
-
 import org.junit.Before;
 import org.junit.Test;
 
 import asgn2Exceptions.VehicleException;
 import asgn2Vehicles.MotorCycle;
 import asgn2Vehicles.Vehicle;
-
 
 public class MotorCycleTests {
 	private static final String EXAMPLE_PLATE = "1234Test";
@@ -32,30 +30,31 @@ public class MotorCycleTests {
 	 * @author Thomas McCarthy
 	 */
 	public void testCreateTestBike() throws VehicleException {
-		testBike = new MotorCycle (EXAMPLE_PLATE, EXAMPLE_TIME);
+		testBike = new MotorCycle(EXAMPLE_PLATE, EXAMPLE_TIME);
 	}
 
-	
 	/**
 	 * Testing the creation of a normal motorcycle Object
+	 * 
 	 * @throws VehicleException
 	 * @author Thomas McCarthy
 	 */
 	@Test
-	public void testNewMotorcycleCreation() throws VehicleException{
+	public void testNewMotorcycleCreation() throws VehicleException {
 		assertTrue(testBike != null);
 	}
-	
+
 	/**
-	 * Tests if the constructor throws an exception if provided arrival
-	 * time <= 0
+	 * Tests if the constructor throws an exception if provided arrival time <=
+	 * 0
+	 * 
 	 * @author Thomas McCarthy
 	 * @throws VehicleException
 	 */
-	@Test (expected = VehicleException.class)
+	@Test(expected = VehicleException.class)
 	public void testLowArrivalTime() throws VehicleException {
-		
+
 		testBike = new MotorCycle(EXAMPLE_PLATE, 0);
 	}
-	
+
 }

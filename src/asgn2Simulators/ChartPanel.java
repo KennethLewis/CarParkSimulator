@@ -44,11 +44,16 @@ public class ChartPanel extends GUISimulator {
 	private JDialog chartDialog;
 	private ArrayList<String> dataList;
 	private ArrayList<Integer> dataProcessList = new ArrayList<Integer>();
+	
 	/***
 	 * Object used for created various graphs.
-	 * @param title The title of the graph
-	 * @param statusList List of carpark statuses to eventually pull data from
-	 * @param isSummary If true, then it is a summary bar graph
+	 * 
+	 * @param title
+	 *            The title of the graph
+	 * @param statusList
+	 *            List of carpark statuses to eventually pull data from
+	 * @param isSummary
+	 *            If true, then it is a summary bar graph
 	 * @Author Thomas McCarthy
 	 */
     public ChartPanel(String title, ArrayList<String> statusList, boolean isSummary) {
