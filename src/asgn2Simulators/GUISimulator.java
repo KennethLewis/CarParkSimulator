@@ -39,7 +39,6 @@ public class GUISimulator extends JFrame implements Runnable {
 	private Log log;
 	private SimulationRunner sr;
 	
-	private ArrayList<String> statuses;
 	private ArrayList<String> chartData = new ArrayList<String>();
 	
 	private int maxCarSpaces,maxSmallSpaces, maxBikeSpaces, maxQueue, seed;
@@ -60,7 +59,7 @@ public class GUISimulator extends JFrame implements Runnable {
 	
 	
 	//Buttons
-	private JButton run, chart, text, exit;
+	private JButton run, timeChart, barChart, exit;
 	
 	//Titles and blanks (blanks were used to help balance layout)
 	private JLabel title = new JLabel ("Car Park");
@@ -119,6 +118,29 @@ public class GUISimulator extends JFrame implements Runnable {
 	}
 	
 	
+	public GUISimulator (int maxCarSpaces, int maxSmallSpaces, int maxBikeSpaces, int maxQueue, int seed,
+			double carProb, double smallCarProb, double bikeProb, double stayMean, double staySD){
+		this.setTitle("Car Park Application");
+		setSize(PREFSIZE);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		this.maxCarSpaces = maxCarSpaces;
+		this.maxSmallSpaces = maxSmallSpaces;
+		this.maxBikeSpaces = maxBikeSpaces;
+		this.maxQueue = maxQueue;
+		this.seed = seed;
+		this.carProb = carProb;
+		this.smallCarProb = smallCarProb;
+		this.bikeProb = bikeProb;
+		this.stayMean = stayMean;
+		this.staySD = staySD;
+		
+		theGUI.setLayout(new BorderLayout());
+		initilizeComponents();
+		repaint();
+
+	}
+	
 	/**
 	 * @param arg0
 	 * @throws HeadlessException
@@ -158,6 +180,8 @@ public class GUISimulator extends JFrame implements Runnable {
 			this.stayMean = stayMean;
 			this.staySD = staySD;
 		
+			System.out.println("the gathered staySD is " + staySD);
+			System.out.println("the real staySD is " + this.staySD);
 			//If program makes it here it means that the method was called
 			//in SimulationRunner. Set to true so that the program will use
 			//the args commands.
@@ -174,31 +198,41 @@ public class GUISimulator extends JFrame implements Runnable {
 	 * on.
 	 */
 	private void gatherUserEnteredVariables() throws SimulationException{
+		String errorMsg = "All fields are required!";
 		
 		try{
 			this.maxCarSpaces = Integer.parseInt(default_max_car_spaces.getText());
-			this.maxSmallSpaces = Integer.parseInt(default_max_small_car_spaces.getText());;
-			this.maxBikeSpaces = Integer.parseInt(default_max_motorcycle_spaces.getText());; 
-			this.maxQueue = Integer.parseInt(default_max_queue_size.getText());;
+			this.maxSmallSpaces = Integer.parseInt(default_max_small_car_spaces.getText());
+			this.maxBikeSpaces = Integer.parseInt(default_max_motorcycle_spaces.getText());
+			this.maxQueue = Integer.parseInt(default_max_queue_size.getText());
 			
-			this.seed = Integer.parseInt(default_seed.getText());;
+			this.seed = Integer.parseInt(default_seed.getText());
 			this.carProb = Double.parseDouble(default_car_prob.getText());
 			this.smallCarProb = Double.parseDouble(default_small_car_prob.getText());
 			this.bikeProb = Double.parseDouble(default_motorcycle_prob.getText());
 			this.stayMean = Double.parseDouble(default_intended_stay_mean.getText());
 			this.staySD = Double.parseDouble(default_intended_stay_sd.getText());
 			
+			if (maxSmallSpaces > maxCarSpaces) {
+				errorMsg = "Maximum number of small car spaces cannot exceed maximum total spaces.";
+				throw new NumberFormatException(errorMsg);
+			}
 		}
+		
+		// We're using NumberFormatException specifically, since that is
+		// the exception thrown whenever fields are blank or invalid numbers.
+		// Saves us a lot of manual work.
 		catch (NumberFormatException nfe){
-			//Displays error if parameters are incorrect and will restart
-			//the program.
+
 			JOptionPane.showMessageDialog(this,
-				    "One or more perameters were incorrect!","Incorrect Entry",
-				    JOptionPane.ERROR_MESSAGE);
-			this.setVisible(false);
-			GUISimulator frame = new GUISimulator();
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setVisible(true);
+			errorMsg,"Incorrect Entry",
+			JOptionPane.ERROR_MESSAGE);
+			throw new SimulationException(errorMsg);
+			
+			//this.setVisible(false);
+			//GUISimulator frame = new GUISimulator();
+			//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			//frame.setVisible(true);
 		}
 		
 	}
@@ -319,12 +353,13 @@ public class GUISimulator extends JFrame implements Runnable {
 		
 		//Create Buttons with ActionListeners
 		run = new JButton("Run");
-		
 		run.addActionListener(new ActionListener() {
+
 	        public void actionPerformed(ActionEvent event) {
+
 				try{
 					//if (argsChecker == false)TODO uncomment if only args required for first run
-						gatherUserEnteredVariables();
+					gatherUserEnteredVariables();
 					
 					//Need to create brand new variables so SimulationRunner
 					//has new data each time.
@@ -332,7 +367,13 @@ public class GUISimulator extends JFrame implements Runnable {
 					log = new Log();
 					sim = new Simulator(seed,stayMean,staySD,carProb,smallCarProb,bikeProb);
 					sr = new SimulationRunner (carPark,sim,log);
+					chartData.clear();
 					sr.runSimulation();
+					
+					
+					timeChart.setEnabled(true);
+					barChart.setEnabled(true);
+					
 					
 					//Prints data to the required panels after program run
 					carParkLogData.setText(carPark.finalState());
@@ -357,12 +398,19 @@ public class GUISimulator extends JFrame implements Runnable {
 					System.out.printf("There was a problem running the program.\n" +
 							"Details are: %s\n", ve);
 				}
+				
+				catch (NumberFormatException nfe){
+					System.out.printf("There was a problem running the program.\n" +
+							"Details are: %s\n", nfe);
+				}
+				
 	        }
 		});
-		chart = new JButton("Charts");
-		chart.addActionListener(new ActionListener() {
+		timeChart = new JButton("Time Series Chart");
+		timeChart.setEnabled(false);
+		timeChart.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent event) {
-                ChartPanel chartWindow = new ChartPanel("lol", statuses);
+                ChartPanel chartWindow = new ChartPanel("Time Series Chart", chartData, false);
                 
                 chartWindow.getChartDialog().pack();
                 RefineryUtilities.centerFrameOnScreen(chartWindow);
@@ -371,7 +419,18 @@ public class GUISimulator extends JFrame implements Runnable {
 	        }
 		});
 		
-		text = new JButton ("Text");
+		barChart = new JButton ("Bar Chart Summary");
+		barChart.setEnabled(false);
+		barChart.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent event) {
+                ChartPanel chartWindow = new ChartPanel("Bar Chart Summary", chartData, true);
+                
+                chartWindow.getChartDialog().pack();
+                RefineryUtilities.centerFrameOnScreen(chartWindow);
+                chartWindow.getChartDialog().repaint();
+                chartWindow.getChartDialog().setVisible(true);
+	        }
+		});
 		exit = new JButton ("Exit");
 		exit.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent event) {
@@ -381,8 +440,8 @@ public class GUISimulator extends JFrame implements Runnable {
 		
 		//Add Buttons to button panel
 		bottomButtons.add(run);
-		bottomButtons.add(chart);
-		bottomButtons.add (text);
+		bottomButtons.add(timeChart);
+		bottomButtons.add (barChart);
 		bottomButtons.add(exit);
 		
 		//Adds the three main panels to a central panel to help display

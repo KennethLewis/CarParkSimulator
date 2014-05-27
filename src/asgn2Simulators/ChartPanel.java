@@ -19,10 +19,15 @@ import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.time.Minute;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
@@ -53,16 +58,24 @@ public class ChartPanel extends GUISimulator {
 	private String chartTitle;
 	private JDialog chartDialog;
 	private ArrayList<String> dataList;
+	private ArrayList<Integer> dataProcessList = new ArrayList<Integer>();
 	
-    public ChartPanel(String title, ArrayList<String> statusList) {
+    public ChartPanel(String title, ArrayList<String> statusList, boolean isSummary) {
     	super(title);
     	
     	this.dataList = statusList;
     	
     	chartDialog = new JDialog(this, title, true);
         chartTitle = title;
+        JFreeChart chart;
+        
+        if (!isSummary) {
         final TimeSeriesCollection dataset = createTimeSeriesData(); 
-        JFreeChart chart = createChart(dataset);
+        	chart = createTimeChart(dataset);
+        } else {
+        	final CategoryDataset dataset = createBarChartData();
+        	chart = createBarChart(dataset);
+        }
         chartDialog.add(new org.jfree.chart.ChartPanel(chart), BorderLayout.CENTER);
         JPanel btnPanel = new JPanel(new FlowLayout());
         chartDialog.add(btnPanel, BorderLayout.SOUTH);
@@ -75,6 +88,22 @@ public class ChartPanel extends GUISimulator {
     }
     
     
+    private CategoryDataset createBarChartData() {
+        final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        
+        for (int i=0; i<=Constants.CLOSING_TIME; i++) {
+        	 processData(dataList.get(i));
+ 	        
+            dataset.addValue(dataProcessList.get(1), "Total Vehicles", "");
+            dataset.addValue(dataProcessList.get(6), "Dissastisfied Vehicles", "");
+            dataProcessList.clear();
+        }
+
+
+        return dataset;
+        
+    }
+    
     /**
      * Private method creates the dataset. Lots of hack code in the 
      * middle, but you should use the labelled code below  
@@ -82,76 +111,59 @@ public class ChartPanel extends GUISimulator {
 	 */
 	private TimeSeriesCollection createTimeSeriesData() {
 		TimeSeriesCollection tsc = new TimeSeriesCollection(); 
-		TimeSeries vehTotal = new TimeSeries("Total Vehicles");
-		TimeSeries carTotal = new TimeSeries("Total Cars"); 
-		TimeSeries mcTotal = new TimeSeries("MotorCycles");
+		TimeSeries vehiclesToDate = new TimeSeries("Vehicles To Date");
+		TimeSeries currentlyParked = new TimeSeries("Currently Parked");
+		TimeSeries totalCars = new TimeSeries("Total Cars");
+		TimeSeries smallCarTotal = new TimeSeries("Total Small Cars");
+		TimeSeries motorCycleTotal = new TimeSeries("Total MotorCycles");
+		TimeSeries vehiclesInQueue = new TimeSeries("Vehicles in Queue"); 
+		TimeSeries archivedVehicles = new TimeSeries("Archived Vehicles");
+		TimeSeries dissatisfiedVehicles = new TimeSeries("Dissatisfied Vehicles");
 
-		List<Integer> dataProcessList = new ArrayList<Integer>();
+
 		//Base time, data set up - the calendar is needed for the time points
 		Calendar cal = GregorianCalendar.getInstance();
 
-		Random rng = new Random(250); 
-		int cars = 0;
-		int mc = 0; 
-		//Hack loop to make it interesting. Grows for half of it, then declines
-		for (int i=0; i<=18*60; i++) {
+
+		for (int i=0; i<=Constants.CLOSING_TIME; i++) {
 			//These lines are important 
 			cal.set(2014,0,1,6,i);
 	        Date timePoint = cal.getTime();
 	        
-	        //HACK BEGINS
-	        if (i<9*60) {
-	        	if (randomSuccess(0.2,rng)) {
-	        		cars++; 
-	        	}
-	        	if (randomSuccess(0.1,rng)) {
-	        		mc++;
-	        	}
-	        } else if (i < 18*60) {
-	        	if (randomSuccess(0.15,rng)) {
-	        		cars++; 
-	        	} else if (randomSuccess(0.4,rng)) {
-	        		cars = Math.max(cars-1,0);
-	        	}
-	        	if (randomSuccess(0.05,rng)) {
-	        		mc++; 
-	        	} else if (randomSuccess(0.2,rng)) {
-	        		mc = Math.max(mc-1,0);
-	        	}
-	        } else {
-	        	cars=0; 
-	        	mc =0;
-	        }
-	        //HACK ENDS
+	       
+	        processData(dataList.get(i));
+	        
+	     
 	        
 	        //This is important - steal it shamelessly 
-			mcTotal.add(new Minute(timePoint),mc);
-			carTotal.add(new Minute(timePoint),cars);
-			vehTotal.add(new Minute(timePoint),cars+mc);
+			vehiclesToDate.add(new Minute(timePoint),dataProcessList.get(1));
+			currentlyParked.add(new Minute(timePoint),dataProcessList.get(2));
+			totalCars.add(new Minute(timePoint),dataProcessList.get(3));
+			smallCarTotal.add(new Minute(timePoint),dataProcessList.get(4));
+			motorCycleTotal.add(new Minute(timePoint),dataProcessList.get(5));
+			vehiclesInQueue.add(new Minute(timePoint),dataProcessList.get(8));
+			archivedVehicles.add(new Minute(timePoint),dataProcessList.get(7));
+			dissatisfiedVehicles.add(new Minute(timePoint),dataProcessList.get(6));
+			dataProcessList = new ArrayList<Integer>();
 		}
 		
 		//Collection
-		tsc.addSeries(vehTotal);
-		tsc.addSeries(carTotal);
-		tsc.addSeries(mcTotal);
+		tsc.addSeries(vehiclesToDate);
+		tsc.addSeries(currentlyParked);
+		tsc.addSeries(totalCars);
+		tsc.addSeries(smallCarTotal);
+		tsc.addSeries(motorCycleTotal);
+		tsc.addSeries(vehiclesInQueue);
+		
+		tsc.addSeries(archivedVehicles);
+		tsc.addSeries(dissatisfiedVehicles);
 		
 		return tsc; 
 	}
 	
-	/**
-	 * Utility method to implement a <a href="http://en.wikipedia.org/wiki/Bernoulli_trial">Bernoulli Trial</a>, 
-	 * a coin toss with two outcomes: success (probability successProb) and failure (probability 1-successProb)
-	 * @param successProb double holding the success probability 
-	 * @param rng Random object 
-	 * @return true if trial was successful, false otherwise
-	 */
-	private boolean randomSuccess(double successProb,Random rng) {
-		boolean result = rng.nextDouble() <= successProb;
-		return result;
-	}
 
 	
-	private void processData(List<Integer> listToAddTo, String statusString) {
+	private void processData(String statusString) {
 		
 		Pattern pattern = Pattern.compile("[0-9]+"); 
 		Matcher matcher = pattern.matcher(statusString);
@@ -160,7 +172,7 @@ public class ChartPanel extends GUISimulator {
 		// Find all matches
 		while (matcher.find()) { 
 		  // Get the matching string  
-			listToAddTo.add(Integer.parseInt(matcher.group()));
+			dataProcessList.add(Integer.parseInt(matcher.group()));
 		}
 		
 
@@ -170,7 +182,7 @@ public class ChartPanel extends GUISimulator {
      * @param dataset TimeSeriesCollection for plotting 
      * @returns chart to be added to panel 
      */
-    private JFreeChart createChart(final XYDataset dataset) {
+    private JFreeChart createTimeChart(final XYDataset dataset) {
         final JFreeChart result = ChartFactory.createTimeSeriesChart(
             chartTitle, "hh:mm:ss", "Vehicles", dataset, true, true, false);
         final XYPlot plot = result.getXYPlot();
@@ -179,8 +191,40 @@ public class ChartPanel extends GUISimulator {
         ValueAxis range = plot.getRangeAxis();
         range.setAutoRange(true);
         
+        
+        // Let's set the series to use the spec's
+        // recommended colors.
         XYItemRenderer renderer = plot.getRenderer();
-        renderer.setSeriesPaint(0, Color.green);
+        renderer.setSeriesPaint(0, Color.black);
+        renderer.setSeriesPaint(1, Color.blue);
+        renderer.setSeriesPaint(2, Color.cyan);
+        renderer.setSeriesPaint(3, Color.gray);
+        renderer.setSeriesPaint(4, Color.darkGray);
+        renderer.setSeriesPaint(5, Color.yellow);
+        renderer.setSeriesPaint(6, Color.green);
+        renderer.setSeriesPaint(7, Color.red);
+        return result;
+    }
+    
+    
+    
+    /**
+     * Helper method to deliver the Chart - currently uses default colours and auto range 
+     * @param dataset TimeSeriesCollection for plotting 
+     * @returns chart to be added to panel 
+     */
+    private JFreeChart createBarChart(final CategoryDataset dataset) {
+        final JFreeChart result = ChartFactory.createBarChart(
+            chartTitle, "", "Number of Vehicles", dataset, PlotOrientation.VERTICAL, true, false, false);
+        final CategoryPlot plot = result.getCategoryPlot();
+        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+        rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+        
+        
+        // Let's set the series to use the spec's
+        // recommended colors.
+        CategoryItemRenderer renderer = plot.getRenderer();
+        renderer.setSeriesPaint(0, Color.blue);
         renderer.setSeriesPaint(1, Color.red);
         return result;
     }

@@ -77,10 +77,12 @@ public class SimulationRunner {
 			}
 			//Log progress 
 			this.log.logEntry(time,this.carPark);
+
 			chartData.add(carPark.getStatus(time));
 			//System.out.printf("%s\n",carPark.getStatus(time));
 		}
 		this.log.finalise(this.carPark);
+		
 	}
 
 	/**
@@ -89,8 +91,8 @@ public class SimulationRunner {
 	 */
 	public static void main(String[] args) {
 		
-		GUISimulator frame = new GUISimulator();
-		frame.gatherChartData(chartData);
+		GUISimulator frame;
+
 		if(args.length == 10){//need to check this number might be 9
 		
 			try{
@@ -105,16 +107,26 @@ public class SimulationRunner {
 				double stayMean = Double.parseDouble(args[8]);
 				double staySD = Double.parseDouble(args[9]);
 				
-				frame.gatherArgs(maxCarSpaces, maxSmallSpaces, maxBikeSpaces, 
+				frame = new GUISimulator(maxCarSpaces, maxSmallSpaces, maxBikeSpaces, 
 						maxQueue, seed, carProb, smallCarProb, bikeProb, stayMean, staySD);
+				frame.gatherChartData(chartData);
+				
+				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				frame.setVisible(true);
+
 			} catch(Exception e){
 				System.out.printf("There were one or more incorrect entries entered on" +
-						" the command line.\nError message is: %s\n",e);
+						" the command line.\n%s\n",e);
 			}
-		}
+		} else {
+			frame = new GUISimulator();
+			frame.gatherChartData(chartData);
 			
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.setVisible(true);
+		}
+		
+
 	} 
 
 	/**
