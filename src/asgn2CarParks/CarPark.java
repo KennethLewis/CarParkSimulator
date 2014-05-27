@@ -561,13 +561,14 @@ public class CarPark {
 	 */
 	@Override
 	public String toString() {
-		return "CarPark [count: " + count
-				+ "\nnumCars: " + numCars
-				+ "\nnumSmallCars: " + numSmallCars
-				+ "\nnumMotorCycles: " + numMotorCycles
-				+ "\nqueue: " + (queue.size())
-				+ "\nnumDissatisfied: " + numDissatisfied
-				+ "\npast: " + past.size() + "]";
+		return "End of Day CarPark Status\n\n\n" +
+				"Total Vehicles " + count
+				+ "\nNumber of Cars: " + numCars
+				+ "\nNumber of Small Cars: " + numSmallCars
+				+ "\nNumber of MotorCycles: " + numMotorCycles
+				+ "\nCurrent Queue Size: " + (queue.size())
+				+ "\nTotal Dissatisfied: " + numDissatisfied
+				+ "\nArchived Vehicles: " + past.size();
 	}
 
 	/**
