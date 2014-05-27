@@ -505,30 +505,36 @@ public class CarPark {
 		boolean motorCycleFull = false;
 		boolean smallCarFull = false;
 		boolean normalCarFull = false;
-		// Math.max used to convert any negatives into 0s (negatives occurring when there are
-		// still spaces left)
 		
-		//  TODO: There is a bug here. Sometimes the carpark goes over its limits slightly.
-		// I think the issue is that Math.max converts to 0 if the value is negative (we need this to make overflow equations easier).
-		// However, there is no way to tell between a converted 0 (i.e. negative overly, meaning some empty spaces left) and a 'true' 0 (i.e. no spaces left)
+		
+		// Math.max used to convert any negatives into 0s (negatives occurring when there are
+		
+		// Calculate the number of motorcycles in small car spaces (aka overflow)
+		// Negative values mean that there's still space left
 		int motorCycleOverflow =  this.getNumMotorCycles() - this.maxMotorCycleSpaces;
+		
+		// If there's cycles overflowing, the normal motorcycle spaces must be full
 		if (motorCycleOverflow >= 0) {
 			motorCycleFull = true;
 		}
+		
+		// To make things easier, let's convert the negative values to be just 0
+		// so if there's no overflow, there won't be any effect on our later equations
 		motorCycleOverflow = Math.max(0, motorCycleOverflow);
 		
 		int smallCarOverflow = this.getNumSmallCars() + motorCycleOverflow - this.maxSmallCarSpaces;
 		if (smallCarOverflow >= 0) {
 			smallCarFull = true;
 		}
+		
 		smallCarOverflow = Math.max(0, smallCarOverflow);
 		
-		if ((this.getNumCars() - this.getNumSmallCars()) >= (this.maxCarSpaces - this.maxSmallCarSpaces)) {
+		if ((this.getNumCars() - this.getNumSmallCars()) >= (this.maxCarSpaces - this.maxSmallCarSpaces - smallCarOverflow)) {
 			normalCarFull = true;
 		}
 		
 		
-		
+		// Now that we've calculated which spaces are full, let's return our values
 		if (this.carParkFull()) {
 			return false;
 		} else if (motorCycleFull && smallCarFull && v instanceof MotorCycle) {
