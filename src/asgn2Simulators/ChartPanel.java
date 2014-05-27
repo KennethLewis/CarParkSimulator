@@ -31,7 +31,12 @@ import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
 
 
-
+/***
+ * Class for chart generation
+ * @author Thomas McCarthy
+ * @author Ken Lewis
+ *
+ */
 public class ChartPanel extends GUISimulator {
 	private static final long serialVersionUID=100L;
 	
@@ -39,7 +44,13 @@ public class ChartPanel extends GUISimulator {
 	private JDialog chartDialog;
 	private ArrayList<String> dataList;
 	private ArrayList<Integer> dataProcessList = new ArrayList<Integer>();
-	
+	/***
+	 * Object used for created various graphs.
+	 * @param title The title of the graph
+	 * @param statusList List of carpark statuses to eventually pull data from
+	 * @param isSummary If true, then it is a summary bar graph
+	 * @Author Thomas McCarthy
+	 */
     public ChartPanel(String title, ArrayList<String> statusList, boolean isSummary) {
     	super(title);
     	
@@ -67,7 +78,12 @@ public class ChartPanel extends GUISimulator {
     	return chartDialog;
     }
     
-    
+    /***
+     * Helper method that creates the bar chart data from a list of statuses
+     * @return the processed data, ready for bar chart implementation
+     * @Author Thomas McCarthy
+     * @Author Ken Lewis
+     */
     private CategoryDataset createBarChartData() {
         final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         
@@ -124,7 +140,7 @@ public class ChartPanel extends GUISimulator {
 			vehiclesInQueue.add(new Minute(timePoint),dataProcessList.get(8));
 			archivedVehicles.add(new Minute(timePoint),dataProcessList.get(7));
 			dissatisfiedVehicles.add(new Minute(timePoint),dataProcessList.get(6));
-			dataProcessList = new ArrayList<Integer>();
+			dataProcessList.clear();
 		}
 		
 		//Collection
@@ -142,7 +158,11 @@ public class ChartPanel extends GUISimulator {
 	}
 	
 
-	
+	/***
+	 * Helper method that processed carpark statuses and rips out
+	 * numbers from the string
+	 * @param statusString the status string to pull from
+	 */
 	private void processData(String statusString) {
 		
 		Pattern pattern = Pattern.compile("[0-9]+"); 

@@ -25,8 +25,9 @@ import asgn2Vehicles.MotorCycle;
 import asgn2CarParks.CarPark;
 
 
-/**
- * @author hogan
+/***
+ * 
+ * @author Thomas McCarthy
  *
  */
 public class CarParkTests {

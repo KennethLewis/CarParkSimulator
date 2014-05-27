@@ -86,7 +86,7 @@ public class GUISimulator extends JFrame implements Runnable {
 	private JPanel theGUI = new JPanel();
 	
 	
-	public GUISimulator (){
+	public GUISimulator(){
 		// Initialize the Frame and add the GamePanel
 		this.setTitle("Car Park Application");
 		setSize(PREFSIZE);
@@ -118,7 +118,7 @@ public class GUISimulator extends JFrame implements Runnable {
 			double carProb, double smallCarProb, double bikeProb, double stayMean, double staySD){
 		this.setTitle("Car Park Application");
 		setSize(PREFSIZE);
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);;
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		this.maxCarSpaces = maxCarSpaces;
 		this.maxSmallSpaces = maxSmallSpaces;
@@ -137,45 +137,17 @@ public class GUISimulator extends JFrame implements Runnable {
 
 	}
 	
-	/**
-	 * @param arg0
-	 * @throws HeadlessException
+	/***
+	 * Needed to satisfy the "implements Runnable" from the spec
 	 */
 	public GUISimulator(String arg0) throws HeadlessException {
 		super(arg0);
-		// TODO Auto-generated constructor stub
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Runnable#run()
+	/***
+	 * Needed to satisfy the "implements Runnable" from the spec
 	 */
-	
 	public void run(){
-		// TODO Auto-generated method stub
-
-	}
-	/**
-	 * GatherArgs is designed to be called in SimulationRunner if args are detected
-	 * on the command line. If they are this method is called and the variables which
-	 * have initially been set to the constants will be changed to the new variables
-	 * Inputed in the command line.
-	 */
-	
-	public void gatherArgs(int maxCarSpaces, int maxSmallSpaces, int maxBikeSpaces, int maxQueue,
-			int seed, double carProb, double smallCarProb, double bikeProb, double stayMean,
-			double staySD) throws SimulationException{
-		
-			this.maxCarSpaces = maxCarSpaces;
-			this.maxSmallSpaces = maxSmallSpaces;
-			this.maxBikeSpaces = maxBikeSpaces;
-			this.maxQueue = maxQueue;
-			this.seed = seed;
-			this.carProb = carProb;
-			this.smallCarProb = smallCarProb;
-			this.bikeProb = bikeProb;
-			this.stayMean = stayMean;
-			this.staySD = staySD;
-		
 	}
 	
 	/**
@@ -183,6 +155,8 @@ public class GUISimulator extends JFrame implements Runnable {
 	 * from the beginning of the gui being written. Variables are taken from the 
 	 * UserOptions Panel from the various positions and converted to be passed 
 	 * on.
+	 * @throws SimulationException
+	 * @Author Ken Lewis
 	 */
 	private void gatherUserEnteredVariables() throws SimulationException{
 		String errorMsg = "All fields are required!";
@@ -233,6 +207,11 @@ public class GUISimulator extends JFrame implements Runnable {
 		
 	}
 	
+	/***
+	 * Populates the GUI and creates buttons
+	 * @Author Thomas McCarthy
+	 * @Author Ken Lewis
+	 */
 	private void initilizeComponents (){
 		
 		//Create User Options Panel
@@ -432,6 +411,8 @@ public class GUISimulator extends JFrame implements Runnable {
 	 * Helper method that populates the GUI fields
 	 * a big bunch of CarPark statuses
 	 * @param statusData
+	 * @Author Ken Lewis
+	 * @Author Thomas McCarthy
 	 */
 	private void fillGUIText(ArrayList<String> statusData) {
 		String data ="";

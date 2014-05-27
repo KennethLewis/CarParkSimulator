@@ -33,6 +33,8 @@ import asgn2Vehicles.Vehicle;
  * used by the logger. 
  * 
  * @author hogan
+ * @author Thomas McCarthy
+ * @Author Ken Lewis
  *
  */
 public class CarPark {
@@ -53,9 +55,8 @@ public class CarPark {
 	private int numMotorCycles;
 	private int numDissatisfied;
 	private String status = "";
-	/* * CarPark constructor sets the basic size parameters. 
-	 * Uses default parameters
-	 */
+	
+	
 	public CarPark() {
 		this(Constants.DEFAULT_MAX_CAR_SPACES,Constants.DEFAULT_MAX_SMALL_CAR_SPACES,
 				Constants.DEFAULT_MAX_MOTORCYCLE_SPACES,Constants.DEFAULT_MAX_QUEUE_SIZE);
@@ -144,6 +145,7 @@ public class CarPark {
 	 * away
 	 * @param v Vehicle to be archived
 	 * @throws SimulationException if vehicle is currently queued or parked
+	 * @Author Thomas McCarthy
 	 */
 	public void archiveNewVehicle(Vehicle v) throws SimulationException {
 		
@@ -250,6 +252,8 @@ public class CarPark {
 	 * @throws SimulationException if vehicle is not in queue 
 	 * @throws VehicleException if the vehicle is in an incorrect state or timing 
 	 * constraints are violated
+	 * @Author Thomas McCarthy
+	 * @Author Ken Lewis
 	 */
 	public void exitQueue(Vehicle v,int exitTime) throws SimulationException, VehicleException {
 		
@@ -460,9 +464,9 @@ public class CarPark {
 				}
 			}
 			// We're removing the queue elements now, since we can't do it mid-iteration
-			this.queue.removeAll(carParkEntries);
+			queue.removeAll(carParkEntries);
 			
-			this.carParkEntries = new ArrayList<Vehicle>();
+			carParkEntries = new ArrayList<Vehicle>();
 
 		}
 
@@ -572,6 +576,7 @@ public class CarPark {
 	 * @param sim Simulation object controlling vehicle creation 
 	 * @throws SimulationException if no suitable spaces available when operation attempted 
 	 * @throws VehicleException if vehicle creation violates constraints 
+	 * @Author Thomas McCarthy
 	 */
 	public void tryProcessNewVehicles(int time,Simulator sim) throws VehicleException, SimulationException {
 		
@@ -581,8 +586,8 @@ public class CarPark {
 		List<Vehicle> newVehicles = new ArrayList<Vehicle>();
 		
 		if (sim.newCarTrial()) {
-			this.count++;
-			plates = "C" + this.count;
+			count++;
+			plates = "C" + count;
 			newCar = new Car(plates, time, sim.smallCarTrial());
 			newVehicles.add(newCar);
 			handleNewVehicle(newCar, time, sim);
@@ -590,8 +595,8 @@ public class CarPark {
 		}
 		
 		if (sim.motorCycleTrial()) {
-			this.count++;
-			plates = "MC" + this.count;
+			count++;
+			plates = "MC" + count;
 			newBike = new MotorCycle(plates, time);
 			newVehicles.add(newBike);
 			handleNewVehicle(newBike, time, sim);
@@ -669,12 +674,12 @@ public class CarPark {
 	 */
 	private void incomingVehicleMonitor(Vehicle v){
 	 if (v instanceof MotorCycle) {
-		this.numMotorCycles++;
+		numMotorCycles++;
 	 } else if (v instanceof Car && ((Car) v).isSmall() == true) {
-		this.numSmallCars++;
-		this.numCars++;
+		numSmallCars++;
+		numCars++;
 	 } else if (v instanceof Car && ((Car) v).isSmall() == false) {
-		this.numCars++;
+		numCars++;
 	}
 
 	 
@@ -689,12 +694,12 @@ public class CarPark {
 	private void outgoingVehicleMonitor (Vehicle v){
 		
 		if (v instanceof MotorCycle)
-			this.numMotorCycles--;
+			numMotorCycles--;
 		 else if (v instanceof Car && ((Car) v).isSmall() == true) {
-			this.numSmallCars--;
-			this.numCars--;
+			numSmallCars--;
+			numCars--;
 		 } else if (v instanceof Car && ((Car) v).isSmall() == false) {
-			this.numCars--;
+			numCars--;
 		 }
 		
 	}
