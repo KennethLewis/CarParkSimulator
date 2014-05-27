@@ -122,7 +122,7 @@ public class GUISimulator extends JFrame implements Runnable {
 			double carProb, double smallCarProb, double bikeProb, double stayMean, double staySD){
 		this.setTitle("Car Park Application");
 		setSize(PREFSIZE);
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);;
 		
 		this.maxCarSpaces = maxCarSpaces;
 		this.maxSmallSpaces = maxSmallSpaces;

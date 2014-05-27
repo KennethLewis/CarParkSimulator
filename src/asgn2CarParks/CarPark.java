@@ -165,13 +165,12 @@ public class CarPark {
 	public void archiveQueueFailures(int time) throws VehicleException {
 		ArrayList<Vehicle> queueFailures = new ArrayList<Vehicle>();
 		for (int i = 0; i < queue.size(); i++){
-			
-			int timeInQueue = time - queue.get(i).getArrivalTime();
+			Vehicle vehicleToRemove = queue.get(i);
+			int timeInQueue = time - vehicleToRemove.getArrivalTime();
 
-			if (timeInQueue >= Constants.MAXIMUM_QUEUE_TIME){
-				Vehicle vehicleToRemove = queue.get(i);
-				
-				
+			if (timeInQueue > Constants.MAXIMUM_QUEUE_TIME){
+			
+				status += setVehicleMsg(vehicleToRemove, "Q", "A");
 				queueFailures.add(vehicleToRemove);
 
 			}
@@ -182,9 +181,10 @@ public class CarPark {
 		for (int i = 0; i < queueFailures.size(); i++) {
 			queueFailures.get(i).exitQueuedState(time);
 			past.add(queueFailures.get(i));
+			//
 			numDissatisfied++;
 		}
-		queueFailures = new ArrayList<Vehicle>();
+		queueFailures.clear();
 
 	}
 	
@@ -231,7 +231,6 @@ public class CarPark {
 		if(queue.size() != maxQueueSize){
 			v.enterQueuedState();
 			queue.add(v);
-
 		}
 		else {
 			//Time passed through to archiveQueue method should be the current time
@@ -254,21 +253,14 @@ public class CarPark {
 	 */
 	public void exitQueue(Vehicle v,int exitTime) throws SimulationException, VehicleException {
 		
-		int queuedTime =  exitTime - v.getArrivalTime();
-		
-		if(v.isQueued() == false)
+		if(v.isQueued() == false) {
 			throw new SimulationException("Vehicle is currently not in the CarPark Queue!\n" + v.toString());
-		else if (queuedTime >= Constants.MAXIMUM_QUEUE_TIME){
-			//If the vehicle has been in queue for too long.
-			past.add(v);
-			queue.remove(v);
+		} else {
 			v.exitQueuedState(exitTime);
-			numDissatisfied++;
-		}
-		else {
-			v.exitQueuedState(exitTime);
+			
+			// We aren't actually removing from the queue yet (to avoid iteration issues).
+			// We're adding it to a list to be bulk removed later.
 			carParkEntries.add(v);
-			//incomingVehicleMonitor(v);
 
 		}
 			
@@ -282,7 +274,7 @@ public class CarPark {
 	 * @return String containing dump of final carpark state 
 	 */
 	public String finalState() {
-		String str = "Vehicles Processed: count:" + 
+		String str = "Vehicles Processed: count: " + 
 				this.count + ", logged: " + this.past.size() 
 				+ "\nVehicle Record: \n";
 		for (Vehicle v : this.past) {
@@ -495,7 +487,7 @@ public class CarPark {
 	 */
 	public boolean queueFull() {
 		
-		if(queue.size() == maxQueueSize) {
+		if(queue.size() >= maxQueueSize) {
 			return true;
 		}	else {
 			return false;
@@ -593,7 +585,7 @@ public class CarPark {
 		
 		if (sim.motorCycleTrial()) {
 			this.count++;
-			plates = "M" + this.count;
+			plates = "MC" + this.count;
 			newBike = new MotorCycle(plates, time);
 			newVehicles.add(newBike);
 			handleNewVehicle(newBike, time, sim);

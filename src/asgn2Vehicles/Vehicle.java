@@ -317,13 +317,19 @@ public abstract class Vehicle {
 		else
 			wasSatisfiedTxt = "not satisfied";
 		
-		return "Vehicle ID: " + this.vehID +
-				"\nArrival Time: " + this.arrivalTime +
-				"\nVehicle " + wasQueuedTxt + " queued" +
-				"\nEntry to the Car Park: " + this.arrivalTime +
+		String wasParkedTxt = "";
+		if (wasParked()) {
+			wasParkedTxt = "\nEntry to Car Park: " + this.arrivalTime +
 				"\nExit from Car Park: " + (getDepartureTime()) +
 				"\nParking Time: " + 
-				(getDepartureTime() - getArrivalTime()) +
+				(getDepartureTime() - getArrivalTime());
+		} else {
+			wasParkedTxt = "\nVehicle was not parked";
+		}
+		return "Vehicle vehID: " + this.vehID +
+				"\nArrival Time: " + this.arrivalTime +
+				"\nVehicle " + wasQueuedTxt + " queued" +
+				wasParkedTxt +
 				"\nCustomer was " + wasSatisfiedTxt;
 		//EXAMPLE toString from Assingment Specs part II		
 		/*Vehicle vehID:
