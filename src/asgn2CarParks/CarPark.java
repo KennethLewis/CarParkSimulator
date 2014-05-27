@@ -11,9 +11,6 @@
 package asgn2CarParks;
 
 import java.util.*;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Queue;
 
 import asgn2Exceptions.SimulationException;
 import asgn2Exceptions.VehicleException;
@@ -82,6 +79,7 @@ public class CarPark {
 	 * 						 restricted to small cars
 	 * @param maxMotorCycleSpaces maximum number of spaces allocated to MotorCycles
 	 * @param maxQueueSize maximum number of vehicles allowed to queue
+	 * @Author Ken Lewis
 	 */
 	public CarPark(int maxCarSpaces,int maxSmallCarSpaces, int maxMotorCycleSpaces, int maxQueueSize) {
 		spaces = new ArrayList<Vehicle>(maxCarSpaces);
@@ -108,25 +106,28 @@ public class CarPark {
 	 * @throws VehicleException if vehicle to be archived is not in the correct state 
 	 * @throws SimulationException if one or more departing vehicles are not in the car park when operation applied
 	 * @author Ken Lewis
+	 * @Author Thomas McCarthy
 	 */
 	public void archiveDepartingVehicles(int time,boolean force) throws VehicleException, SimulationException {
 		ArrayList<Vehicle> departingVehicles = new ArrayList<Vehicle>();
 		for (int i = 0; i < spaces.size(); i++){
+			
 			//Check to make sure vehicle is parked, throw exception if not
 			if(spaces.get(i).isParked() == false)
 				throw new SimulationException("One or more departing Vehicles are" +
 						" currently not in the car park. Archive Departing Vehicles failure.\n");
+			
 			else if (time == spaces.get(i).getDepartureTime()) {
 				spaces.get(i).exitParkedState(time);
-				outgoingVehicleMonitor(spaces.get(i));//changing carpark numbers making sure
-				  									 //it ends up empty
+				outgoingVehicleMonitor(spaces.get(i));
 				past.add(spaces.get(i));
 				status += setVehicleMsg(spaces.get(i), "P", "A");
 				departingVehicles.add(spaces.get(i));
 				
 			}
-			else if (force == true){ //Forces cars to leave at the end of the day. Removes
-									//all cars from the CarPark and archives them.
+			
+			// Dumping all cars from the carpark if force is true.
+			else if (force == true){
 				spaces.get(i).exitParkedState(time);
 				outgoingVehicleMonitor(spaces.get(i));
 				past.add(spaces.get(i));
@@ -437,7 +438,8 @@ public class CarPark {
 	 * @param time int holding current simulation time 
 	 * @throws SimulationException if no suitable spaces available when parking attempted
 	 * @throws VehicleException if state is incorrect, or timing constraints are violated
-	 * 
+	 * @Author Thomas McCarthy
+	 * @Author Ken Lewis
 	 */
 	public void processQueue(int time, Simulator sim) throws VehicleException, SimulationException {
 
@@ -449,7 +451,6 @@ public class CarPark {
 					Vehicle v = this.queue.get(i);
 					this.exitQueue(v, time);
 					this.parkVehicle(v, time, sim.setDuration());
-					//incomingVehicleMonitor(v);
 					status += setVehicleMsg(v, "Q", "P");
 					} else {
 						break;
@@ -598,6 +599,16 @@ public class CarPark {
 	}
 
 	
+	/***
+	 * Helper method used when processing new vehicles. Parks, archives or queues.
+	 * Also adds transition text to the status
+	 * @param v The vehicle to process
+	 * @param time Current simulation time
+	 * @param sim The simulator to use
+	 * @throws SimulationException
+	 * @throws VehicleException
+	 * @Author Thomas McCarthy
+	 */
 	private void handleNewVehicle(Vehicle v, int time, Simulator sim) throws SimulationException, VehicleException {
 	 if (this.spacesAvailable(v)) {
 			this.parkVehicle(v, time, sim.setDuration());

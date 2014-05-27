@@ -288,11 +288,6 @@ public abstract class Vehicle {
 		
 		if (vehicleState.contains("P"))
 			return true;
-		/*TODO
-		 * Not sure about calculating the in queued for too long time period.
-		* or if they were turned away as soon as they arrived.
-		* need to fix.
-		*/
 		else if ((this.arrivalTime + this.exitTime) > Constants.MAXIMUM_QUEUE_TIME)
 			return false; //false if queue time was too long
 		else 

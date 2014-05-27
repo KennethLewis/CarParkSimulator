@@ -44,7 +44,6 @@ public class GUISimulator extends JFrame implements Runnable {
 	private int maxCarSpaces,maxSmallSpaces, maxBikeSpaces, maxQueue, seed;
 	private double carProb,smallCarProb,bikeProb,stayMean, staySD;
 	
-	private boolean argsChecker = false;
 	
 	//4 Panels which are placed on the GUIPANEL (this.)	
 	private JPanel allComponents = new JPanel(new GridLayout());
@@ -62,12 +61,9 @@ public class GUISimulator extends JFrame implements Runnable {
 	private JButton run, timeChart, barChart, exit;
 	
 	//Titles and blanks (blanks were used to help balance layout)
-	private JLabel title = new JLabel ("Car Park");
-	private JLabel userOptions, variables, probabilities, statusCharts,carParkLog,summary;
-	private JLabel blank1 = new JLabel("");
+	private JLabel userOptions, variables, probabilities,carParkLog,summary;
 	private JLabel blank2 = new JLabel ("");
 	private JLabel blank3 = new JLabel ("");
-	private JLabel blank4 = new JLabel ("");
 	
 	//All Fields and Labels for the User Options area
 	private JTextField default_max_car_spaces, default_max_small_car_spaces,
@@ -179,15 +175,6 @@ public class GUISimulator extends JFrame implements Runnable {
 			this.bikeProb = bikeProb;
 			this.stayMean = stayMean;
 			this.staySD = staySD;
-		
-			System.out.println("the gathered staySD is " + staySD);
-			System.out.println("the real staySD is " + this.staySD);
-			//If program makes it here it means that the method was called
-			//in SimulationRunner. Set to true so that the program will use
-			//the args commands.
-			//TODO not sure if it really matter cause user should be able to
-			//change them anyway even after inputting the args?
-			this.argsChecker = true;
 		
 	}
 	
