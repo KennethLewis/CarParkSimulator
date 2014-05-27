@@ -92,8 +92,9 @@ public class SimulationRunner {
 	public static void main(String[] args) {
 		
 		GUISimulator frame;
-
-		if(args.length == 10){//need to check this number might be 9
+		
+		// Arguments are all or nothing
+		if(args.length == 10){
 		
 			try{
 				int maxCarSpaces = Integer.parseInt(args[0]);

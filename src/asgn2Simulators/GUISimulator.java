@@ -215,11 +215,6 @@ public class GUISimulator extends JFrame implements Runnable {
 			errorMsg,"Incorrect Entry",
 			JOptionPane.ERROR_MESSAGE);
 			throw new SimulationException(errorMsg);
-			
-			//this.setVisible(false);
-			//GUISimulator frame = new GUISimulator();
-			//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			//frame.setVisible(true);
 		}
 		
 	}
@@ -232,7 +227,9 @@ public class GUISimulator extends JFrame implements Runnable {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		// Cute feature that allows the user to run the simulation
+		// using GUISimulator as well
+		SimulationRunner.main(args);
 		
 	}
 	
@@ -361,17 +358,7 @@ public class GUISimulator extends JFrame implements Runnable {
 					timeChart.setEnabled(true);
 					barChart.setEnabled(true);
 					
-					
-					//Prints data to the required panels after program run
-					carParkLogData.setText(carPark.finalState());
-					//String data ="";
-					//for(int i =0; i < chartData.size(); i++){
-					//	data += chartData.get(i) + "\n";
-						//System.out.printf("%s\n", chartData.get(i));
-					//}
-					//carParkLogData.setText(data);
-					carParkSummary.setText("Customers Parked: %d\n"
-							+"Customers Dissatisfied: %d\n\n" + carPark.toString() );
+					fillGUIText(chartData);
 				}
 				catch (IOException ioe){
 					System.out.printf("There was a problem running the program.\n" +
@@ -441,6 +428,18 @@ public class GUISimulator extends JFrame implements Runnable {
 		this.add(allComponents, BorderLayout.CENTER);
 		this.add(bottomButtons, BorderLayout.PAGE_END);
 	}
-	
+	/***
+	 * Helper method that populates the GUI fields
+	 * a big bunch of CarPark statuses
+	 * @param statusData
+	 */
+	private void fillGUIText(ArrayList<String> statusData) {
+		String data ="";
+		for(int i =0; i < statusData.size(); i++){
+			data += statusData.get(i) + "";
+		}
+		carParkLogData.setText(data);
+		carParkSummary.setText("CarPark simulation completed. Here's the final summary:\n\n" + carPark.toString());
+	}
 
 }
