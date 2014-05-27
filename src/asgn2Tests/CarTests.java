@@ -333,7 +333,7 @@ public class CarTests {
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterParkedState(10,20);
 		testVehicle.exitParkedState(12);
-		assertTrue(testVehicle.getDepartureTime() == 22);
+		assertEquals(testVehicle.getDepartureTime(), 12);
 	}
 	
 	
@@ -400,7 +400,7 @@ public class CarTests {
 	 * @author Ken Lewis
 	 */	
 	@Test
-	public void testingExitQueForCorrectVars() throws VehicleException {
+	public void testExitQueueForCorrectVars() throws VehicleException {
 		
 		testVehicle = new Car (EXAMPLE_PLATE, EXAMPLE_TIME, false);
 		testVehicle.enterQueuedState();

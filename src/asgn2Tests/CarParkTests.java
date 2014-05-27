@@ -34,7 +34,7 @@ public class CarParkTests {
 
 
 	private static final int EXAMPLE_SPACES = Constants.DEFAULT_MAX_CAR_SPACES;
-	private static final int EXAMPLE_SPACES_TINY = 1;
+	private static final int EXAMPLE_SPACES_TINY = 2;
 	
 	private static final int EXAMPLE_SMALL_SPACES = Constants.DEFAULT_MAX_SMALL_CAR_SPACES;
 	private static final int EXAMPLE_SMALL_SPACES_TINY = 1;
@@ -45,11 +45,18 @@ public class CarParkTests {
 	
 	private static final String EXAMPLE_PLATE = "1234Test";	
 	private static final int EXAMPLE_ARRIVAL_TIME = 5;
-	private static final int EXAMPLE_DEPARTURE_TIME = 7;
+
 	private static final int EXAMPLE_INTENDED_DURATION = Constants.MINIMUM_STAY;
+	private static final int EXAMPLE_DEPARTURE_TIME = EXAMPLE_ARRIVAL_TIME + EXAMPLE_INTENDED_DURATION;
 	
 	private static final int EXAMPLE_LOOP = 10;
+	
+	
 	private CarPark testCarPark;
+	private CarPark testTinyPark;
+	private Car testCar;
+	private Car testSmallCar;
+	private MotorCycle testBike;
 	
 	@Before
 	/**
@@ -58,6 +65,11 @@ public class CarParkTests {
 	 */
 	public void testCreateTestCarPark() throws VehicleException {
 		testCarPark = new CarPark();
+		testTinyPark = new CarPark(EXAMPLE_SPACES_TINY, EXAMPLE_SMALL_SPACES_TINY,
+				 EXAMPLE_CYCLE_SPACES_TINY,EXAMPLE_QUEUE_SIZE);
+		testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
+		testSmallCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
+		testBike = new MotorCycle (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME); 
 	}
 
 	@Test
@@ -121,7 +133,6 @@ public class CarParkTests {
 	 */
 	@Test
 	public void testEmptyCarPark_False() throws VehicleException, SimulationException{
-		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
 		testCarPark.parkVehicle(testCar, EXAMPLE_ARRIVAL_TIME, EXAMPLE_INTENDED_DURATION);
 		assertFalse(testCarPark.carParkEmpty());
 	}
@@ -136,17 +147,11 @@ public class CarParkTests {
 	@Test
 	public void testFullCarPark() throws VehicleException, SimulationException {
 		
-		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
-		Car testSmallCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
-		MotorCycle motorBike = new MotorCycle (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME); 
-		testCarPark = new CarPark(EXAMPLE_SPACES_TINY, EXAMPLE_SMALL_SPACES_TINY,
-				 EXAMPLE_CYCLE_SPACES_TINY,EXAMPLE_QUEUE_SIZE);
-		testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
-		testCarPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(),
+		testTinyPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testTinyPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testTinyPark.parkVehicle(testBike, testBike.getArrivalTime(),
 				EXAMPLE_INTENDED_DURATION);
-		testCarPark.parkVehicle(motorBike, motorBike.getArrivalTime(),+
-				EXAMPLE_INTENDED_DURATION);
-		assertTrue(testCarPark.carParkFull());
+		assertTrue(testTinyPark.carParkFull());
 	}
 	
 	
@@ -160,17 +165,12 @@ public class CarParkTests {
 	@Test
 	public void testFullCarPark_False() throws VehicleException, SimulationException {
 		
-		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
-		Car testSmallCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
-		MotorCycle motorBike = new MotorCycle (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME); 
-		testCarPark = new CarPark(EXAMPLE_SPACES_TINY, EXAMPLE_SMALL_SPACES_TINY,
-				 EXAMPLE_CYCLE_SPACES_TINY,EXAMPLE_QUEUE_SIZE);
-		testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
-		testCarPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(),
+		testTinyPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testTinyPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(),
 				EXAMPLE_INTENDED_DURATION);
 
 		// We don't add a motorbike so the park shouldn't be full
-		assertFalse(testCarPark.carParkFull());
+		assertFalse(testTinyPark.carParkFull());
 	}
 	
 	
@@ -182,13 +182,27 @@ public class CarParkTests {
 	 * @throws SimulationException 
 	 */
 	@Test(expected = VehicleException.class)
-	public void testParkVehicle_FullCarPark() throws VehicleException, SimulationException {
-		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
-		testCarPark = new CarPark(EXAMPLE_SPACES_TINY, EXAMPLE_SMALL_SPACES,
-								  EXAMPLE_CYCLE_SPACES, EXAMPLE_QUEUE_SIZE);
+	public void testParkVehicle_Duplicate() throws VehicleException, SimulationException {
 		testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
 		testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
 	}
+	
+	
+	/**
+	 * Tests if an exception is throw when we try
+	 * adding a car to a full carpark
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test(expected = SimulationException.class)
+	public void testParkVehicle_NoSpaces() throws VehicleException, SimulationException {
+		testTinyPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		
+		testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
+		testTinyPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+	}
+	
 	
 	
 	/**
@@ -221,17 +235,11 @@ public class CarParkTests {
 	 */
 	@Test
 	public void testNumSmallCars() throws VehicleException, SimulationException{
-		
-		Car testCar;
-		
-		// adding a non small car to make sure it's excluded in the final count
-		//testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
-		
+	
 		for(int i = 0; i < EXAMPLE_LOOP; i++)  {
 			testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
 			testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
 		}
-		System.out.printf("%d",testCarPark.getNumSmallCars());
 		assertTrue(testCarPark.getNumSmallCars() == EXAMPLE_LOOP);
 	}
 	
@@ -246,15 +254,11 @@ public class CarParkTests {
 	@Test
 	public void testNumMotorCycles() throws VehicleException, SimulationException{
 		
-		MotorCycle testBike;
-		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
-		
-		// adding something that isnt a motorcycle to make sure it's excluded in the final count
 		testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
 		
 		for(int i = 0; i < EXAMPLE_LOOP; i++)  {
-			testBike = new MotorCycle(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME);
 			testCarPark.parkVehicle(testBike, testBike.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+			testBike = new MotorCycle (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME); 
 		}
 		assertTrue(testCarPark.getNumMotorCycles() == EXAMPLE_LOOP);
 	}
@@ -269,7 +273,6 @@ public class CarParkTests {
 	 */
 	@Test
 	public void testQueueNumVehicles() throws VehicleException, SimulationException{
-		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
 		testCarPark.enterQueue(testCar);
 		assertTrue(testCarPark.numVehiclesInQueue() == 1);
 	}
@@ -297,11 +300,7 @@ public class CarParkTests {
 	 */
 	@Test
 	public void testQueueFull() throws VehicleException, SimulationException{
-		
-		testCarPark = new CarPark(EXAMPLE_SPACES_TINY, EXAMPLE_SMALL_SPACES,
-				  EXAMPLE_CYCLE_SPACES, EXAMPLE_QUEUE_SIZE);
-		Car testCar; 
-		
+			
 		for (int i = 0; i < EXAMPLE_QUEUE_SIZE; i++) {
 			
 			testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
@@ -319,9 +318,6 @@ public class CarParkTests {
 	 */
 	@Test
 	public void testQueueFull_False() throws VehicleException, SimulationException{
-		testCarPark = new CarPark(EXAMPLE_SPACES_TINY, EXAMPLE_SMALL_SPACES,
-				  EXAMPLE_CYCLE_SPACES, EXAMPLE_QUEUE_SIZE);
-		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
 		testCarPark.enterQueue(testCar);
 		assertFalse(testCarPark.queueFull());
 	}
@@ -330,7 +326,6 @@ public class CarParkTests {
 	
 	/**
 	 * Tests if the queue is correctly reported as empty
-	 * TODO Make better?
 	 * @throws VehicleException
 	 * @author Thomas McCarthy
 	 * @throws SimulationException 
@@ -349,9 +344,6 @@ public class CarParkTests {
 	 */
 	@Test
 	public void testQueueEmpty_False() throws VehicleException, SimulationException{
-		testCarPark = new CarPark(EXAMPLE_SPACES_TINY, EXAMPLE_SMALL_SPACES,
-				  EXAMPLE_CYCLE_SPACES, EXAMPLE_QUEUE_SIZE);
-		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
 		testCarPark.enterQueue(testCar);
 		assertFalse(testCarPark.queueEmpty());
 	}
@@ -365,7 +357,6 @@ public class CarParkTests {
 	 */
 	@Test
 	public void testRemoveFromCarpark() throws VehicleException, SimulationException{
-		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
 		testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
 		testCarPark.unparkVehicle(testCar, EXAMPLE_DEPARTURE_TIME);
 		assertTrue(testCarPark.carParkEmpty());
@@ -379,93 +370,190 @@ public class CarParkTests {
 	 * @author Thomas McCarthy
 	 * @throws SimulationException 
 	 */
-	@Test//(expected = VehicleException.class)
+	@Test
 	public void testRemoveFromCarpark_WithoutBeingParked() throws VehicleException, SimulationException{
-		
-		Car testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
 		testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
 		testCarPark.unparkVehicle(testCar, EXAMPLE_DEPARTURE_TIME);
 		assertTrue(testCarPark.carParkEmpty());
 		
 	}
 	
+
 	
-	/**
-	 * Tests if the carpark correctly reports that there are no
-	 * spaces available for a normal car when normal car spaces are empty
-	 * @throws VehicleException
-	 * @author Thomas McCarthy
-	 * @throws SimulationException 
-	 */
-	@Test (expected = SimulationException.class)
-	public void testSpacesAvailableCar() throws VehicleException, SimulationException{
-		
-		Car testCar = new Car ("TEST1234", EXAMPLE_ARRIVAL_TIME, false); 
-		Car testSmallCar; 
-		
-		for (int i =0; i < EXAMPLE_SPACES; i++) {
-			testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
-			testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
-		}
-		
-		for (int i =0; i < EXAMPLE_SMALL_SPACES; i++) {
-			testSmallCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
-			testCarPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
-		}
-	}
-	
-	
-	/**
-	 * Tests if the carpark correctly reports that there are no
-	 * spaces available for a small car when all available car spaces are empty
-	 * @throws VehicleException
-	 * @author Thomas McCarthy
-	 * @throws SimulationException 
-	 */
-	@Test (expected = SimulationException.class)
-	public void testSpacesAvailableSmallCar() throws VehicleException, SimulationException{
-		
-		Car testCar;
-		Car testSmallCar = new Car("TEST1234", EXAMPLE_ARRIVAL_TIME, true);
-		
-		for (int i =0; i < EXAMPLE_SPACES; i++) {
-			testCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false);
-			testCarPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
-		}
-		
-		for (int i =0; i < EXAMPLE_SMALL_SPACES; i++) {
-			testSmallCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
-			testCarPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
-		}
-	}
 	
 	
 	
 	/**
-	 * Tests if the carpark correctly reports that there are no
-	 * spaces available for a motorcycle when all available spaces are empty
+	 * Tests if it is calculated that there is no space for a normal car
+	 * when all spaces are filled
 	 * @throws VehicleException
 	 * @author Thomas McCarthy
 	 * @throws SimulationException 
 	 */
 	@Test
-	public void testSpacesAvailableMotorCycle() throws VehicleException, SimulationException{
+	public void testSpacesAvailable_Full_Car() throws VehicleException, SimulationException{
 		
-		Car testSmallCar;
-		MotorCycle testBike = new MotorCycle("TEST1234", EXAMPLE_ARRIVAL_TIME); 
-		
-		for (int i =0; i < EXAMPLE_SMALL_SPACES; i++) {
-			testSmallCar = new Car(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
-			testCarPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
-		}
-		
-		for (int i =0; i < EXAMPLE_CYCLE_SPACES; i++) {
-			testBike = new MotorCycle(EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME);
-			testCarPark.parkVehicle(testBike, testBike.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
-		}
-		assertFalse(testCarPark.spacesAvailable(testBike));
+		testTinyPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testTinyPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testTinyPark.parkVehicle(testBike, testBike.getArrivalTime(),
+				EXAMPLE_INTENDED_DURATION);
+		assertFalse(testTinyPark.spacesAvailable(testCar));
+	
 	}
 	
+	
+
+	/**
+	 * Tests if it is calculated that there is no space for a small car
+	 * when all spaces are filled
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test
+	public void testSpacesAvailable_Full_SmallCar() throws VehicleException, SimulationException{
+		
+		testTinyPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testTinyPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testTinyPark.parkVehicle(testBike, testBike.getArrivalTime(),
+				EXAMPLE_INTENDED_DURATION);
+		assertFalse(testTinyPark.spacesAvailable(testSmallCar));
+	
+	}
+	
+	
+
+	/**
+	 * Tests if it is calculated that there is no space for a bike
+	 * when all spaces are filled
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test
+	public void testSpacesAvailable_Full_Bike() throws VehicleException, SimulationException{
+		
+		testTinyPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testTinyPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testTinyPark.parkVehicle(testBike, testBike.getArrivalTime(),
+				EXAMPLE_INTENDED_DURATION);
+		assertFalse(testTinyPark.spacesAvailable(testBike));
+	
+	}
+	
+	
+
+	/**
+	 * Tests if it is calculated that is space for a bike
+	 * when there is in fact space
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test
+	public void testSpacesAvailable_Bike() throws VehicleException, SimulationException{
+		
+		testTinyPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testTinyPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		assertTrue(testTinyPark.spacesAvailable(testBike));
+	
+	}
+	
+	
+	/**
+	 * Tests if it is calculated that is space for a car
+	 * when there is in fact space
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test
+	public void testSpacesAvailable_Car() throws VehicleException, SimulationException{
+		
+		testTinyPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testTinyPark.parkVehicle(testBike, testBike.getArrivalTime(),
+				EXAMPLE_INTENDED_DURATION);
+		assertTrue(testTinyPark.spacesAvailable(testCar));
+	
+	}
+	
+	
+	
+	/**
+	 * Tests if it is calculated that is space for a small car
+	 * when there is in fact space
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test
+	public void testSpacesAvailable_SmallCar() throws VehicleException, SimulationException{
+		
+		testTinyPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testTinyPark.parkVehicle(testBike, testBike.getArrivalTime(),
+				EXAMPLE_INTENDED_DURATION);
+		assertTrue(testTinyPark.spacesAvailable(testSmallCar));
+	
+	}
+	
+
+	/**
+	 * Tests if it is calculated that is space for a small car
+	 * when there is in fact space (a normal space that is)
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test
+	public void testSpacesAvailable_SmallCar_InBigSpace() throws VehicleException, SimulationException{
+		
+		testTinyPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testTinyPark.parkVehicle(testBike, testBike.getArrivalTime(),
+				EXAMPLE_INTENDED_DURATION);
+		assertTrue(testTinyPark.spacesAvailable(testSmallCar));
+	
+	}
+	
+	
+	/**
+	 * Tests if it is calculated that is space for a bike
+	 * when there is in fact space (a small car space that is)
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test
+	public void testSpacesAvailable_Bike_InBigSpace() throws VehicleException, SimulationException{
+		
+		testTinyPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testTinyPark.parkVehicle(testBike, testBike.getArrivalTime(),
+				EXAMPLE_INTENDED_DURATION);
+		assertTrue(testTinyPark.spacesAvailable(testBike));
+	
+	}
+	
+	
+	/**
+	 * Test if small cars are overflowing into normal
+	 * spaces and properly blocking normal cars
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+	 */
+	@Test
+	public void testSpacesAvailable_Car_CantFromOverflow() throws VehicleException, SimulationException{
+		
+		testTinyPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testSmallCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, true);
+		testTinyPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testTinyPark.parkVehicle(testBike, testBike.getArrivalTime(),
+				EXAMPLE_INTENDED_DURATION);
+		assertFalse(testTinyPark.spacesAvailable(testCar));
+	
+	}
+	
+	
+
 	
 	/**
 	 * Tests if an exception is thrown when we try to
@@ -492,7 +580,6 @@ public class CarParkTests {
 	 */
 	@Test(expected = SimulationException.class)
 	public void testArchiveNewVehicle_Queued() throws SimulationException, VehicleException{
-		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
 		testCarPark.enterQueue(testCar);
 		testCarPark.archiveNewVehicle(testCar);
 	}
@@ -506,7 +593,6 @@ public class CarParkTests {
  */
 	@Test
 	public void testArchiveNewVehicle() throws SimulationException, VehicleException{
-		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
 		testCarPark.archiveNewVehicle(testCar);
 		assertTrue(testCarPark.getStatus(testCar.getArrivalTime()).contains("A:1"));
 	}
@@ -521,9 +607,8 @@ public class CarParkTests {
 	 * @author Thomas McCarthy
 	 * @throws SimulationException 
 	 */
-	@Test//(expected = SimulationException.class)
+	@Test
 	public void testArchiveNewVehicle_NeverQueued() throws SimulationException, VehicleException{
-		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
 		testCarPark.archiveNewVehicle(testCar);
 		assertFalse(testCar.wasQueued());
 	}
@@ -539,7 +624,6 @@ public class CarParkTests {
 	 */
 	@Test
 	public void testArchiveNewVehicle_NeverParked() throws SimulationException, VehicleException{
-		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
 		testCarPark.archiveNewVehicle(testCar);
 		assertTrue(testCar.wasParked() == false);
 	}
@@ -553,8 +637,6 @@ public class CarParkTests {
 	 */
 	@Test
 	public void testArchiveDepartingVehicles() throws SimulationException, VehicleException{
-		
-		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
 		testCarPark.parkVehicle(testCar, EXAMPLE_ARRIVAL_TIME, EXAMPLE_INTENDED_DURATION);
 		testCarPark.archiveDepartingVehicles(EXAMPLE_DEPARTURE_TIME, false);
 		assertTrue(testCarPark.getStatus(testCar.getArrivalTime()).contains("A:1"));
@@ -570,7 +652,6 @@ public class CarParkTests {
 	 */
 	@Test
 	public void testArchiveDepartingVehicles_ForceClear() throws SimulationException, VehicleException{
-		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
 		testCarPark.parkVehicle(testCar, EXAMPLE_ARRIVAL_TIME, EXAMPLE_INTENDED_DURATION);
 		testCarPark.archiveDepartingVehicles(EXAMPLE_DEPARTURE_TIME, true);
 		assertTrue(testCarPark.getStatus(testCar.getArrivalTime()).contains("P:0"));
@@ -578,15 +659,17 @@ public class CarParkTests {
 	
 	
 	/**
-	 * TODO How do we test this?!
+	 * Tests if we don't allow intended durations that are too short
 	 * @throws VehicleException
 	 * @author Thomas McCarthy
 	 * @throws SimulationException 
 	 */
-	@Test(expected = SimulationException.class)
-	public void testArchiveDepartingVehicles_NotInCarPark() throws SimulationException, VehicleException{
-		
+	@Test(expected = VehicleException.class)
+	public void testArchiveDepartingVehicles_Shorted() throws SimulationException, VehicleException{
+		testCarPark.parkVehicle(testCar, EXAMPLE_ARRIVAL_TIME, EXAMPLE_ARRIVAL_TIME);
+		testCarPark.archiveDepartingVehicles(EXAMPLE_DEPARTURE_TIME, true);
 	}
+	
 
 		
 	
@@ -596,10 +679,9 @@ public class CarParkTests {
 	 * @author Thomas McCarthy
 	 * @throws SimulationException 
  */
-	@Test(expected = SimulationException.class)
+	@Test
 	public void testArchiveQueueFailures() throws SimulationException, VehicleException{
-		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
-		int finishTime = EXAMPLE_ARRIVAL_TIME + Constants.MAXIMUM_QUEUE_TIME;
+		int finishTime = EXAMPLE_ARRIVAL_TIME + Constants.MAXIMUM_QUEUE_TIME  + 1;
 		
 		testCarPark.enterQueue(testCar);
 		testCarPark.archiveQueueFailures(finishTime);
@@ -614,12 +696,11 @@ public class CarParkTests {
 	 * @author Thomas McCarthy
 	 * @throws SimulationException 
 	 */
-	@Test(expected = SimulationException.class)
+	@Test
 	public void testArchiveQueueFailures_NotLongEnough() throws SimulationException, VehicleException{
-		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
 		
 		// Just below maximum queue time
-		int finishTime = EXAMPLE_ARRIVAL_TIME + Constants.MAXIMUM_QUEUE_TIME - 1;
+		int finishTime = EXAMPLE_ARRIVAL_TIME + Constants.MAXIMUM_QUEUE_TIME;
 		
 		testCarPark.enterQueue(testCar);
 		testCarPark.archiveQueueFailures(finishTime);
@@ -634,7 +715,6 @@ public class CarParkTests {
  */
 	@Test
 	public void testEnterQueue() throws SimulationException, VehicleException{
-		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
 		
 		testCarPark.enterQueue(testCar);
 		assertTrue(testCarPark.getStatus(EXAMPLE_ARRIVAL_TIME).contains("Q:1"));
@@ -649,7 +729,6 @@ public class CarParkTests {
  */
 	@Test(expected = SimulationException.class)
 	public void testEnterQueue_Full_ZeroQueue() throws SimulationException, VehicleException{
-		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
 		testCarPark = new CarPark(EXAMPLE_SPACES, EXAMPLE_SMALL_SPACES, EXAMPLE_CYCLE_SPACES, 0);
 		testCarPark.enterQueue(testCar);
 	}
@@ -680,12 +759,11 @@ public class CarParkTests {
  */
 	@Test
 	public void testExitQueue() throws SimulationException, VehicleException{
-		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
 		
 		testCarPark.enterQueue(testCar);
 		testCarPark.exitQueue(testCar, EXAMPLE_DEPARTURE_TIME);
 		
-		assertTrue(testCarPark.getStatus(EXAMPLE_DEPARTURE_TIME).contains("Q:0"));
+		assertFalse(testCar.isQueued());
 	}
 	
 	
@@ -698,7 +776,6 @@ public class CarParkTests {
  */
 	@Test(expected = SimulationException.class)
 	public void testExitQueue_NotInQueue() throws SimulationException, VehicleException{
-		Car testCar = new Car (EXAMPLE_PLATE, EXAMPLE_ARRIVAL_TIME, false); 
 		testCarPark.exitQueue(testCar, EXAMPLE_DEPARTURE_TIME);
 	}
 	
