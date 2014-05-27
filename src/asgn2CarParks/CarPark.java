@@ -209,12 +209,11 @@ public class CarPark {
 	 */
 	public boolean carParkFull() {
 		
-		int totalSpaces = this.maxCarSpaces + this.maxMotorCycleSpaces +
-				this.maxSmallCarSpaces;
-		if (totalSpaces <= spaces.size())
+		if (this.getNumCars() + this.getNumMotorCycles() >= this.maxCarSpaces + this.maxMotorCycleSpaces) {
 			return true;
-		else
+		}else {
 			return false;
+		}
 	}
 	
 	/**
@@ -445,7 +444,7 @@ public class CarPark {
 		if(this.queueEmpty() == false){
 			
 			for (int i = 0; i < this.queue.size(); i++) {
-					if (spacesAvailable(this.queue.get(i))) {
+					if (spacesAvailable(this.queue.get(i)) && !carParkFull()) {
 
 					Vehicle v = this.queue.get(i);
 					this.exitQueue(v, time);
@@ -524,7 +523,7 @@ public class CarPark {
 		}
 		smallCarOverflow = Math.max(0, smallCarOverflow);
 		
-		if (this.getNumCars() - this.getNumSmallCars() >= (this.maxCarSpaces - this.maxSmallCarSpaces)) {
+		if ((this.getNumCars() - this.getNumSmallCars()) >= (this.maxCarSpaces - this.maxSmallCarSpaces)) {
 			normalCarFull = true;
 		}
 		
