@@ -55,7 +55,7 @@ public class CarPark {
 	private int numSmallCars;
 	private int numMotorCycles;
 	private int numDissatisfied;
-	private String status;
+	private String status = "";
 	/* * CarPark constructor sets the basic size parameters. 
 	 * Uses default parameters
 	 */

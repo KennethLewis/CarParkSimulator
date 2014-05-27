@@ -306,30 +306,44 @@ public abstract class Vehicle {
 	public String toString() {
 		
 		String wasQueuedTxt = "";
-		if (wasQueued() == true)
-			wasQueuedTxt = "was";
-		else
-			wasQueuedTxt = "was not";
+		if (wasQueued() == true) {
+			int queueOverstay;
+			
+			if (getParkingTime() == 0) {
+				queueOverstay = getDepartureTime() - getArrivalTime() - Constants.MAXIMUM_QUEUE_TIME;
+				wasQueuedTxt = "\nExit from Queue: " + getDepartureTime() +
+						"\nQueuing Time: " + (getDepartureTime() - getArrivalTime()) +
+				"\nExceeded maximum acceptable queuing time by: " + queueOverstay;
+			} else {
+
+				wasQueuedTxt = "\nExit from Queue: " + getParkingTime() +
+							"\nQueuing Time: " + (getParkingTime() - getArrivalTime());
+			}
+		} else {
+			wasQueuedTxt = "\nVehicle was not queued";
+		}
+		
 		
 		String wasSatisfiedTxt = "";
-		if (isSatisfied() == true)
+		if (isSatisfied() == true) {
 			wasSatisfiedTxt = "satisfied";
-		else
+		} else {
 			wasSatisfiedTxt = "not satisfied";
+		}
+		
 		
 		String wasParkedTxt = "";
 		if (wasParked()) {
-			wasParkedTxt = "\nEntry to Car Park: " + this.arrivalTime +
+			wasParkedTxt = "\nEntry to Car Park: " + this.parkingTime + 
 				"\nExit from Car Park: " + (getDepartureTime()) +
 				"\nParking Time: " + 
-				(getDepartureTime() - getArrivalTime());
+				(getDepartureTime() - getParkingTime());
 		} else {
 			wasParkedTxt = "\nVehicle was not parked";
 		}
 		return "Vehicle vehID: " + this.vehID +
 				"\nArrival Time: " + this.arrivalTime +
-				"\nVehicle " + wasQueuedTxt + " queued" +
-				wasParkedTxt +
+				wasQueuedTxt + wasParkedTxt +
 				"\nCustomer was " + wasSatisfiedTxt;
 		//EXAMPLE toString from Assingment Specs part II		
 		/*Vehicle vehID:
