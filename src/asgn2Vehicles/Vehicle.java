@@ -93,11 +93,7 @@ public abstract class Vehicle {
 	public void enterParkedState(int parkingTime, int intendedDuration) throws VehicleException {
 
 		
-		///for(int i =0; i < vehicleState.size(); i++){
-		///	System.out.printf("VEHICLE STATE IS: %s\n", vehicleState.get(i));
-		///}
 		
-
 		if(vehicleState.contains("P") || vehicleState.get(vehicleState.size() - 1) == "Q")
 			throw new VehicleException ("Vehicle is currently either already parked"
 					+ " or in the queue to enter the CarPark.\n");
@@ -145,8 +141,6 @@ public abstract class Vehicle {
 		else if (departureTime < this.parkingTime)
 			throw new VehicleException ("Revised departure time cannot be less than" +
 					" the parking time.\n");
-		//Method enterParkedState mentions departure time is parkingTime + 
-		//intendedDuration yields the departureTime
 		else {
 			this.departureTime = departureTime;
 			vehicleState.add("A");
@@ -340,16 +334,6 @@ public abstract class Vehicle {
 				"\nArrival Time: " + this.arrivalTime +
 				wasQueuedTxt + wasParkedTxt +
 				"\nCustomer was " + wasSatisfiedTxt;
-		//EXAMPLE toString from Assingment Specs part II		
-		/*Vehicle vehID:
-			C9
-			Arrival Time: 9
-			Vehicle was not queued
-			Entry to Car Park: 9
-			Exit from Car Park: 124
-			Parking Time: 115
-			Customer was satisfied
-			Car cannot use small parking space*/
 	}
 
 	/**
