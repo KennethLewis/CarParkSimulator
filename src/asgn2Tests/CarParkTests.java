@@ -20,6 +20,7 @@ import org.junit.Test;
 import asgn2Exceptions.SimulationException;
 import asgn2Exceptions.VehicleException;
 import asgn2Simulators.Constants;
+import asgn2Simulators.Simulator;
 import asgn2Vehicles.Car;
 import asgn2Vehicles.MotorCycle;
 import asgn2CarParks.CarPark;
@@ -50,6 +51,10 @@ public class CarParkTests {
 	private static final int EXAMPLE_DEPARTURE_TIME = EXAMPLE_ARRIVAL_TIME + EXAMPLE_INTENDED_DURATION;
 	
 	private static final int EXAMPLE_LOOP = 10;
+	
+	private static final int EXAMPLE_SIM_TIME = 1;
+	
+	private static final double EXAMPLE_PROB_CERTAIN = 1;
 	
 	
 	private CarPark testCarPark;
@@ -665,7 +670,7 @@ public class CarParkTests {
 	 * @throws SimulationException 
 	 */
 	@Test(expected = VehicleException.class)
-	public void testArchiveDepartingVehicles_Shorted() throws SimulationException, VehicleException{
+	public void testArchiveDepartingVehicles_IntendedTooShort() throws SimulationException, VehicleException{
 		testCarPark.parkVehicle(testCar, EXAMPLE_ARRIVAL_TIME, EXAMPLE_ARRIVAL_TIME);
 		testCarPark.archiveDepartingVehicles(EXAMPLE_DEPARTURE_TIME, true);
 	}
@@ -779,4 +784,64 @@ public class CarParkTests {
 		testCarPark.exitQueue(testCar, EXAMPLE_DEPARTURE_TIME);
 	}
 	
+	
+	/**
+	 * Tests if a new car is created and added to the carpark. Probability
+	 * is set to certain in order to test for this.
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+ */
+	@Test
+	public void testTryProcessNew_Park() throws SimulationException, VehicleException{
+		Simulator sim = new Simulator(Constants.DEFAULT_SEED,Constants.DEFAULT_INTENDED_STAY_MEAN,Constants.DEFAULT_INTENDED_STAY_SD,
+		 		 EXAMPLE_PROB_CERTAIN, 0, 0);
+		testCarPark.tryProcessNewVehicles(EXAMPLE_SIM_TIME, sim);
+		assertTrue(testCarPark.getStatus(EXAMPLE_SIM_TIME).contains("C:1"));
+	}
+	
+	
+	/**
+	 * Tests if a new car is created and added to the queue. Probability
+	 * is set to certain in order to test for this.
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+ */
+	@Test
+	public void testTryProcessNew_Queue() throws SimulationException, VehicleException{
+		Simulator sim = new Simulator(Constants.DEFAULT_SEED,Constants.DEFAULT_INTENDED_STAY_MEAN,Constants.DEFAULT_INTENDED_STAY_SD,
+		 		 EXAMPLE_PROB_CERTAIN, 0, 0);
+		
+		testTinyPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testTinyPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testTinyPark.parkVehicle(testBike, testBike.getArrivalTime(),
+				EXAMPLE_INTENDED_DURATION);
+		testTinyPark.tryProcessNewVehicles(EXAMPLE_SIM_TIME, sim);
+		assertTrue(testTinyPark.getStatus(EXAMPLE_SIM_TIME).contains("Q:1"));
+	}
+	
+	
+	/**
+	 * Tests if a new car is created and added to the archive. Probability
+	 * is set to certain in order to test for this.
+	 * @throws VehicleException
+	 * @author Thomas McCarthy
+	 * @throws SimulationException 
+ */
+	@Test
+	public void testTryProcessNew_ArchiveInstantly() throws SimulationException, VehicleException{
+		Simulator sim = new Simulator(Constants.DEFAULT_SEED,Constants.DEFAULT_INTENDED_STAY_MEAN,Constants.DEFAULT_INTENDED_STAY_SD,
+		 		 EXAMPLE_PROB_CERTAIN, 0, 0);
+		
+		testTinyPark = new CarPark(EXAMPLE_SPACES_TINY, EXAMPLE_SMALL_SPACES_TINY,
+				 EXAMPLE_CYCLE_SPACES_TINY,0);
+		
+		testTinyPark.parkVehicle(testCar, testCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testTinyPark.parkVehicle(testSmallCar, testSmallCar.getArrivalTime(), EXAMPLE_INTENDED_DURATION);
+		testTinyPark.parkVehicle(testBike, testBike.getArrivalTime(),
+				EXAMPLE_INTENDED_DURATION);
+		testTinyPark.tryProcessNewVehicles(EXAMPLE_SIM_TIME, sim);
+		assertTrue(testTinyPark.getStatus(EXAMPLE_SIM_TIME).contains("A:1"));
+	}
 }
