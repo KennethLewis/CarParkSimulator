@@ -212,7 +212,7 @@ public class CarPark {
 	 */
 	public boolean carParkFull() {
 		
-		if (this.getNumCars() + this.getNumMotorCycles() >= this.maxCarSpaces + this.maxMotorCycleSpaces) {
+		if (this.getNumCars() + this.getNumMotorCycles() >= maxCarSpaces + maxMotorCycleSpaces) {
 			return true;
 		}else {
 			return false;

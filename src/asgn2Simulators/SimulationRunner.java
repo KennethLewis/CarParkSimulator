@@ -52,36 +52,36 @@ public class SimulationRunner {
 	 * @throws VehicleException if Vehicle creation or operation constraints violated 
 	 * @throws SimulationException if Simulation constraints are violated 
 	 * @throws IOException on logging failures
+	 * @author hogan
 	 */
 	public void runSimulation() throws VehicleException, SimulationException, IOException {
 		
-		this.log.initialEntry(this.carPark,this.sim);
+		log.initialEntry(carPark,sim);
 		for (int time=0; time<=Constants.CLOSING_TIME; time++) {
 			//queue elements exceed max waiting time
-			if (!this.carPark.queueEmpty()) {
-				this.carPark.archiveQueueFailures(time);
+			if (carPark.queueEmpty()) {
+				carPark.archiveQueueFailures(time);
 			}
 			//vehicles whose time has expired
-			if (!this.carPark.carParkEmpty()) {
+			if (carPark.carParkEmpty()) {
 				//force exit at closing time, otherwise normal
 				boolean force = (time == Constants.CLOSING_TIME);
-				this.carPark.archiveDepartingVehicles(time, force);
+				carPark.archiveDepartingVehicles(time, force);
 			}
 			//attempt to clear the queue 
-			if (!this.carPark.carParkFull()) {
-				this.carPark.processQueue(time,this.sim);
+			if (!carPark.carParkFull()) {
+				carPark.processQueue(time,sim);
 			}
 			// new vehicles from minute 1 until the last hour
 			if (newVehiclesAllowed(time)) { 
-				this.carPark.tryProcessNewVehicles(time,this.sim);
+				carPark.tryProcessNewVehicles(time,sim);
 			}
 			//Log progress 
-			this.log.logEntry(time,this.carPark);
+			log.logEntry(time,carPark);
 
 			chartData.add(carPark.getStatus(time));
-			//System.out.printf("%s\n",carPark.getStatus(time));
 		}
-		this.log.finalise(this.carPark);
+		log.finalise(carPark);
 		
 	}
 
